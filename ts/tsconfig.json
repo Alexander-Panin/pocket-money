@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "allowJs": false,
+    "noEmitOnError": true,
+    "target": "es2022",
+    "lib": ["es2022"],
+    "module": "NodeNext",
+    "esModuleInterop": true,
+    "sourceMap": false,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "resolveJsonModule": true,
+  },
+  "include": ["./src/**/*"],
+  "exclude": ["node_modules", "**/*.test.ts"]
+}

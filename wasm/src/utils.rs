@@ -1,4 +1,5 @@
 use wasm_bindgen::prelude::*;
+use crate::store::store;
 
 #[wasm_bindgen]
 extern "C" {
@@ -7,5 +8,6 @@ extern "C" {
 
 #[wasm_bindgen]
 pub fn greet(name: &str) {
-    alert(&format!("Hello, {}!", name));
+    let x = store();
+    alert(&format!("Hello {}, {:?}!", name, x));
 }
