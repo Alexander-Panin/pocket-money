@@ -9,12 +9,6 @@ pub fn store() -> Option<u32> {
 }
 
 #[wasm_bindgen]
-extern "C" {
-    pub fn alert(s: &str);
-}
-
-
-#[wasm_bindgen]
 pub fn render_template(main: &str, t: &str) {
     let _ = render(main, t);
 }

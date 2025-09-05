@@ -1,21 +1,32 @@
 <!doctype html>
-<html lang="en-US">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>rust-wasm example</title>
   </head>
   <body>
     <script type="module">
       import init, { greet, render_template } from "./wasm/pkg/wasm.js";
 
-      init().then(() => {
-        // greet("hi");
-        render_template("#main", "#one");
-      });
+      init()
+        .then(() => {
+          render_template("#main", "#one");
+        })
+        .then(() => {
+          document.querySelector("body")
+            .addEventListener('click', (event) => {
+              const map = {};
+              for (let x of event.target.attributes) {
+                console.log(x);
+                map[x.name] = x.value;
+              }
+              console.log(map);
+            })
+        });
     </script>
+
     <div id="main"></div>
     <template id="one">
-      <div>a</div>
+      <div class="green" data="id=123">a</div>
       <div>b</div>
     </template>
   </body>
