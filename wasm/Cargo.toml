@@ -15,5 +15,9 @@ features = [
   "Storage",
   "Window",
   "Document",
-  "Element"
+  "Element",
+  "HtmlTemplateElement",
+  "Node",
+  "NodeList",
+  "DocumentFragment",
 ]

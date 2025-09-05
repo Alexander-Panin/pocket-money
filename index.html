@@ -6,26 +6,19 @@
   </head>
   <body>
     <script type="module">
-      import init, { greet } from "./wasm/pkg/wasm.js";
+      import init, { greet, render_template } from "./wasm/pkg/wasm.js";
 
       init().then(() => {
-        greet("hi");
-        const main = document.querySelector("#main");
-        const t = document.querySelector("#one"); 
-        for (let x in localStorage) 
-          if (localStorage.hasOwnProperty(x)) {
-            const clone = t.content.cloneNode(true);
-            let div = clone.querySelectorAll("div");
-            div[0].textContent = x;
-            div[1].textContent = x + x;
-            main.appendChild(clone);   
-          }
+        // greet("hi");
+        render_template("#main", "#one");
       });
     </script>
     <div id="main"></div>
     <template id="one">
-      <div></div>
-      <div></div>
+      <div id="root">
+        <div>a</div>
+        <div>b</div>
+      </div>
     </template>
   </body>
 </html>
