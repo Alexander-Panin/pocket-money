@@ -25,11 +25,11 @@ fn render(main:& str, t: &str) -> Option<String> {
     let template = document.query_selector(t).ok()??.dyn_into::<HtmlTemplateElement>().ok()?;
 
     for x in 1..5 {
-        let clone = template.content().query_selector("#root").ok()??.clone_node_with_deep(true).ok()?;
+        let clone = template.content().clone_node_with_deep(true).ok()?;
         let nodes = clone.child_nodes();
         alert(&format!("{}", nodes.length()));
-        nodes.item(0)?.set_text_content(Some(&format!("{x}")));
-        nodes.item(1)?.set_text_content(Some(&format!("{x}+{x}+{x}")));
+        nodes.item(1)?.set_text_content(Some(&format!("{x}")));
+        nodes.item(3)?.set_text_content(Some(&format!("{x}+{x}+{x}")));
         let _ = main.append_child(&clone);
     }
     Some("".to_owned())
