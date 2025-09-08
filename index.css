@@ -1,0 +1,17 @@
+#main {
+    width: 400px;
+    height: 650px;
+    border: 2px solid indianred;
+}
+
+#list {
+    margin: 10px;
+    overflow-y: auto;
+    height: 600px;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

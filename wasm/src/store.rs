@@ -34,6 +34,16 @@ fn render_list(document: &Document, list_id: &str) -> Result<(), JsValue> {
     Ok(())
 }
 
+#[derive(Debug)]
+struct Day {
+    date: u32,
+    price: f32,
+    tag: &'static str,
+    comment: &'static str,
+}
+
+const DATA = const DATA: [Day; 1] = [Day { date: 1, price: 10.5, tag: "food", comment: "" }, Day { date: 1, price: 16.0, tag: "play", comment: "" }, Day { date: 2, price: 5.0, tag: "relax", comment: "" }];
+
 fn render_rows(document: &Document, row_id: &str) -> Result<(), JsValue> {
     let container = document
         .query_selector(&format!("#{row_id}"))?
@@ -43,23 +53,23 @@ fn render_rows(document: &Document, row_id: &str) -> Result<(), JsValue> {
         .ok_or(JsValue::from_str("can not find template-row"))?
         .dyn_into::<HtmlTemplateElement>()?;
 
-    for x in 1..5 {
+    for (day,i) in DATA.iter().zip(0..) {
         let content = template
             .content()
             .clone_node_with_deep(true)?
             .dyn_into::<DocumentFragment>()?;
-        render_row(&content, x)?;
+        render_row(&content, day, i)?;
         let _ = container.append_child(&content);
     }
     Ok(())
 }
 
-fn render_row(content: &DocumentFragment, x: u32) -> Result<(), JsValue> {
+fn render_row(content: &DocumentFragment, day: &Day, x: u32) -> Result<(), JsValue> {
     let node = content
         .query_selector_all("div")?
         .item(0)
         .ok_or(JsValue::from_str("no nodes[0] in row-template"))?;
-    node.set_text_content(Some("hello world!"));
+    node.set_text_content(Some(day.tag));
     node.dyn_into::<Element>()?.set_attribute("__id", &format!("{x}"))?;
     Ok(())
 }
