@@ -4,7 +4,7 @@
     "allowJs": false,
     "noEmitOnError": true,
     "target": "es2022",
-    "lib": ["es2022"],
+    "lib": ["es2022", "dom", "dom.iterable"],
     "module": "NodeNext",
     "esModuleInterop": true,
     "sourceMap": false,

@@ -5,30 +5,30 @@
   </head>
   <body>
     <script type="module">
-      import init, { greet, render_template } from "./wasm/pkg/wasm.js";
+      import init, { view } from "./wasm/pkg/wasm.js";
+      import { handler } from "./ts/dist/listen.js";
 
-      init()
-        .then(() => {
-          render_template("#main", "#one");
-        })
-        .then(() => {
-          document.querySelector("body")
-            .addEventListener('click', (event) => {
-              const map = {};
-              for (let x of event.target.attributes) {
-                console.log(x);
-                map[x.name] = x.value;
-              }
-              console.log(map);
-            })
-        });
+      init().then(() => view("list", "row", "popup"));
+      document
+        .querySelector("body")
+        .addEventListener('click', handler("#popup"));
     </script>
 
-    <div id="main"></div>
-    <template id="one">
-      <div class="green" data="id=123">a</div>
-      <div>b</div>
-    </template>
+    <div id="list"></div>
+    <div hidden id="popup"></div>
   </body>
 </html>
 
+<template id="template-list">
+  <div>list title</div>
+  <div id="row"></div>
+</template>
+
+<template id="template-row">
+  <div __action="list/row" __id=""></div>
+</template>
+
+<template id="template-popup">
+  <div>popup</div>
+  <button __action="popup/close">close</button>
+</template>

@@ -20,4 +20,17 @@ features = [
   "Node",
   "NodeList",
   "DocumentFragment",
+  "NamedNodeMap",
+  "console",
 ]
+
+[dev-dependencies.web-sys]
+version = "0.3.77"
+features = [
+  "console",
+]
+
+
+
+
+
