@@ -2,7 +2,8 @@ use wasm_bindgen::prelude::*;
 use web_sys::{
     window, 
     HtmlTemplateElement, 
-    DocumentFragment, 
+    DocumentFragment,
+    Document, 
     Element, 
     console,
 };
@@ -20,12 +21,7 @@ pub fn view(list_id: &str, row_id: &str, popup_id: &str) {
     let _ = r.map_err(|x| console::error_1(&x));
 }
 
-fn render(list_id: &str, row_id: &str, popup_id: &str) -> Result<(), JsValue> {
-    let document = window()
-        .ok_or(JsValue::from_str("can not find window"))?
-        .document()
-        .ok_or(JsValue::from_str("can not find document"))?;
-        
+fn render_list(document: &Document, list_id: &str) -> Result<(), JsValue> {
     let list = document
         .query_selector(&format!("#{list_id}"))?
         .ok_or(JsValue::from_str("can not find list"))?;
@@ -38,7 +34,10 @@ fn render(list_id: &str, row_id: &str, popup_id: &str) -> Result<(), JsValue> {
         .clone_node_with_deep(true)?
         .dyn_into::<DocumentFragment>()?;
     let _ = list.append_child(&content);
+    Ok(())
+}
 
+fn render_rows(document: &Document, row_id: &str) -> Result<(), JsValue> {
     let row = document
         .query_selector(&format!("#{row_id}"))?
         .ok_or(JsValue::from_str("can not find row"))?;
@@ -46,6 +45,7 @@ fn render(list_id: &str, row_id: &str, popup_id: &str) -> Result<(), JsValue> {
         .query_selector(&format!("#template-{row_id}"))?
         .ok_or(JsValue::from_str("can not find template-row"))?
         .dyn_into::<HtmlTemplateElement>()?;
+
     for x in 1..5 {
         let content = row_template
             .content()
@@ -61,7 +61,10 @@ fn render(list_id: &str, row_id: &str, popup_id: &str) -> Result<(), JsValue> {
             .set_attribute("__id", &format!("{x}"));
         let _ = row.append_child(&content);
     }
+    Ok(())
+}
 
+fn render_popup(document: &Document, popup_id: &str) -> Result<(), JsValue> {
     let popup = document
         .query_selector(&format!("#{popup_id}"))?
         .ok_or(JsValue::from_str("can not find popup"))?;
@@ -74,7 +77,17 @@ fn render(list_id: &str, row_id: &str, popup_id: &str) -> Result<(), JsValue> {
         .clone_node_with_deep(true)?
         .dyn_into::<DocumentFragment>()?;
     let _ = popup.append_child(&content);
+    Ok(())
+}
 
+fn render(list_id: &str, row_id: &str, popup_id: &str) -> Result<(), JsValue> {
+    let document = window()
+        .ok_or(JsValue::from_str("can not find window"))?
+        .document()
+        .ok_or(JsValue::from_str("can not find document"))?;
+    let _ = render_list(&document, list_id);
+    let _ = render_rows(&document, row_id);
+    let _ = render_popup(&document, popup_id);
     Ok(())
 }
 
