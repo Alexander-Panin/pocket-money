@@ -25,42 +25,42 @@ fn render_list(document: &Document, list_id: &str) -> Result<(), JsValue> {
     let list = document
         .query_selector(&format!("#{list_id}"))?
         .ok_or(JsValue::from_str("can not find list"))?;
-    let list_template = document
+    let content = document
         .query_selector(&format!("#template-{list_id}"))?
         .ok_or(JsValue::from_str("can not find template-list"))?
-        .dyn_into::<HtmlTemplateElement>()?;
-    let content = list_template
-        .content()
-        .clone_node_with_deep(true)?
-        .dyn_into::<DocumentFragment>()?;
+        .dyn_into::<HtmlTemplateElement>()?
+        .content();
     let _ = list.append_child(&content);
     Ok(())
 }
 
 fn render_rows(document: &Document, row_id: &str) -> Result<(), JsValue> {
-    let row = document
+    let container = document
         .query_selector(&format!("#{row_id}"))?
         .ok_or(JsValue::from_str("can not find row"))?;
-    let row_template = document
+    let template = document
         .query_selector(&format!("#template-{row_id}"))?
         .ok_or(JsValue::from_str("can not find template-row"))?
         .dyn_into::<HtmlTemplateElement>()?;
 
     for x in 1..5 {
-        let content = row_template
+        let content = template
             .content()
             .clone_node_with_deep(true)?
             .dyn_into::<DocumentFragment>()?;
-        let nodes = content.query_selector_all("div")?;
-        let node = nodes
-            .item(0)
-            .ok_or(JsValue::from_str("no nodes[0] in row-template"))?;
-        node.set_text_content(Some("hello world!"));
-        let _ = node
-            .dyn_into::<Element>()?
-            .set_attribute("__id", &format!("{x}"));
-        let _ = row.append_child(&content);
+        render_row(&content, x)?;
+        let _ = container.append_child(&content);
     }
+    Ok(())
+}
+
+fn render_row(content: &DocumentFragment, x: u32) -> Result<(), JsValue> {
+    let node = content
+        .query_selector_all("div")?
+        .item(0)
+        .ok_or(JsValue::from_str("no nodes[0] in row-template"))?;
+    node.set_text_content(Some("hello world!"));
+    node.dyn_into::<Element>()?.set_attribute("__id", &format!("{x}"))?;
     Ok(())
 }
 
@@ -68,14 +68,11 @@ fn render_popup(document: &Document, popup_id: &str) -> Result<(), JsValue> {
     let popup = document
         .query_selector(&format!("#{popup_id}"))?
         .ok_or(JsValue::from_str("can not find popup"))?;
-    let popup_template = document
+    let content = document
         .query_selector(&format!("#template-{popup_id}"))?
         .ok_or(JsValue::from_str("can not find template-popup"))?
-        .dyn_into::<HtmlTemplateElement>()?;
-    let content = popup_template
-        .content()
-        .clone_node_with_deep(true)?
-        .dyn_into::<DocumentFragment>()?;
+        .dyn_into::<HtmlTemplateElement>()?
+        .content();
     let _ = popup.append_child(&content);
     Ok(())
 }
@@ -85,9 +82,9 @@ fn render(list_id: &str, row_id: &str, popup_id: &str) -> Result<(), JsValue> {
         .ok_or(JsValue::from_str("can not find window"))?
         .document()
         .ok_or(JsValue::from_str("can not find document"))?;
-    let _ = render_list(&document, list_id);
-    let _ = render_rows(&document, row_id);
-    let _ = render_popup(&document, popup_id);
+    render_list(&document, list_id)?;
+    render_rows(&document, row_id)?;
+    render_popup(&document, popup_id)?;
     Ok(())
 }
 
