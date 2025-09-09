@@ -1,4 +1,6 @@
+use serde::{Deserialize};
 use wasm_bindgen::prelude::*;
+use js_sys::{JSON};
 use web_sys::{
     window, 
     HtmlTemplateElement, 
@@ -24,36 +26,46 @@ pub fn view(list_id: &str, row_id: &str, popup_id: &str) {
 fn render_list(document: &Document, list_id: &str) -> Result<(), JsValue> {
     let list = document
         .query_selector(&format!("#{list_id}"))?
-        .ok_or(JsValue::from_str("can not find list"))?;
+        .ok_or(JsValue::from_str("not found list"))?;
     let content = document
         .query_selector(&format!("#template-{list_id}"))?
-        .ok_or(JsValue::from_str("can not find template-list"))?
+        .ok_or(JsValue::from_str("not found template-list"))?
         .dyn_into::<HtmlTemplateElement>()?
         .content();
     let _ = list.append_child(&content);
     Ok(())
 }
 
-#[derive(Debug)]
+#[derive(Deserialize, Debug)]
 struct Day {
     date: u32,
     price: f32,
-    tag: &'static str,
-    comment: &'static str,
+    tag: String,
+    comment: String,
 }
 
-const DATA = const DATA: [Day; 1] = [Day { date: 1, price: 10.5, tag: "food", comment: "" }, Day { date: 1, price: 16.0, tag: "play", comment: "" }, Day { date: 2, price: 5.0, tag: "relax", comment: "" }];
-
 fn render_rows(document: &Document, row_id: &str) -> Result<(), JsValue> {
+    let window = window()
+        .ok_or(JsValue::from_str("not found window"))?;
+    let local_storage = window
+        .local_storage()?
+        .ok_or(JsValue::from_str("not found local storage"))?;
+    let value = local_storage
+        .get_item("data")?
+        .ok_or(JsValue::from_str("not found storage[data]"))?;
+
+    let tmp = JSON::parse(&value)?;
+    let data: Vec<Day> = serde_wasm_bindgen::from_value(tmp)?;
+
     let container = document
         .query_selector(&format!("#{row_id}"))?
-        .ok_or(JsValue::from_str("can not find row"))?;
+        .ok_or(JsValue::from_str("not found row-id"))?;
     let template = document
         .query_selector(&format!("#template-{row_id}"))?
-        .ok_or(JsValue::from_str("can not find template-row"))?
+        .ok_or(JsValue::from_str("not found template-row"))?
         .dyn_into::<HtmlTemplateElement>()?;
 
-    for (day,i) in DATA.iter().zip(0..) {
+    for (day,i) in data.iter().zip(0..) {
         let content = template
             .content()
             .clone_node_with_deep(true)?
@@ -68,8 +80,8 @@ fn render_row(content: &DocumentFragment, day: &Day, x: u32) -> Result<(), JsVal
     let node = content
         .query_selector_all("div")?
         .item(0)
-        .ok_or(JsValue::from_str("no nodes[0] in row-template"))?;
-    node.set_text_content(Some(day.tag));
+        .ok_or(JsValue::from_str("no div[0] in row-template"))?;
+    node.set_text_content(Some(&day.tag));
     node.dyn_into::<Element>()?.set_attribute("__id", &format!("{x}"))?;
     Ok(())
 }
@@ -77,10 +89,10 @@ fn render_row(content: &DocumentFragment, day: &Day, x: u32) -> Result<(), JsVal
 fn render_popup(document: &Document, popup_id: &str) -> Result<(), JsValue> {
     let popup = document
         .query_selector(&format!("#{popup_id}"))?
-        .ok_or(JsValue::from_str("can not find popup"))?;
+        .ok_or(JsValue::from_str("not found popup-id"))?;
     let content = document
         .query_selector(&format!("#template-{popup_id}"))?
-        .ok_or(JsValue::from_str("can not find template-popup"))?
+        .ok_or(JsValue::from_str("not found template-popup"))?
         .dyn_into::<HtmlTemplateElement>()?
         .content();
     let _ = popup.append_child(&content);
@@ -89,12 +101,12 @@ fn render_popup(document: &Document, popup_id: &str) -> Result<(), JsValue> {
 
 fn render(list_id: &str, row_id: &str, popup_id: &str) -> Result<(), JsValue> {
     let document = window()
-        .ok_or(JsValue::from_str("can not find window"))?
+        .ok_or(JsValue::from_str("not found window"))?
         .document()
-        .ok_or(JsValue::from_str("can not find document"))?;
+        .ok_or(JsValue::from_str("not found document"))?;
     render_list(&document, list_id)?;
-    render_rows(&document, row_id)?;
     render_popup(&document, popup_id)?;
+    render_rows(&document, row_id)?;
     Ok(())
 }
 
