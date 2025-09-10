@@ -25,12 +25,20 @@
 </html>
 
 <template id="template-list">
-  <div>list title</div>
+  <h2>Август 2025</h2>
   <div id="row"></div>
 </template>
 
 <template id="template-row">
-  <div __action="list/row" __id=""></div>
+  <div class="row" __action="list/row" __id="">
+    <span id="money"></span>
+    <span id="money2"></span>
+    <span id="tag"></span>
+    <div class="comment">
+      <hr />
+      <span id="comment"></span>
+    </div>
+  </div>
 </template>
 
 <template id="template-popup">

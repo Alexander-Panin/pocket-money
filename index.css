@@ -3,6 +3,9 @@
     height: 650px;
     border: 2px solid indianred;
     border-radius: 19px;
+    background-color: black;
+    color: rgb(186, 116, 37);
+
 }
 
 #list {
@@ -15,4 +18,53 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    font:
+        1rem "Fira Sans",
+        sans-serif;
 }
+
+hr {
+  border: none;
+  border-top: 1px dotted rgb(186, 116, 37);
+  color: black;
+  background-color: black;
+  height: 1px;
+  width: 100%;
+  margin-top: 12px;
+}
+
+#comment {
+}
+
+#money {
+    font-size: xx-large;
+    width: 80px;
+    display: inline-block;
+    text-align: end;
+}
+
+#money2 {
+    font-size: x-large;
+    margin-left: -5px;
+}
+
+#tag {
+    vertical-align: top;
+}
+
+.row {
+    text-align: start;
+    padding: 2px;
+}
+
+.comment {
+    display: flex;
+    font-size: smaller;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow:hidden;
+}
+
+
+
+
