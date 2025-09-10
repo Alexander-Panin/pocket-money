@@ -2,12 +2,13 @@
     width: 400px;
     height: 650px;
     border: 2px solid indianred;
+    border-radius: 19px;
 }
 
 #list {
     margin: 10px;
     overflow-y: auto;
-    height: 600px;
+    height: 400px;
 }
 
 body {

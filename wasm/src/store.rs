@@ -5,35 +5,14 @@ use web_sys::{
     window, 
     HtmlTemplateElement, 
     DocumentFragment,
-    Document, 
     Element, 
     console,
 };
-
-pub fn store() -> Option<u32> {
-    let local_storage = window()?.local_storage().ok()??;
-    let x = local_storage.length();
-    let _ = local_storage.set_item(&format!("{:?}", x), "foobar");
-    x.ok()
-}
 
 #[wasm_bindgen]
 pub fn view(list_id: &str, row_id: &str, popup_id: &str) {
     let r = render(list_id, row_id, popup_id);
     let _ = r.map_err(|x| console::error_1(&x));
-}
-
-fn render_list(document: &Document, list_id: &str) -> Result<(), JsValue> {
-    let list = document
-        .query_selector(&format!("#{list_id}"))?
-        .ok_or(JsValue::from_str("not found list"))?;
-    let content = document
-        .query_selector(&format!("#template-{list_id}"))?
-        .ok_or(JsValue::from_str("not found template-list"))?
-        .dyn_into::<HtmlTemplateElement>()?
-        .content();
-    let _ = list.append_child(&content);
-    Ok(())
 }
 
 #[derive(Deserialize, Debug)]
@@ -44,39 +23,52 @@ struct Day {
     comment: String,
 }
 
-fn render_rows(document: &Document, row_id: &str) -> Result<(), JsValue> {
-    let window = window()
-        .ok_or(JsValue::from_str("not found window"))?;
-    let local_storage = window
+fn storage(key: &str) -> Result<Vec<Day>, JsValue> {
+    let value = window()
+        .ok_or(JsValue::from_str("not found window"))?
         .local_storage()?
-        .ok_or(JsValue::from_str("not found local storage"))?;
-    let value = local_storage
-        .get_item("data")?
-        .ok_or(JsValue::from_str("not found storage[data]"))?;
+        .ok_or(JsValue::from_str("not found local storage"))?
+        .get_item(key)?
+        .ok_or(JsValue::from_str(&format!("not found storage[{key}]")))?;
+    let x = JSON::parse(&value)?;
+    Ok(serde_wasm_bindgen::from_value(x)?)
+}
 
-    let tmp = JSON::parse(&value)?;
-    let data: Vec<Day> = serde_wasm_bindgen::from_value(tmp)?;
+fn container(id: &str) -> Result<Element, JsValue> {
+    window()
+        .ok_or(JsValue::from_str("not found window"))?
+        .document()
+        .ok_or(JsValue::from_str("not found document"))?
+        .query_selector(&format!("#{id}"))?
+        .ok_or(JsValue::from_str(&format!("not found node({id})")))
+}
 
-    let container = document
-        .query_selector(&format!("#{row_id}"))?
-        .ok_or(JsValue::from_str("not found row-id"))?;
-    let template = document
-        .query_selector(&format!("#template-{row_id}"))?
-        .ok_or(JsValue::from_str("not found template-row"))?
-        .dyn_into::<HtmlTemplateElement>()?;
+fn template(id: &str) -> Result<DocumentFragment, JsValue> {
+    Ok(window()
+        .ok_or(JsValue::from_str("not found window"))?
+        .document()
+        .ok_or(JsValue::from_str("not found document"))?
+        .query_selector(&format!("#template-{id}"))?
+        .ok_or(JsValue::from_str(&format!("not found template({id})")))?
+        .dyn_into::<HtmlTemplateElement>()?
+        .content())
+}
 
-    for (day,i) in data.iter().zip(0..) {
+fn rows(id: &str) -> Result<(), JsValue> {
+    let container = container(id)?;
+    let template = template(id)?;
+
+    for (day,i) in storage("data")?.into_iter().zip(0..) {
         let content = template
-            .content()
             .clone_node_with_deep(true)?
             .dyn_into::<DocumentFragment>()?;
-        render_row(&content, day, i)?;
-        let _ = container.append_child(&content);
+        row(&content, day, i)?;
+        container.append_child(&content)?;
     }
     Ok(())
 }
 
-fn render_row(content: &DocumentFragment, day: &Day, x: u32) -> Result<(), JsValue> {
+fn row(content: &DocumentFragment, day: Day, x: u32) -> Result<(), JsValue> {
     let node = content
         .query_selector_all("div")?
         .item(0)
@@ -86,27 +78,10 @@ fn render_row(content: &DocumentFragment, day: &Day, x: u32) -> Result<(), JsVal
     Ok(())
 }
 
-fn render_popup(document: &Document, popup_id: &str) -> Result<(), JsValue> {
-    let popup = document
-        .query_selector(&format!("#{popup_id}"))?
-        .ok_or(JsValue::from_str("not found popup-id"))?;
-    let content = document
-        .query_selector(&format!("#template-{popup_id}"))?
-        .ok_or(JsValue::from_str("not found template-popup"))?
-        .dyn_into::<HtmlTemplateElement>()?
-        .content();
-    let _ = popup.append_child(&content);
-    Ok(())
-}
-
 fn render(list_id: &str, row_id: &str, popup_id: &str) -> Result<(), JsValue> {
-    let document = window()
-        .ok_or(JsValue::from_str("not found window"))?
-        .document()
-        .ok_or(JsValue::from_str("not found document"))?;
-    render_list(&document, list_id)?;
-    render_popup(&document, popup_id)?;
-    render_rows(&document, row_id)?;
+    container(list_id)?.append_child(&template(list_id)?.into())?;
+    container(popup_id)?.append_child(&template(popup_id)?.into())?;
+    rows(row_id)?;
     Ok(())
 }
 
