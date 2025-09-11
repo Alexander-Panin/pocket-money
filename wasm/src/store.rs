@@ -76,13 +76,12 @@ fn row(content: &DocumentFragment, day: Day, x: u32) -> Result<(), JsValue> {
     let node = content
         .query_selector("#money")?
         .ok_or(JsValue::from_str("no #money in row-template"))?;
-    // let price = &day.price.to_string();
-    let diff = day.price.round() == day.price;
     let price = &format!("{:.0},", day.price);
     node.set_text_content(Some(&price));
     let node = content
         .query_selector("#money2")?
         .ok_or(JsValue::from_str("no #money2 in row-template"))?;
+    let diff = day.price.round() == day.price;
     let price = if diff { " " } 
         else { &format!("{}", ((day.price - day.price.floor()) * 100.0).round() ) };
     node.set_text_content(Some(price));

@@ -9,12 +9,14 @@ function target(node: Element | null): Element | null {
 
 export const handler = (popupId: string) => (event: Event) => {
 	const node = target(event.target as Element);
+	if (!node?.attributes) return;
 	console.assert(Boolean(node?.attributes), "not found node");
 	const {__id: rowId = null, __action: action} = get_attrs(node!.attributes);
 	switch (action) {
 		case 'list/row':
 			link(popupId, popup_handler(rowId));
 			show(popupId);
+			focus(node as HTMLElement);
 			return;
 		case 'popup/close':
 			unlink(popupId);
@@ -34,6 +36,9 @@ function link(popupId: string, handler: (e: Event) => void) {
 	__popup_handler = handler;
 	x?.addEventListener('click', __popup_handler);
 }
+
+const focus = (node: HTMLElement) => 
+	{ node.focus(); node.scrollIntoView({ behavior: "smooth", block: "nearest" }); }
 
 const show = (popupId: string) => 
 	{ (document.querySelector(popupId) as HTMLElement).hidden = false; }

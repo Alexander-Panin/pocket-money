@@ -30,7 +30,7 @@
 </template>
 
 <template id="template-row">
-  <div class="row" __action="list/row" __id="">
+  <div tabindex="0" class="row" __action="list/row" __id="">
     <span id="money"></span>
     <span id="money2"></span>
     <span id="tag"></span>
@@ -43,5 +43,7 @@
 
 <template id="template-popup">
   <div>popup</div>
+  <input type="range" min="0" max="11" />
+  <input type="range" min="0" max="11" />
   <button __action="popup/close">close</button>
 </template>
