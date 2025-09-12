@@ -20,7 +20,7 @@
     <div id="main">
       <div id="list"></div>
       <div hidden id="popup"></div>
-  </div>
+    </div>
   </body>
 </html>
 
@@ -42,8 +42,13 @@
 </template>
 
 <template id="template-popup">
-  <div>popup</div>
-  <input type="range" min="0" max="11" />
-  <input type="range" min="0" max="11" />
-  <button __action="popup/close">close</button>
+  <span class="popup-close" __action="popup/close">X</span>
+  <div style="height: 40px"></div>
+  <input tabindex="-1" class="popup-input" type="text" />
+  <div style="height: 60px"></div>
+  <input class="popup-slider" type="range" min="0" max="110" />
+  <div style="height: 50px"></div>
+  <input class="popup-slider-2" type="range" min="0" max="110" />
+  <div style="height: 150px"></div>
+  <br />
 </template>
