@@ -42,13 +42,21 @@
 </template>
 
 <template id="template-popup">
-  <span class="popup-close" __action="popup/close">X</span>
+  <span>
+  <span class="popup-tab popup-tab-close" __action="popup/close">X</span>
+  <span class="popup-tab popup-tab-money" __action="popup/money">$</span>
+  <span class="popup-tab popup-tab-tag" __action="popup/tag">✎</span>
+  <span class="popup-tab popup-tab-comment" __action="popup/comment">T</span>
+  <span class="popup-tab popup-tab-day" __action="popup/day">Y</span>
+  </span>
   <div style="height: 40px"></div>
   <input tabindex="-1" class="popup-input" type="text" />
   <div style="height: 60px"></div>
+  <span class="popup-slider-msg">0-100</span>
   <input class="popup-slider" type="range" min="0" max="110" />
   <div style="height: 50px"></div>
   <input class="popup-slider-2" type="range" min="0" max="110" />
+  <span class="popup-slider-msg-2">0-32</span>
   <div style="height: 150px"></div>
   <br />
 </template>

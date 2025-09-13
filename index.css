@@ -81,7 +81,7 @@ hr {
 }
 
 #popup {
-    box-shadow: 0px -5px 21px var(--tt-blue) inset;
+    box-shadow: 0px 1px 11px var(--tt-blue) inset;
     background: black;
     position:sticky;
     top:auto;
@@ -92,6 +92,16 @@ hr {
     height: 250px;
     z-index: 100;
 }
+
+@keyframes show {
+    from { bottom: -100px; } 
+    to { bottom: 0px; } 
+}
+
+#popup{ 
+    animation: show 0.3s;
+}
+
 
 input[type=text] {
     background: transparent;
@@ -126,6 +136,13 @@ textarea:focus, input:focus{
     width: 100px;
 }
 
+.popup-slider-msg {
+    color: rgb(212, 20, 20);
+    display: block;
+    text-align: end;
+    padding-right: 10px;
+}
+
 .popup-slider-2 {
     display: block;
     margin: auto;
@@ -133,16 +150,54 @@ textarea:focus, input:focus{
     width: 200px;
 }
 
-.popup-close {
+.popup-slider-msg-2 {
+    color: green;
+    display: block;
+    text-align: end;
+    padding-right: 10px;
+}
+
+.popup-tab {
     font-size: larger;
     cursor: pointer;
     float:right;
     margin-top: -36px;
     border: 2px solid;
     border-radius: 50%;
-    padding: 2px 5px;
-    margin-right: 30px;
+    margin-right: 20px;
     color: rgb(33, 88, 122);
+    width: 23px;
+    height: 23px;
+    line-height: 26px;
+    text-align: center;
+    background: black;
+}
+
+.popup-tab.popup-tab-close {
+    float: right;
+}
+
+.popup-tab.popup-tab-money {
+    float: left;
+    margin-left: 10px;
+}
+
+.popup-tab.popup-tab-tag {
+    float: left;
+    margin-left: 45px;
+    color: #357575;
+}
+
+.popup-tab.popup-tab-comment {
+    float: left;
+    margin-left: 80px;
+    color: #3138aa;
+}
+
+.popup-tab.popup-tab-day {
+    float: left;
+    margin-left: 115px;
+    color: #3b752f;
 }
 
 

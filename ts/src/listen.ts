@@ -38,7 +38,7 @@ function link(popupId: string, handler: (e: Event) => void) {
 }
 
 const focus = (node: HTMLElement) => 
-	{ node.focus(); node.scrollIntoView({ behavior: "smooth", block: "nearest" }); }
+	{ node.focus(); node.scrollIntoView({ behavior: "smooth", block: "center" }); }
 
 const show = (popupId: string) => 
 	{ (document.querySelector(popupId) as HTMLElement).hidden = false; }
@@ -52,6 +52,8 @@ const popup_handler = (rowId: string | null) => (event: Event) => {
 		case 'popup/update': 
 			event.stopPropagation();
 			console.log("popup/update XXXX, rowId:", rowId);
+		default:
+			console.log("XXXX", action, rowId);
 	}
 }
 
