@@ -1,4 +1,4 @@
-use serde::{Deserialize};
+use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 use js_sys::{JSON};
 use web_sys::{
@@ -15,7 +15,14 @@ pub fn view(list_id: &str, row_id: &str, popup_id: &str) {
     let _ = r.map_err(|x| console::error_1(&x));
 }
 
-#[derive(Deserialize, Debug)]
+#[wasm_bindgen]
+pub fn store(row_id: &str) -> JsValue {
+    let data = storage("data").unwrap();
+    let id = row_id.parse::<usize>().unwrap();
+    serde_wasm_bindgen::to_value(&data[id]).unwrap()
+}
+
+#[derive(Deserialize, Serialize, Debug)]
 struct Day {
     date: u32,
     price: f32,
@@ -76,7 +83,7 @@ fn row(content: &DocumentFragment, day: Day, x: u32) -> Result<(), JsValue> {
     let node = content
         .query_selector("#money")?
         .ok_or(JsValue::from_str("no #money in row-template"))?;
-    let price = &format!("{:.0},", day.price);
+    let price = &format!("{:.0},", day.price.floor());
     node.set_text_content(Some(&price));
     let node = content
         .query_selector("#money2")?

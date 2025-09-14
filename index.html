@@ -8,13 +8,13 @@
   </head>
   <body>
     <script type="module">
-      import init, { view } from "./wasm/pkg/wasm.js";
+      import init, { view, store } from "./wasm/pkg/wasm.js";
       import { handler } from "./ts/dist/listen.js";
 
       init().then(() => view("list", "row", "popup"));
       document
         .querySelector("body")
-        .addEventListener('click', handler("#popup"));
+        .addEventListener('click', handler("#popup", store));
     </script>
 
     <div id="main">
@@ -44,19 +44,28 @@
 <template id="template-popup">
   <span>
   <span class="popup-tab popup-tab-close" __action="popup/close">X</span>
-  <span class="popup-tab popup-tab-money" __action="popup/money">$</span>
-  <span class="popup-tab popup-tab-tag" __action="popup/tag">✎</span>
-  <span class="popup-tab popup-tab-comment" __action="popup/comment">T</span>
-  <span class="popup-tab popup-tab-day" __action="popup/day">Y</span>
+  <span class="popup-tab popup-tab-money" __action="popup/tab-money">$</span>
+  <span class="popup-tab popup-tab-tag" __action="popup/tab-tag">✎</span>
+  <span class="popup-tab popup-tab-comment" __action="popup/tab-comment">T</span>
+  <span class="popup-tab popup-tab-day" __action="popup/tab-day">Y</span>
   </span>
+  <div style="height: 20px"></div>
+  <input id="popup-input" tabindex="-1" class="popup-input" type="text" />
   <div style="height: 40px"></div>
-  <input tabindex="-1" class="popup-input" type="text" />
-  <div style="height: 60px"></div>
-  <span class="popup-slider-msg">0-100</span>
-  <input class="popup-slider" type="range" min="0" max="110" />
-  <div style="height: 50px"></div>
-  <input class="popup-slider-2" type="range" min="0" max="110" />
-  <span class="popup-slider-msg-2">0-32</span>
-  <div style="height: 150px"></div>
-  <br />
+  <span 
+    id="popup-slider-msg" 
+    class="popup-slider-msg"
+  >0-32</span>
+  <div style="height: 30px"></div>
+  <input 
+    id="popup-slider-scale" 
+    __action="popup/slider-scale"
+    class="popup-slider-scale" 
+    type="range" min="-2" max="15" />
+  <div style="height: 40px"></div>
+  <input 
+    id="popup-slider-main" 
+    __action="popup/slider-main" 
+    class="popup-slider-main" 
+    type="range" min="-50" max="100" />
 </template>
