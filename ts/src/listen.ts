@@ -14,15 +14,15 @@ function target(node: Element | null): Element | null {
 	return node;
 } 
 
-export const handler = (popupId: string, store: Function) => (event: Event) => {
+export const handler = (popupId: string, storageById: Function) => (event: Event) => {
 	const node = target(event.target as Element);
 	if (!node?.attributes) return;
 	console.assert(Boolean(node?.attributes), "not found node");
 	const {__id: rowId = null, __action: action} = get_attrs(node!.attributes);
 	switch (action) {
 		case 'list/row':
-			link(popupId, popup_handler(rowId, store(rowId ?? "0"))); // todo handle rowId when null
-			show(popupId, store(rowId ?? "0"));
+			link(popupId, popup_handler(rowId, storageById(rowId ?? "0"))); // todo handle rowId when null
+			show(popupId, storageById(rowId ?? "0"));
 			focus(node as HTMLElement);
 			return;
 		case 'popup/close':
@@ -80,7 +80,7 @@ const popup_handler = (rowId: string | null, day: Day) => (event: Event) => {
 function sliderScale(event: Event) {
 	const scale = parseInt((event.target as HTMLInputElement).value);
 	const [min, max] = [Math.round(5*scale/10), Math.round(1.5**scale+32)];
-	document.querySelector('#popup-slider-msg')!.textContent = `${min}-${max}`;
+	document.querySelector('#popup-slider-msg')!.textContent = `${min}–${max}`;
 	(document.querySelector('#popup-slider-main') as HTMLInputElement).min = String(min*10);
 	(document.querySelector('#popup-slider-main') as HTMLInputElement).max = String(max*10);
 }
@@ -93,6 +93,36 @@ function sliderMain(event: Event, rowId: string) {
 		.querySelectorAll('.row')[parseInt(rowId)]!
 	    .querySelector('#money') as HTMLElement).textContent = String(x); 
 }
+
+export function render(storageAll: Function) {
+	document
+		.querySelector("#list")!
+		.appendChild(
+			(document.querySelector("#template-list") as HTMLTemplateElement).content
+		);
+	document
+		.querySelector("#popup")!
+		.appendChild(
+			(document.querySelector("#template-popup") as HTMLTemplateElement).content
+		);
+	render_row(storageAll);
+}
+
+function render_row(storageAll: Function) {
+	const container = document.querySelector("#row")!;
+	const template = (document.querySelector("#template-row") as HTMLTemplateElement).content;
+	storageAll().forEach((d: Day, i: number) => {
+		const tmp = template.cloneNode(true) as HTMLElement;
+		tmp.querySelector("div")!.setAttribute('__id', String(i));
+		tmp.querySelector("#money")!.textContent = String(Math.floor(d.price));
+		tmp.querySelector("#money2")!.textContent = String(d.price);
+		tmp.querySelector("#tag")!.textContent = d.tag;
+		tmp.querySelector("#comment")!.textContent = d.comment;
+		container.appendChild(tmp);
+	});
+}
+
+
 
 function get_attrs(attributes: NamedNodeMap) {
 	const map = {} as Record<string, string>;

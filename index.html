@@ -8,13 +8,13 @@
   </head>
   <body>
     <script type="module">
-      import init, { view, store } from "./wasm/pkg/wasm.js";
-      import { handler } from "./ts/dist/listen.js";
+      import init, * as wasm from "./wasm/pkg/wasm.js";
+      import { handler, render } from "./ts/dist/listen.js";
 
-      init().then(() => view("list", "row", "popup"));
+      init().then(() => render(wasm.storage_all));
       document
         .querySelector("body")
-        .addEventListener('click', handler("#popup", store));
+        .addEventListener('click', handler("#popup", wasm.storage_by_id));
     </script>
 
     <div id="main">
@@ -55,7 +55,7 @@
   <span 
     id="popup-slider-msg" 
     class="popup-slider-msg"
-  >0-32</span>
+  >0–32</span>
   <div style="height: 30px"></div>
   <input 
     id="popup-slider-scale" 
