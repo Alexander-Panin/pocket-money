@@ -9,13 +9,15 @@
   <body>
     <script type="module">
       import init, * as wasm from "./wasm/pkg/wasm.js";
-      import { handler, render } from "./ts/dist/listen.js";
+      import { Listener } from "./ts/dist/listen.js";
+      import { View } from "./ts/dist/view.js";
 
-      init().then(() => render(wasm.storage_all));
+      init().then(() => new View(wasm).render());
       document
         .querySelector("body")
-        .addEventListener('click', handler("#popup", wasm.storage_by_id));
+        .addEventListener('click', new Listener(wasm).handler);
     </script>
+
 
     <div id="main">
       <div id="list"></div>
@@ -26,7 +28,7 @@
 
 <template id="template-list">
   <h1>Август 2025</h1>
-  <div id="row"></div>
+  <div id="rows"></div>
 </template>
 
 <template id="template-row">

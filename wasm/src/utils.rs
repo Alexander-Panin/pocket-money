@@ -1,11 +1,26 @@
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
-extern "C" {
-    pub fn alert(s: &str);
+pub fn foobar() -> JsValue {
+    JsValue::NULL
 }
 
 #[wasm_bindgen]
-pub fn greet(name: &str) {
-    alert(&format!("Hello {}!", name));
+pub fn cent(price: f32) -> String {
+    if price.round() == price { 
+        " ".to_owned() 
+    } else { 
+        format!("{}", ((price - price.floor()) * 100.0).round()) 
+    }
+}
+
+#[wasm_bindgen]
+pub fn euro(price: f32) -> String {
+    format!("{:.0},", price.floor()) 
+}
+
+#[wasm_bindgen]
+pub fn money(price: f32) -> String {
+    let x = cent(price);
+    format!("{:.0}.{x}", price.floor()) 
 }
