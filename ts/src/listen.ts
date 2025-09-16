@@ -83,6 +83,7 @@ class Popup {
 		const day = this.wasm.storage_by!(id); 
 		const value = this.wasm.money!(day.price);
 		(document.querySelector("#popup-input") as HTMLInputElement).value = value; 
+		(document.querySelector("#popup-input") as HTMLInputElement).placeholder = value; 
 		(document.querySelector("#popup") as HTMLElement).hidden = false; 
 	}
 
