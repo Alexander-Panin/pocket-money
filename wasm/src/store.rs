@@ -10,6 +10,7 @@ struct Day {
     price: f32,
     tag: String,
     comment: String,
+    id: usize,
 }
 
 #[wasm_bindgen]
@@ -66,23 +67,25 @@ impl Storage {
             .map_err(|_| JsValue::from_str("failed to serialize"))
     }
 
-    fn prepare(&self, xs: Vec<Day>) -> Vec<(bool, usize, Day)> {
-        let mut v: Vec<_> = vv.into_iter().zip(0..).collect();
-        v.sort_by_key(|x| Reverse(x.0.date));
+    // require v is not empty
+    fn prepare(&self, mut v: Vec<Day>) -> Vec<(bool, Day)> {
+        if v.is_empty() { return vec![]; }
+        v.sort_by_key(|x| Reverse(x.date));
         let mut result = vec![];
         let mut current = 0;
-        for (day, i) in v {
-            let r = current != day.date;
+        for day in v {
+            let is_next = current != day.date;
             current = day.date;
-            result.push( (r, i, day) );
+            result.push( (is_next, day) );
         }
         result
     }
 
     fn by(&self, id: usize) -> Result<JsValue, JsValue> {
-        let x = JSON::parse(&self.get("data")?)?;
-        let v: Vec<Day> = serde_wasm_bindgen::from_value(x)?;
-        serde_wasm_bindgen::to_value(&v[id])
+        let js_value = JSON::parse(&self.get("data")?)?;
+        let v: Vec<Day> = serde_wasm_bindgen::from_value(js_value)?;
+        let x = v.into_iter().find(|d| d.id == id).unwrap(); // todo unwrap
+        serde_wasm_bindgen::to_value(&x)
             .map_err(|_| JsValue::from_str("failed to serialize"))
     }
 

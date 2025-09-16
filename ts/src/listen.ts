@@ -68,13 +68,13 @@ class Popup {
 	}
 
 	unlink() {
-		const x = document.querySelector("#popup");
+		const x = document.querySelector("#container-popup");
 		x?.removeEventListener('click', this.handler);
 		x?.removeEventListener('input', this.handler);
 	}
 
 	link() {
-		const x = document.querySelector("#popup");
+		const x = document.querySelector("#container-popup");
 		x?.addEventListener('click', this.handler);
 		x?.addEventListener('input', this.handler);
 	}
@@ -84,10 +84,10 @@ class Popup {
 		const value = this.wasm.money!(day.price);
 		(document.querySelector("#popup-input") as HTMLInputElement).value = value; 
 		(document.querySelector("#popup-input") as HTMLInputElement).placeholder = value; 
-		(document.querySelector("#popup") as HTMLElement).hidden = false; 
+		(document.querySelector("#container-popup") as HTMLElement).hidden = false; 
 	}
 
-	hide() { (document.querySelector("#popup") as HTMLElement).hidden = true; }
+	hide() { (document.querySelector("#container-popup") as HTMLElement).hidden = true; }
 
 	handler = (event: Event) => {
 		const action = (event.target as Element).attributes.getNamedItem('__action')?.value;
@@ -101,7 +101,20 @@ class Popup {
 			case 'popup/input':
 				this.input(parseFloat((event.target as HTMLInputElement).value));
 				return;
+			case 'popup/tab-comment':
+				this.tab('comment');
+				return;
+			case 'popup/tab-money':
+				this.tab('money');
+				return;
 		}
+	}
+
+	tab(page: string) {
+		const popup = document.querySelector("#container-popup")!;
+		const template = (document.querySelector(`#template-${page}`) as HTMLTemplateElement).content;
+		const container = popup.querySelector('#container-main')!;
+		container.replaceChildren(template.cloneNode(true));
 	}
 
 	scale(value: number) {

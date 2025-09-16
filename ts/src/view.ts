@@ -1,10 +1,11 @@
 type Wasm = Record<string, Function>;
 
 type Day = {
+    id: number;
     date: number;
     price: number;
-    tag: string,
-    comment: string,
+    tag: string;
+    comment: string;
 };
 
 export class View {
@@ -20,22 +21,31 @@ export class View {
 			.appendChild(
 				(document.querySelector("#template-list") as HTMLTemplateElement).content
 			);
-		document
-			.querySelector("#popup")!
-			.appendChild(
-				(document.querySelector("#template-popup") as HTMLTemplateElement).content
-			);
 		this.renderRows();
+		this.renderPopup();
+	}
+
+	renderPopup() {
+		const popup = document.querySelector("#container-popup")!;
+		const tPopup = (document.querySelector("#template-popup") as HTMLTemplateElement).content;
+		const tNav = (document.querySelector("#template-nav") as HTMLTemplateElement).content;
+		const tMoney = (document.querySelector("#template-money") as HTMLTemplateElement).content;
+		popup.appendChild(tPopup);
+		popup
+			.querySelector('#container-nav')!
+			.appendChild(tNav.cloneNode(true));
+		popup
+			.querySelector('#container-main')!
+			.appendChild(tMoney.cloneNode(true));
 	}
 
 	renderRows() {
 		const container = document.querySelector("#rows")!;
-		const template = (document.querySelector("#template-row") as HTMLTemplateElement).content;
-		const templateDate = (document.querySelector("#template-row-date") as HTMLTemplateElement).content;
-		console.log(this.wasm.storage_all!());
-		this.wasm.storage_all!().forEach(([b, i, day]: [boolean, number, Day]) => {
-			if (b) container.appendChild(this.renderDate(templateDate.cloneNode(true) as HTMLElement, day)); 
-			container.appendChild(this.renderRow(template.cloneNode(true) as HTMLElement, day, i));
+		const tRow = (document.querySelector("#template-row") as HTMLTemplateElement).content;
+		const tRowDate = (document.querySelector("#template-row-date") as HTMLTemplateElement).content;
+		this.wasm.storage_all!().forEach(([isNextDate, day]: [boolean, Day]) => {
+			if (isNextDate) container.appendChild(this.renderDate(tRowDate.cloneNode(true) as HTMLElement, day)); 
+			container.appendChild(this.renderRow(tRow.cloneNode(true) as HTMLElement, day));
 		});
 	}
 
@@ -44,9 +54,8 @@ export class View {
 		return x;
 	}
 
-	renderRow(x: HTMLElement, d: Day, i: number): HTMLElement {
-		console.log(d, i);
-		x.querySelector("div")!.setAttribute('__id', String(i));
+	renderRow(x: HTMLElement, d: Day): HTMLElement {
+		x.querySelector("div")!.setAttribute('__id', String(d.id));
 		x.querySelector("#money")!.textContent = this.wasm.euro!(d.price);
 		x.querySelector("#money2")!.textContent = this.wasm.cent!(d.price);
 		x.querySelector("#tag")!.textContent = d.tag;

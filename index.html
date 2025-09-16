@@ -17,11 +17,9 @@
         .querySelector("body")
         .addEventListener('click', new Listener(wasm).handler);
     </script>
-
-
     <div id="main">
       <div id="list"></div>
-      <div hidden id="popup"></div>
+      <div hidden id="container-popup"></div>
     </div>
   </body>
 </html>
@@ -51,37 +49,36 @@
   <hr />
 </template>
 
-<template id="template-popup">
-  <span>
+<template id="template-nav">
   <span class="popup-tab popup-tab-close" __action="popup/close">X</span>
   <span class="popup-tab popup-tab-money" __action="popup/tab-money">$</span>
   <span class="popup-tab popup-tab-tag" __action="popup/tab-tag">✎</span>
-  <span class="popup-tab popup-tab-comment" __action="popup/tab-comment">T</span>
   <span class="popup-tab popup-tab-day" __action="popup/tab-day">Y</span>
-  </span>
+  <span class="popup-tab popup-tab-comment" __action="popup/tab-comment">T</span>
+</template>
+
+<template id="template-comment">
+  <textarea></textarea>
+</template>
+
+<template id="template-money">
   <div style="height: 20px"></div>
-  <input 
-    id="popup-input"
+  <input id="popup-input" tabindex="-1" placeholder="" class="popup-input"
     __action="popup/input" 
-    placeholder="" 
-    tabindex="-1" 
-    class="popup-input" 
     type="text" />
   <div style="height: 40px"></div>
-  <span 
-    id="popup-slider-msg" 
-    class="popup-slider-msg"
-  >0–17</span>
+  <span id="popup-slider-msg" class="popup-slider-msg">0–17</span>
   <div style="height: 30px"></div>
-  <input 
-    id="popup-slider-scale" 
+  <input id="popup-slider-scale" class="popup-slider-scale"
     __action="popup/slider-scale"
-    class="popup-slider-scale" 
     type="range" min="-2" max="15" value="0" />
   <div style="height: 40px"></div>
-  <input 
-    id="popup-slider-main" 
+  <input id="popup-slider-main" class="popup-slider-main"
     __action="popup/slider-main"
-    class="popup-slider-main" 
-    type="range" min="-50" max="100" value="0" />
+    type="range" min="0" max="170" value="0" />
+</template>
+
+<template id="template-popup">
+  <div id="container-nav"></div>
+  <div id="container-main"></div>
 </template>

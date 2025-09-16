@@ -64,6 +64,7 @@ hr {
     font-size: large;
     text-align: end;
     cursor: auto;
+    padding: 0;
 }
 
 .row {
@@ -86,7 +87,7 @@ hr {
     margin-top: -5px;
 }
 
-#popup {
+#container-popup {
     box-shadow: 0px 1px 11px var(--tt-blue) inset;
     background: black;
     position:sticky;
@@ -104,7 +105,7 @@ hr {
     to { bottom: 0px; } 
 }
 
-#popup{ 
+#container-popup { 
     animation: show 0.3s;
 }
 
