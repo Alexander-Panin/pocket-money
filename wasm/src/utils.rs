@@ -21,6 +21,5 @@ pub fn euro(price: f32) -> String {
 
 #[wasm_bindgen]
 pub fn money(price: f32) -> String {
-    let x = cent(price);
-    format!("{:.0}.{x}", price.floor()) 
+    format!("{:1}", price) 
 }

@@ -43,6 +43,14 @@
   </div>
 </template>
 
+<template id="template-row-date">
+  <div class="row date">
+    <span id="date"></span>
+    <span style="color: black; font-size: xx-large">|</span>
+  </div>
+  <hr />
+</template>
+
 <template id="template-popup">
   <span>
   <span class="popup-tab popup-tab-close" __action="popup/close">X</span>
@@ -52,18 +60,23 @@
   <span class="popup-tab popup-tab-day" __action="popup/tab-day">Y</span>
   </span>
   <div style="height: 20px"></div>
-  <input id="popup-input" tabindex="-1" class="popup-input" type="text" />
+  <input 
+    id="popup-input"
+    __action="popup/input" 
+    tabindex="-1" 
+    class="popup-input" 
+    type="text" />
   <div style="height: 40px"></div>
   <span 
     id="popup-slider-msg" 
     class="popup-slider-msg"
-  >0–32</span>
+  >0–17</span>
   <div style="height: 30px"></div>
   <input 
     id="popup-slider-scale" 
     __action="popup/slider-scale"
     class="popup-slider-scale" 
-    type="range" min="-2" max="15" />
+    type="range" min="-2" max="15" value="0" />
   <div style="height: 40px"></div>
   <input 
     id="popup-slider-main" 

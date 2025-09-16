@@ -60,6 +60,12 @@ hr {
     vertical-align: top;
 }
 
+.row.date {
+    font-size: large;
+    text-align: end;
+    cursor: auto;
+}
+
 .row {
     text-align: start;
     border-radius: 10px;

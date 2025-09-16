@@ -34,7 +34,7 @@ export class Listener {
 			case 'list/row':
 				this.focus(node as HTMLElement);
 				this.popup?.destroy();
-				this.popup = new Popup(this.wasm, id);
+				this.popup = new Popup(this.wasm, id, node);
 				return;
 			case 'popup/close':
 				this.popup?.destroy();
@@ -52,10 +52,12 @@ export class Listener {
 class Popup {
 	wasm: Wasm
 	node: Element
+	id: number
 
-	constructor(wasm: Wasm, id: number) {
+	constructor(wasm: Wasm, id: number, node: Element) {
 		this.wasm = wasm;
-		this.node = document.querySelectorAll('.row')![id]!; // todo ![]!
+		this.id = id;
+		this.node = node;
 		this.link();
 		this.show(id);
 	}
@@ -78,7 +80,7 @@ class Popup {
 	}
 
 	show(id: number) { 
-		const day = this.wasm.storage_by_id!(id); 
+		const day = this.wasm.storage_by!(id); 
 		const value = this.wasm.money!(day.price);
 		(document.querySelector("#popup-input") as HTMLInputElement).value = value; 
 		(document.querySelector("#popup") as HTMLElement).hidden = false; 
@@ -95,11 +97,14 @@ class Popup {
 			case 'popup/slider-main':
 				this.slider(parseInt((event.target as HTMLInputElement).value));
 				return;
+			case 'popup/input':
+				this.input(parseFloat((event.target as HTMLInputElement).value));
+				return;
 		}
 	}
 
 	scale(value: number) {
-		const [min, max] = [Math.round(5*value/10), Math.round(1.5**value+32)];
+		const [min, max] = [Math.round(25*value/10), Math.round(1.7**value+16)];
 		document.querySelector('#popup-slider-msg')!.textContent = `${min}–${max}`;
 		(document.querySelector('#popup-slider-main') as HTMLInputElement).min = String(min*10);
 		(document.querySelector('#popup-slider-main') as HTMLInputElement).max = String(max*10);
@@ -108,7 +113,15 @@ class Popup {
 	slider(value: number) {
 		(document.querySelector("#popup-input") as HTMLInputElement).value = String(value / 10);
 	    (this.node.querySelector('#money') as HTMLElement).textContent = this.wasm.euro!(value / 10); 
-	    (this.node.querySelector('#money2') as HTMLElement).textContent = this.wasm.cent!(value / 10); 
+	    (this.node.querySelector('#money2') as HTMLElement).textContent = this.wasm.cent!(value / 10);
+	    this.wasm.storage_save!(this.id, value / 10); 
+	}
+
+	input(value: number) {
+		if (isNaN(value)) return;
+	    (this.node.querySelector('#money') as HTMLElement).textContent = this.wasm.euro!(value); 
+	    (this.node.querySelector('#money2') as HTMLElement).textContent = this.wasm.cent!(value);
+	    this.wasm.storage_save!(this.id, value); 
 	}
 }
 
