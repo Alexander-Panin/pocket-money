@@ -32,9 +32,9 @@ pub fn storage_all() -> JsValue {
 }
 
 #[wasm_bindgen]
-pub fn storage_save(id: usize, price: f32) {
+pub fn storage_save(obj: JsValue) {
     let mut db = Storage::new();
-    match db.save(id, price) {
+    match db.save(obj) {
         Ok(x) => x,
         Err(r) => console::error_1(&r),
     };
@@ -49,10 +49,10 @@ impl Storage {
         Self { db: window().unwrap().local_storage().unwrap().unwrap() }
     }
 
-    fn get(&self, key: &str) -> Result<String, JsValue> {
-        self.db
+    fn get(&self, key: &str) -> Result<JsValue, JsValue> {
+        JSON::parse(&self.db
             .get_item(key)?
-            .ok_or(JsValue::from_str(&format!("not found storage[{key}]")))
+            .ok_or(JsValue::from_str(&format!("not found storage[{key}]")))?)
     }
 
     fn set(&mut self, key: &str, value: &str) -> Result<(), JsValue> {
@@ -60,14 +60,12 @@ impl Storage {
     }
 
     fn all(&self) -> Result<JsValue, JsValue> {
-        let data = self.get("data")?;
-        let x = JSON::parse(&data)?;
-        let v: Vec<Day> = serde_wasm_bindgen::from_value(x)?;
+        let v = self.get("data")?;
+        let v: Vec<Day> = serde_wasm_bindgen::from_value(v)?;
         serde_wasm_bindgen::to_value(&self.prepare(v))
             .map_err(|_| JsValue::from_str("failed to serialize"))
     }
 
-    // require v is not empty
     fn prepare(&self, mut v: Vec<Day>) -> Vec<(bool, Day)> {
         if v.is_empty() { return vec![]; }
         v.sort_by_key(|x| Reverse(x.date));
@@ -82,17 +80,19 @@ impl Storage {
     }
 
     fn by(&self, id: usize) -> Result<JsValue, JsValue> {
-        let js_value = JSON::parse(&self.get("data")?)?;
-        let v: Vec<Day> = serde_wasm_bindgen::from_value(js_value)?;
+        let data = self.get("data")?;
+        let v: Vec<Day> = serde_wasm_bindgen::from_value(data)?;
         let x = v.into_iter().find(|d| d.id == id).unwrap(); // todo unwrap
         serde_wasm_bindgen::to_value(&x)
             .map_err(|_| JsValue::from_str("failed to serialize"))
     }
 
-    fn save(&mut self, id: usize, price: f32) -> Result<(), JsValue> {
-        let obj = JSON::parse(&self.get("data")?)?;
-        let mut v: Vec<Day> = serde_wasm_bindgen::from_value(obj)?;
-        v[id].price = price;
+    fn save(&mut self, day: JsValue) -> Result<(), JsValue> {
+        let v = self.get("data")?;
+        let mut v: Vec<Day> = serde_wasm_bindgen::from_value(v)?;
+        let day: Day = serde_wasm_bindgen::from_value(day)?;
+        let i = v.iter().position(|d| d.id == day.id).unwrap(); // todo unwrap
+        v[i] = day;
         let x = serde_wasm_bindgen::to_value(&v)?;
         let s = &JSON::stringify(&x)?.as_string()
             .ok_or(JsValue::from_str("failed to string"))?;

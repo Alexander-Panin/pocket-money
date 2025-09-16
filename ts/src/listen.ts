@@ -39,6 +39,8 @@ export class Listener {
 			case 'popup/close':
 				this.popup?.destroy();
 				return;
+			default:
+				this.popup?.destroy();
 		}
 
 	}
@@ -52,14 +54,15 @@ export class Listener {
 class Popup {
 	wasm: Wasm
 	node: Element
-	id: number
+	model: Day
 
 	constructor(wasm: Wasm, id: number, node: Element) {
 		this.wasm = wasm;
-		this.id = id;
+		this.model = wasm.storage_by!(id);
 		this.node = node;
 		this.link();
-		this.show(id);
+		this.tab('money');
+		this.money();
 	}
 
 	destroy() {
@@ -79,11 +82,15 @@ class Popup {
 		x?.addEventListener('input', this.handler);
 	}
 
-	show(id: number) { 
-		const day = this.wasm.storage_by!(id); 
-		const value = this.wasm.money!(day.price);
+	money() { 
+		const value = this.wasm.money!(this.model.price);
 		(document.querySelector("#popup-input") as HTMLInputElement).value = value; 
 		(document.querySelector("#popup-input") as HTMLInputElement).placeholder = value; 
+		(document.querySelector("#container-popup") as HTMLElement).hidden = false; 
+	}
+
+	comment() { 
+		(document.querySelector("#comment-textarea") as HTMLInputElement).value = this.model.comment; 
 		(document.querySelector("#container-popup") as HTMLElement).hidden = false; 
 	}
 
@@ -91,6 +98,8 @@ class Popup {
 
 	handler = (event: Event) => {
 		const action = (event.target as Element).attributes.getNamedItem('__action')?.value;
+		if (action === 'popup/close') { return; }
+		event.stopImmediatePropagation();
 		switch (action) {
 			case 'popup/slider-scale':
 				this.scale(parseInt((event.target as HTMLInputElement).value));
@@ -103,9 +112,11 @@ class Popup {
 				return;
 			case 'popup/tab-comment':
 				this.tab('comment');
+				this.comment();
 				return;
 			case 'popup/tab-money':
 				this.tab('money');
+				this.money();
 				return;
 		}
 	}
@@ -128,14 +139,14 @@ class Popup {
 		(document.querySelector("#popup-input") as HTMLInputElement).value = String(value / 10);
 	    (this.node.querySelector('#money') as HTMLElement).textContent = this.wasm.euro!(value / 10); 
 	    (this.node.querySelector('#money2') as HTMLElement).textContent = this.wasm.cent!(value / 10);
-	    this.wasm.storage_save!(this.id, value / 10); 
+	    this.wasm.storage_save!({...this.model, price: value / 10 }); 
 	}
 
 	input(value: number) {
 		if (isNaN(value)) return;
 	    (this.node.querySelector('#money') as HTMLElement).textContent = this.wasm.euro!(value); 
 	    (this.node.querySelector('#money2') as HTMLElement).textContent = this.wasm.cent!(value);
-	    this.wasm.storage_save!(this.id, value); 
+	    this.wasm.storage_save!({...this.model, price: value }); 
 	}
 }
 

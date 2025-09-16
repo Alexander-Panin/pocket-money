@@ -59,7 +59,7 @@ export class View {
 		x.querySelector("#money")!.textContent = this.wasm.euro!(d.price);
 		x.querySelector("#money2")!.textContent = this.wasm.cent!(d.price);
 		x.querySelector("#tag")!.textContent = d.tag;
-		x.querySelector("#comment")!.textContent = d.comment;
+		x.querySelector("#row-comment")!.textContent = d.comment;
 		return x;
 	}
 }
