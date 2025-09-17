@@ -17,48 +17,47 @@ export class View {
 
 	render() {
 		document
-			.querySelector("#list")!
+			.querySelector("#container-list")!
 			.appendChild(
 				(document.querySelector("#template-list") as HTMLTemplateElement).content
 			);
-		this.renderRows();
-		this.renderPopup();
+		this.list();
+		this.popup();
 	}
 
-	renderPopup() {
-		const popup = document.querySelector("#container-popup")!;
-		const tPopup = (document.querySelector("#template-popup") as HTMLTemplateElement).content;
-		const tNav = (document.querySelector("#template-nav") as HTMLTemplateElement).content;
-		const tMoney = (document.querySelector("#template-money") as HTMLTemplateElement).content;
-		popup.appendChild(tPopup);
-		popup
-			.querySelector('#container-nav')!
-			.appendChild(tNav.cloneNode(true));
-		popup
-			.querySelector('#container-main')!
-			.appendChild(tMoney.cloneNode(true));
+	popup() {
+		document
+			.querySelector("#container-popup")!
+			.appendChild(
+				(document.querySelector("#template-popup") as HTMLTemplateElement).content
+			);
+		document
+			.querySelector('#container-popup-nav')!
+			.appendChild(
+				(document.querySelector("#template-nav") as HTMLTemplateElement).content
+			);
 	}
 
-	renderRows() {
-		const container = document.querySelector("#rows")!;
-		const tRow = (document.querySelector("#template-row") as HTMLTemplateElement).content;
-		const tRowDate = (document.querySelector("#template-row-date") as HTMLTemplateElement).content;
-		this.wasm.storage_all!().forEach(([isNextDate, day]: [boolean, Day]) => {
-			if (isNextDate) container.appendChild(this.renderDate(tRowDate.cloneNode(true) as HTMLElement, day)); 
-			container.appendChild(this.renderRow(tRow.cloneNode(true) as HTMLElement, day));
+	list() {
+		const container = document.querySelector("#container-row")!;
+		const row = (document.querySelector("#template-row") as HTMLTemplateElement).content;
+		const date = (document.querySelector("#template-date-row") as HTMLTemplateElement).content;
+		this.wasm.storage_all!().forEach(([isNext, day]: [boolean, Day]) => {
+			if (isNext) { container.appendChild(this.fillDate(date.cloneNode(true) as HTMLElement, day)); } 
+			container.appendChild(this.fill(row.cloneNode(true) as HTMLElement, day));
 		});
 	}
 
-	renderDate(x: HTMLElement, d: Day): HTMLElement {
-		x.querySelector("#date")!.textContent = `${d.date}`;
+	fillDate(x: HTMLElement, d: Day): HTMLElement {
+		x.querySelector("#date-row")!.textContent = `${d.date}`;
 		return x;
 	}
 
-	renderRow(x: HTMLElement, d: Day): HTMLElement {
-		x.querySelector("div")!.setAttribute('__id', String(d.id));
-		x.querySelector("#money")!.textContent = this.wasm.euro!(d.price);
-		x.querySelector("#money2")!.textContent = this.wasm.cent!(d.price);
-		x.querySelector("#tag")!.textContent = d.tag;
+	fill(x: HTMLElement, d: Day): HTMLElement {
+		x.querySelector("#row-id")!.setAttribute('__id', String(d.id));
+		x.querySelector("#row-money-euro")!.textContent = this.wasm.euro!(d.price);
+		x.querySelector("#row-money-cent")!.textContent = this.wasm.cent!(d.price);
+		x.querySelector("#row-tag")!.textContent = d.tag;
 		x.querySelector("#row-comment")!.textContent = d.comment;
 		return x;
 	}

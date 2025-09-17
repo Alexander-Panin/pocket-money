@@ -1,5 +1,11 @@
+:root {
+    --tt-brown: rgb(186, 116, 37);
+    --tt-blue: rgba(35, 173, 278, 1);
+}
+
 html {
     background: gray;
+    /* debug only: todo del me later */
 }
 
 body {
@@ -11,25 +17,6 @@ body {
         sans-serif;
 }
 
-:root {
-    --tt-brown: rgb(186, 116, 37);
-    --tt-blue: rgba(35, 173, 278, 1);
-}
-
-#main {
-    width: 400px;
-    height: 650px;
-    border-radius: 19px;
-    background-color: black;
-    color: var(--tt-brown);
-}
-
-#list {
-    margin: 10px;
-    overflow-y: auto;
-    height: 650px;
-}
-
 hr {
   border: none;
   border-top: 2px dotted var(--tt-brown);
@@ -38,35 +25,53 @@ hr {
   height: 1px;
   width: 100%;
   margin-top: 12px;
-  margin-left: 5px;
-  margin-right: 3px;
-  margin-bottom: 3px;
-  padding-botto: 3px;
 }
 
-#money {
+input[type=text] {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--tt-brown);
+}
+
+input[type='range'] {
+    height: 2px;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+textarea:focus, input:focus {
+    outline: none;
+}
+
+#main {
+    /* debug sizes, adjustlater */
+    width: 400px;
+    height: 650px;
+    border-radius: 19px;
+    background-color: black;
+    color: var(--tt-brown);
+}
+
+.container-list {
+    margin: 10px;
+    overflow-y: auto;
+    height: 650px;
+}
+
+.row-money-euro {
     font-size: xx-large;
     min-width: 80px;
     display: inline-block;
     text-align: end;
 }
 
-#money2 {
+.row-money-cent {
     font-size: x-large;
     margin-left: -5px;
 }
 
-#tag {
+.row-tag {
     vertical-align: top;
-}
-
-.row.date {
-    font-size: large;
-    text-align: end;
-    cursor: auto;
-    padding-top: 0px;
-    padding-top: 9px;
-    margin-bottom: -9px;
 }
 
 .row {
@@ -74,6 +79,15 @@ hr {
     border-radius: 10px;
     padding-top: 5px;
     cursor: pointer;
+}
+
+.row.date-row {
+    font-size: large;
+    text-align: end;
+    cursor: auto;
+    padding-top: 0px;
+    padding-top: 5px;
+    margin-bottom: -5px;
 }
 
 .row:focus {
@@ -89,7 +103,7 @@ hr {
     margin-top: -5px;
 }
 
-#container-popup {
+.container-popup {
     box-shadow: 0px 1px 11px var(--tt-blue) inset;
     background: black;
     position:sticky;
@@ -107,28 +121,11 @@ hr {
     to { bottom: 0px; } 
 }
 
-#container-popup { 
+.container-popup { 
     animation: show 0.3s;
 }
 
-
-input[type=text] {
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid var(--tt-brown);
-}
-
-input[type='range'] {
-    height: 2px;
-    outline: none;
-    -webkit-appearance: none;
-}
-
-textarea:focus, input:focus{
-    outline: none;
-}
-
-.popup-input {
+.money-input {
     font-size: x-large;
     max-width: 180px;
     color: var(--tt-brown);
@@ -138,21 +135,21 @@ textarea:focus, input:focus{
     text-align: center;
 }
 
-.popup-slider-scale {
+.money-slider-scale {
     display: block;
     margin: auto;
     background: rgb(168, 13, 13);
     width: 100px;
 }
 
-.popup-slider-main {
+.money-slider-main {
     display: block;
     margin: auto;
     background: green; 
     width: 200px;
 }
 
-.popup-slider-msg {
+.money-slider-scale-msg {
     color: #af1e1e;
     display: block;
     text-align: center;
@@ -160,7 +157,7 @@ textarea:focus, input:focus{
     font-size: large;
 }
 
-.popup-tab {
+.nav {
     font-size: larger;
     cursor: pointer;
     float:right;
@@ -176,34 +173,34 @@ textarea:focus, input:focus{
     background: black;
 }
 
-.popup-tab.popup-tab-close {
+.nav.nav-close {
     float: right;
 }
 
-.popup-tab.popup-tab-money {
+.nav.nav-money {
     float: left;
     margin-left: 10px;
 }
 
-.popup-tab.popup-tab-tag {
+.nav.nav-tag {
     float: left;
     margin-left: 45px;
     color: #357575;
 }
 
-.popup-tab.popup-tab-comment {
+.nav.nav-comment {
     float: left;
     margin-left: 80px;
     color: #3138aa;
 }
 
-.popup-tab.popup-tab-day {
+.nav.nav-day {
     float: left;
     margin-left: 115px;
     color: #3b752f;
 }
 
-.comment-textarea {
+.comment {
     margin: 0 auto;
     display: block;
     background: black;

@@ -1,10 +1,11 @@
-
-<!doctype html>
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <title>Pocket money</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="./index.css" fetchpriority="high">
     <meta name="viewport" content="initial-scale=1">
+    <link rel="stylesheet" href="./index.css" fetchpriority="high">
   </head>
   <body>
     <script type="module">
@@ -18,22 +19,22 @@
         .addEventListener('click', new Listener(wasm).handler);
     </script>
     <div id="main">
-      <div id="list"></div>
-      <div hidden id="container-popup"></div>
+      <div id="container-list" class="container-list"></div>
+      <div hidden id="container-popup" class="container-popup"></div>
     </div>
   </body>
 </html>
 
 <template id="template-list">
-  <h1 __action="list/title">Август 2025</h1>
-  <div __action="list/rows" id="rows"></div>
+  <h1 __action="list/todo">Август 2025</h1>
+  <div id="container-row" __action="list/todo" ></div>
 </template>
 
 <template id="template-row">
-  <div tabindex="0" class="row" __action="list/row" __id="">
-    <span id="money"></span>
-    <span id="money2"></span>
-    <span id="tag"></span>
+  <div id="row-id" __action="row" __id="" class="row" tabindex="0" >
+    <span id="row-money-euro" class="row-money-euro"></span>
+    <span id="row-money-cent" class="row-money-cent"></span>
+    <span id="row-tag" class="row-tag"></span>
     <div class="row-comment">
       <hr />
       <span id="row-comment"></span>
@@ -41,45 +42,44 @@
   </div>
 </template>
 
-<template id="template-row-date">
-  <div __action="list/row-date" class="row date">
-    <span id="date"></span>
+<template id="template-date-row">
+  <div __action="date-row" class="row date-row">
+    <span id="date-row"></span>
     <span style="color: black; font-size: xx-large">|</span>
   </div>
   <hr />
 </template>
 
 <template id="template-nav">
-  <span class="popup-tab popup-tab-close" __action="popup/close">X</span>
-  <span class="popup-tab popup-tab-money" __action="popup/tab-money">$</span>
-  <span class="popup-tab popup-tab-tag" __action="popup/tab-tag">✎</span>
-  <span class="popup-tab popup-tab-day" __action="popup/tab-day">Y</span>
-  <span class="popup-tab popup-tab-comment" __action="popup/tab-comment">T</span>
+  <span  __action="nav/close" class="nav nav-close">X</span>
+  <span  __action="nav/money" class="nav nav-money">$</span>
+  <span  __action="nav/tag" class="nav nav-tag">✎</span>
+  <span  __action="nav/day" class="nav nav-day">Y</span>
+  <span  __action="nav/comment" class="nav nav-comment">T</span>
 </template>
 
 <template id="template-comment">
   <div style="height: 30px"></div>
-  <textarea id="comment-textarea" class="comment-textarea"></textarea>
+  <textarea id="comment" __action="comment" class="comment"></textarea>
 </template>
 
 <template id="template-money">
   <div style="height: 20px"></div>
-  <input id="popup-input" tabindex="-1" placeholder="" class="popup-input"
-    __action="popup/input" 
-    type="text" />
+  <input id="money-input" __action="money/input" class="money-input"
+    tabindex="-1" placeholder=""  type="text" />
   <div style="height: 40px"></div>
-  <span id="popup-slider-msg" class="popup-slider-msg">0–17</span>
+  <span id="money-slider-scale-msg" class="money-slider-scale-msg">0–17</span>
   <div style="height: 30px"></div>
-  <input id="popup-slider-scale" class="popup-slider-scale"
-    __action="popup/slider-scale"
+  <input id="money-slider-scale" __action="money/slider-scale" 
+    class="money-slider-scale"
     type="range" min="-2" max="15" value="0" />
   <div style="height: 40px"></div>
-  <input id="popup-slider-main" class="popup-slider-main"
-    __action="popup/slider-main"
+  <input __action="money/slider-main" id="money-slider-main" 
+    class="money-slider-main"
     type="range" min="0" max="170" value="0" />
 </template>
 
 <template id="template-popup">
-  <div id="container-nav"></div>
-  <div id="container-main"></div>
+  <div id="container-popup-nav"></div>
+  <div id="container-popup-main"></div>
 </template>

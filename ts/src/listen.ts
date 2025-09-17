@@ -7,8 +7,6 @@ type Day = {
 
 type Wasm = Record<string, Function>;
 
-let __popupHandler = (ev: Event) => {};
-
 function target(node: Element | null): Element | null {
 	while (node?.attributes && !node?.attributes?.getNamedItem('__action')?.value) { 
 		node = node?.parentNode as Element | null; 
@@ -31,18 +29,17 @@ export class Listener {
 		const action = node.attributes.getNamedItem('__action')?.value;
 		const id = parseInt(node.attributes.getNamedItem('__id')?.value ?? "0"); // todo 0
 		switch (action) {
-			case 'list/row':
+			case 'row':
 				this.focus(node as HTMLElement);
 				this.popup?.destroy();
 				this.popup = new Popup(this.wasm, id, node);
 				return;
-			case 'popup/close':
+			case 'nav/close':
 				this.popup?.destroy();
 				return;
 			default:
 				this.popup?.destroy();
 		}
-
 	}
 
     focus(row: HTMLElement) { 
@@ -53,16 +50,16 @@ export class Listener {
 
 class Popup {
 	wasm: Wasm
-	node: Element
+	row: Element
 	model: Day
 
-	constructor(wasm: Wasm, id: number, node: Element) {
+	constructor(wasm: Wasm, id: number, row: Element) {
 		this.wasm = wasm;
 		this.model = wasm.storage_by!(id);
-		this.node = node;
+		this.row = row;
 		this.link();
 		this.tab('money');
-		this.money();
+		this.fillMoney();
 	}
 
 	destroy() {
@@ -82,41 +79,40 @@ class Popup {
 		x?.addEventListener('input', this.handler);
 	}
 
-	money() { 
-		const value = this.wasm.money!(this.model.price);
-		(document.querySelector("#popup-input") as HTMLInputElement).value = value; 
-		(document.querySelector("#popup-input") as HTMLInputElement).placeholder = value; 
-		(document.querySelector("#container-popup") as HTMLElement).hidden = false; 
+	fillMoney() { 
+		const price = this.wasm.money!(this.model.price);
+		const input = (document.querySelector("#money-input") as HTMLInputElement);
+		input.value = price; 
+		input.placeholder = price;
 	}
 
-	comment() { 
-		(document.querySelector("#comment-textarea") as HTMLInputElement).value = this.model.comment; 
-		(document.querySelector("#container-popup") as HTMLElement).hidden = false; 
+	fillComment() { 
+		(document.querySelector("#comment") as HTMLInputElement).value = this.model.comment; 
 	}
 
 	hide() { (document.querySelector("#container-popup") as HTMLElement).hidden = true; }
 
 	handler = (event: Event) => {
 		const action = (event.target as Element).attributes.getNamedItem('__action')?.value;
-		if (action === 'popup/close') { return; }
+		if (action === 'nav/close') { return; }
 		event.stopImmediatePropagation();
 		switch (action) {
-			case 'popup/slider-scale':
-				this.scale(parseInt((event.target as HTMLInputElement).value));
+			case 'money/slider-scale':
+				this.moneyScale(parseInt((event.target as HTMLInputElement).value));
 				return;
-			case 'popup/slider-main':
-				this.slider(parseInt((event.target as HTMLInputElement).value));
+			case 'money/slider-main':
+				this.moneySlider(parseInt((event.target as HTMLInputElement).value));
 				return;
-			case 'popup/input':
-				this.input(parseFloat((event.target as HTMLInputElement).value));
+			case 'money/input':
+				this.moneyInput(parseFloat((event.target as HTMLInputElement).value));
 				return;
-			case 'popup/tab-comment':
+			case 'nav/comment':
 				this.tab('comment');
-				this.comment();
+				this.fillComment();
 				return;
-			case 'popup/tab-money':
+			case 'nav/money':
 				this.tab('money');
-				this.money();
+				this.fillMoney();
 				return;
 		}
 	}
@@ -124,28 +120,30 @@ class Popup {
 	tab(page: string) {
 		const popup = document.querySelector("#container-popup")!;
 		const template = (document.querySelector(`#template-${page}`) as HTMLTemplateElement).content;
-		const container = popup.querySelector('#container-main')!;
+		const container = popup.querySelector('#container-popup-main')!;
 		container.replaceChildren(template.cloneNode(true));
+		(document.querySelector("#container-popup") as HTMLElement).hidden = false; 
 	}
 
-	scale(value: number) {
+	moneyScale(value: number) {
 		const [min, max] = [Math.round(25*value/10), Math.round(1.7**value+16)];
-		document.querySelector('#popup-slider-msg')!.textContent = `${min}–${max}`;
-		(document.querySelector('#popup-slider-main') as HTMLInputElement).min = String(min*10);
-		(document.querySelector('#popup-slider-main') as HTMLInputElement).max = String(max*10);
+		document.querySelector('#money-slider-msg')!.textContent = `${min}–${max}`;
+		const slider = (document.querySelector('#moey-slider-main') as HTMLInputElement);
+		slider.min = String(min*10);
+		slider.max = String(max*10);
 	}
 
-	slider(value: number) {
-		(document.querySelector("#popup-input") as HTMLInputElement).value = String(value / 10);
-	    (this.node.querySelector('#money') as HTMLElement).textContent = this.wasm.euro!(value / 10); 
-	    (this.node.querySelector('#money2') as HTMLElement).textContent = this.wasm.cent!(value / 10);
+	moneySlider(value: number) {
+		(document.querySelector("#money-input") as HTMLInputElement).value = String(value / 10);
+	    (this.row.querySelector('#row-money-euro') as HTMLElement).textContent = this.wasm.euro!(value / 10); 
+	    (this.row.querySelector('#row-money-cent') as HTMLElement).textContent = this.wasm.cent!(value / 10);
 	    this.wasm.storage_save!({...this.model, price: value / 10 }); 
 	}
 
-	input(value: number) {
+	moneyInput(value: number) {
 		if (isNaN(value)) return;
-	    (this.node.querySelector('#money') as HTMLElement).textContent = this.wasm.euro!(value); 
-	    (this.node.querySelector('#money2') as HTMLElement).textContent = this.wasm.cent!(value);
+	    (this.row.querySelector('#row-money-euro') as HTMLElement).textContent = this.wasm.euro!(value); 
+	    (this.row.querySelector('#row-money-cent') as HTMLElement).textContent = this.wasm.cent!(value);
 	    this.wasm.storage_save!({...this.model, price: value }); 
 	}
 }
