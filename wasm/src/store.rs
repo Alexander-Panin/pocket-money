@@ -40,6 +40,15 @@ pub fn storage_save(obj: JsValue) {
     };
 }
 
+#[wasm_bindgen]
+pub fn storage_tag(value: usize) -> String {
+    let db = Storage::new();
+    match db.tag(value) {
+        Ok(x) => x,
+        Err(r) => { console::error_1(&r); "not_found".to_owned() }
+    }
+}
+
 struct Storage {
     db: web_sys::Storage 
 }
@@ -97,6 +106,16 @@ impl Storage {
         let s = &JSON::stringify(&x)?.as_string()
             .ok_or(JsValue::from_str("failed to string"))?;
         self.set("data", s)
+    }
+
+    fn tag(&self, value: usize) -> Result<String, JsValue> {
+        // todo if empty
+        let v = self.get("data")?;
+        let v: Vec<Day> = serde_wasm_bindgen::from_value(v)?;
+        let mut xs: Vec<String> = v.into_iter().map(|x| x.tag).collect();
+        xs.dedup();
+        xs.sort();
+        Ok(xs.swap_remove(value % xs.len()))
     }
 }
 

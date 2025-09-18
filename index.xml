@@ -4,8 +4,8 @@
   <head>
     <title>Pocket money</title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="initial-scale=1">
-    <link rel="stylesheet" href="./index.css" fetchpriority="high">
+    <meta name="viewport" content="initial-scale=1" />
+    <link rel="stylesheet" href="./index.css" fetchpriority="high" />
   </head>
   <body>
     <script type="module">
@@ -19,32 +19,33 @@
         .addEventListener('click', new Listener(wasm).handler);
     </script>
     <div id="main">
-      <div id="container-list" class="container-list"></div>
-      <div hidden id="container-popup" class="container-popup"></div>
+      <div id="container-list" class="container-list" />
+      <div hidden="hidden" id="container-popup" class="container-popup" />
     </div>
   </body>
-</html>
 
 <template id="template-list">
-  <h1 __action="list/todo">Август 2025</h1>
-  <div id="container-row" __action="list/todo" ></div>
+  <h1 __action="list/on-top" class="title-sticky" >&#160;</h1>
+  <div id="container-row" class="container-row" __action="list/todo">
+    <h1 __action="list/todo" id="list-title" class="title" >Август 2025</h1>
+  </div>
 </template>
 
 <template id="template-row">
   <div id="row-id" __action="row" __id="" class="row" tabindex="0" >
-    <span id="row-money-euro" class="row-money-euro"></span>
-    <span id="row-money-cent" class="row-money-cent"></span>
-    <span id="row-tag" class="row-tag"></span>
+    <span id="row-money-euro" class="row-money-euro" />
+    <span id="row-money-cent" class="row-money-cent" />
+    <span id="row-tag" class="row-tag" />
     <div class="row-comment">
       <hr />
-      <span id="row-comment"></span>
+      <span id="row-comment" />
     </div>
   </div>
 </template>
 
 <template id="template-date-row">
   <div __action="date-row" class="row date-row">
-    <span id="date-row"></span>
+    <span id="date-row" />
     <span style="color: black; font-size: xx-large">|</span>
   </div>
   <hr />
@@ -59,27 +60,43 @@
 </template>
 
 <template id="template-comment">
-  <div style="height: 30px"></div>
-  <textarea id="comment" __action="comment" class="comment"></textarea>
+  <div style="height: 30px" />
+  <textarea id="comment" __action="comment" class="comment" />
 </template>
 
 <template id="template-money">
-  <div style="height: 20px"></div>
-  <input id="money-input" __action="money/input" class="money-input"
+  <div style="height: 20px" />
+  <input id="money-input" __action="money/input" class="view-input"
     tabindex="-1" placeholder=""  type="text" />
-  <div style="height: 40px"></div>
-  <span id="money-slider-scale-msg" class="money-slider-scale-msg">0–17</span>
-  <div style="height: 30px"></div>
+  <div style="height: 40px" />
+  <span id="money-slider-scale-msg" class="view-slider-scale-msg">0–17</span>
+  <div style="height: 30px" />
   <input id="money-slider-scale" __action="money/slider-scale" 
-    class="money-slider-scale"
+    class="view-slider-scale"
     type="range" min="-2" max="15" value="0" />
-  <div style="height: 40px"></div>
+  <div style="height: 40px" />
   <input __action="money/slider-main" id="money-slider-main" 
-    class="money-slider-main"
+    class="view-slider-main"
+    type="range" min="0" max="170" value="0" />
+</template>
+
+<template id="template-tag">
+  <div style="height: 20px" />
+  <input id="tag-input" __action="tag/input" class="view-input tag-input"
+    tabindex="-1" placeholder=""  type="text" />
+  <div style="height: 40px" />
+  <span id="tag-slider-msg" 
+    class="view-slider-scale-msg tag-slider-scale-msg">A</span>
+  <div style="height: 40px" />
+  <input __action="tag/slider-main" id="tag-slider-main" 
+    class="view-slider-main tag-slider-main"
     type="range" min="0" max="170" value="0" />
 </template>
 
 <template id="template-popup">
-  <div id="container-popup-nav"></div>
-  <div id="container-popup-main"></div>
+  <div id="container-popup-nav" />
+  <div id="container-popup-main" />
 </template>
+
+</html>
+

@@ -52,10 +52,28 @@ textarea:focus, input:focus {
     color: var(--tt-brown);
 }
 
-.container-list {
+.container-row {
     margin: 10px;
     overflow-y: auto;
     height: 650px;
+}
+
+.title-sticky {
+    position: sticky;
+    top: 0;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    background: black;
+    z-index: 100;
+    border-radius: 19px;
+}
+
+.title {
+    position: static;
+    z-index: 100;
+    padding: 0;
+    margin: 0;
 }
 
 .row-money-euro {
@@ -125,7 +143,7 @@ textarea:focus, input:focus {
     animation: show 0.3s;
 }
 
-.money-input {
+.view-input {
     font-size: x-large;
     max-width: 180px;
     color: var(--tt-brown);
@@ -135,21 +153,21 @@ textarea:focus, input:focus {
     text-align: center;
 }
 
-.money-slider-scale {
+.view-slider-scale {
     display: block;
     margin: auto;
     background: rgb(168, 13, 13);
     width: 100px;
 }
 
-.money-slider-main {
+.view-slider-main {
     display: block;
     margin: auto;
     background: green; 
     width: 200px;
 }
 
-.money-slider-scale-msg {
+.view-slider-scale-msg {
     color: #af1e1e;
     display: block;
     text-align: center;
@@ -212,5 +230,19 @@ textarea:focus, input:focus {
     padding: 10px;
 }
 
+
+.view-input.tag-input {
+    color: #357575;
+    border-bottom: 1px solid #357575;
+}
+
+.view-slider-scale-msg.tag-slider-scale-msg {
+    color: #357575;
+    font-size: x-large;
+}
+
+.view-slider-main.tag-slider-main {
+    background: #357575;
+}
 
 
