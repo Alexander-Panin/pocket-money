@@ -44,8 +44,8 @@ textarea:focus, input:focus {
 }
 
 #main {
-    /* debug sizes, adjustlater */
-    width: 400px;
+    /* todo debug sizes, adjustlater */
+    width: 360px;
     height: 650px;
     border-radius: 19px;
     background-color: black;
@@ -74,11 +74,13 @@ textarea:focus, input:focus {
     z-index: 100;
     padding: 0;
     margin: 0;
+    padding-bottom: 20px;
+    text-align: center;
 }
 
 .row-money-euro {
     font-size: xx-large;
-    min-width: 80px;
+    min-width: 90px;
     display: inline-block;
     text-align: end;
 }
@@ -212,7 +214,7 @@ textarea:focus, input:focus {
     color: #3138aa;
 }
 
-.nav.nav-day {
+.nav.nav-year {
     float: left;
     margin-left: 115px;
     color: #3b752f;
@@ -230,19 +232,32 @@ textarea:focus, input:focus {
     padding: 10px;
 }
 
-
 .view-input.tag-input {
-    color: #357575;
-    border-bottom: 1px solid #357575;
+    inputmode: text;
+    padding: 5px;
+    padding-top: 3px;
+    border-radius: 5px;
+    border: 1px solid var(--tt-brown);
 }
 
 .view-slider-scale-msg.tag-slider-scale-msg {
-    color: #357575;
+    color: var(--tt-brown);
     font-size: x-large;
 }
 
 .view-slider-main.tag-slider-main {
-    background: #357575;
+    background: green;
 }
 
+.view-input.year-input {
+    inputmode: text;
+    display: inline-block;
+    max-width: 40px;
+    font-size: xx-large;
+}
 
+.year-wrapper {
+    text-align: center;
+    padding-top: 50px;
+    font-size: xx-large;
+}

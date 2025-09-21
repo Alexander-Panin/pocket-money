@@ -46,6 +46,7 @@
 <template id="template-date-row">
   <div __action="date-row" class="row date-row">
     <span id="date-row" />
+    <span></span>
     <span style="color: black; font-size: xx-large">|</span>
   </div>
   <hr />
@@ -55,13 +56,21 @@
   <span  __action="nav/close" class="nav nav-close">X</span>
   <span  __action="nav/money" class="nav nav-money">$</span>
   <span  __action="nav/tag" class="nav nav-tag">✎</span>
-  <span  __action="nav/day" class="nav nav-day">Y</span>
+  <span  __action="nav/year" class="nav nav-year">Y</span>
   <span  __action="nav/comment" class="nav nav-comment">T</span>
 </template>
 
 <template id="template-comment">
   <div style="height: 30px" />
   <textarea id="comment" __action="comment" class="comment" />
+</template>
+
+<template id="template-year">
+  <div class="year-wrapper">
+    <input id="year-input" __action="year/input" class="view-input year-input"
+      tabindex="-1" placeholder="" type="text" />
+    <span id="year-msg">/ 08 / 2020</span>
+  </div>
 </template>
 
 <template id="template-money">
@@ -81,16 +90,16 @@
 </template>
 
 <template id="template-tag">
-  <div style="height: 20px" />
+  <div style="height: 30px" />
   <input id="tag-input" __action="tag/input" class="view-input tag-input"
     tabindex="-1" placeholder=""  type="text" />
-  <div style="height: 40px" />
+  <div style="height: 20px" />
   <span id="tag-slider-msg" 
     class="view-slider-scale-msg tag-slider-scale-msg">A</span>
-  <div style="height: 40px" />
+  <div style="height: 60px" />
   <input __action="tag/slider-main" id="tag-slider-main" 
     class="view-slider-main tag-slider-main"
-    type="range" min="0" max="170" value="0" />
+    type="range" min="0" max="84" value="0" />
 </template>
 
 <template id="template-popup">

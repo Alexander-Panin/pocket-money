@@ -50,7 +50,11 @@ export class Listener {
 
     focus(row: HTMLElement) { 
     	row.focus(); 
-    	row.scrollIntoView({ behavior: "smooth", block: "center" }); 
+    	row.scrollIntoView({ 
+    		behavior: "smooth", 
+    		block: "center", 
+    		inline: "center",
+    	}); 
     }
 }
 
@@ -58,7 +62,7 @@ class Popup {
 	wasm: Wasm
 	row: Element
 	model: Day
-	view: Money | Comment | null
+	view: Money | Comment | Tag | Year | null
 
 	constructor(wasm: Wasm, id: number, row: Element) {
 		this.wasm = wasm;
@@ -97,11 +101,11 @@ class Popup {
 	handler = (event: Event) => {
 		const action = (event.target as Element).attributes.getNamedItem('__action')?.value;
 		if (action !== 'nav/close') { event.stopImmediatePropagation(); }
-		if (this.view?.handler(event)) { return; }
+		if (this.view?.action(event)) { return; }
 		switch (action) {
 			case 'nav/comment':
 				this.tab('comment');
-				this.view = new Comment(this.wasm, this.model.comment);
+				this.view = new Comment(this.wasm, this.model, this.row);
 				return;
 			case 'nav/money':
 				this.tab('money');
@@ -110,6 +114,10 @@ class Popup {
 			case 'nav/tag':
 				this.tab('tag');
 				this.view = new Tag(this.wasm, this.model, this.row);
+				return;
+			case 'nav/year':
+				this.tab('year');
+				this.view = new Year(this.wasm, this.model);
 				return;
 		}
 	}
@@ -121,24 +129,76 @@ class Popup {
 		container.replaceChildren(template.cloneNode(true));
 		(document.querySelector("#container-popup") as HTMLElement).hidden = false; 
 	}
-
 }
+
+class Year {
+	wasm: Wasm
+	model: Day
+
+	constructor(wasm: Wasm, day: Day) {
+		this.wasm = wasm;
+		this.model = day;
+		this.fill(day.date)
+	}
+
+	action(event: Event) {
+		const action = (event.target as Element).attributes.getNamedItem('__action')?.value;
+		switch (action) {
+			case 'year/input':
+				this.input(parseInt((event.target as HTMLInputElement).value));
+				return true;
+			default: 
+				return false;
+		}
+	}
+
+	input(value: number) {
+		if (isNaN(value) || value < 1) return; // todo think about < 1
+	    this.wasm.storage_save!({...this.model, date: value }); 
+	}
+
+	fill(value: number) {
+		const msg = `/ 08 / 2025`; // todo later 
+		(document.querySelector("#year-msg") as HTMLElement).textContent = msg; 
+		(document.querySelector("#year-input") as HTMLInputElement).value = String(value); 
+	}
+}
+
 
 class Comment {
 	wasm: Wasm
+	model: Day
+	row: Element
 
-	constructor(wasm: Wasm, comment: string) {
+	constructor(wasm: Wasm, model: Day, row: Element) {
 		this.wasm = wasm;
-		this.fill(comment);
+		this.model = model;
+		this.row = row;
+		this.fill(this.model.comment);
 	}
 
-	handler(_event: Event) { return false; }
+	action(event: Event) {
+		const action = (event.target as Element).attributes.getNamedItem('__action')?.value;
+		switch (action) {
+			case 'comment':
+				this.comment((event.target as HTMLTextAreaElement).value);
+				return true;
+			default: 
+				return false;
+		}
+	}
 
 	fill(comment: string) { 
-		(document.querySelector("#comment") as HTMLInputElement).value = comment; 
+		(document.querySelector("#comment") as HTMLInputElement).value = comment;
+		(document.querySelector("#comment") as HTMLInputElement).placeholder = comment; 
 	}
-
+	comment(comment: string) { 
+		(document.querySelector("#comment") as HTMLInputElement).value = comment; 
+		(this.row.querySelector('#row-comment') as HTMLElement).textContent = comment; 
+		this.wasm.storage_save!({...this.model, comment }); 
+	}
 }
+
 
 class Money {
 	wasm: Wasm
@@ -152,7 +212,7 @@ class Money {
 		this.fill(wasm.money!(model.price));
 	}
 
-	handler(event: Event) {
+	action(event: Event) {
 		const action = (event.target as Element).attributes.getNamedItem('__action')?.value;
 		switch (action) {
 			case 'money/slider-scale':
@@ -211,7 +271,7 @@ class Tag {
 		this.fill(model.tag);
 	}
 
-	handler(event: Event) {
+	action(event: Event) {
 		const action = (event.target as Element).attributes.getNamedItem('__action')?.value;
 		switch (action) {
 			case 'tag/slider-main':

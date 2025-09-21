@@ -114,7 +114,7 @@ impl Storage {
         let v: Vec<Day> = serde_wasm_bindgen::from_value(v)?;
         let mut xs: Vec<String> = v.into_iter().map(|x| x.tag).collect();
         xs.dedup();
-        xs.sort();
+        xs.sort_by_key(|t| t.to_lowercase());
         Ok(xs.swap_remove(value % xs.len()))
     }
 }
