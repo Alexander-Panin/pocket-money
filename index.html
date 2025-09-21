@@ -19,8 +19,8 @@
         .addEventListener('click', new Listener(wasm).handler);
     </script>
     <div id="main">
-      <div id="container-list" class="container-list" />
-      <div hidden="hidden" id="container-popup" class="container-popup" />
+      <div id="container-list" class="container-list" ></div>
+      <div hidden="hidden" id="container-popup" class="container-popup"></div>
     </div>
   </body>
 
@@ -33,20 +33,19 @@
 
 <template id="template-row">
   <div id="row-id" __action="row" __id="" class="row" tabindex="0" >
-    <span id="row-money-euro" class="row-money-euro" />
-    <span id="row-money-cent" class="row-money-cent" />
-    <span id="row-tag" class="row-tag" />
+    <span id="row-money-euro" class="row-money-euro" /></span>
+    <span id="row-money-cent" class="row-money-cent" /></span>
+    <span id="row-tag" class="row-tag" /></span>
     <div class="row-comment">
       <hr />
-      <span id="row-comment" class="row-comment-msg" />
+      <span id="row-comment" class="row-comment-msg" /></span>
     </div>
   </div>
 </template>
 
 <template id="template-date-row">
   <div __action="date-row" class="row date-row">
-    <span id="date-row" />
-    <span></span>
+    <span id="date-row" /></span>
     <span style="color: black; font-size: xx-large">|</span>
   </div>
   <hr />
@@ -61,7 +60,7 @@
 </template>
 
 <template id="template-comment">
-  <div style="height: 30px" />
+  <div style="height: 30px"></div>
   <textarea id="comment" __action="comment" class="comment" />
 </template>
 
@@ -69,42 +68,42 @@
   <div class="year-wrapper">
     <input id="year-input" __action="year/input" class="view-input year-input"
       tabindex="-1" placeholder="" type="text" />
-    <span id="year-msg">/ 08 / 2020</span>
+    <span id="year-msg"></span>
   </div>
 </template>
 
 <template id="template-money">
-  <div style="height: 20px" />
+  <div style="height: 20px"></div>
   <input id="money-input" __action="money/input" class="view-input"
     tabindex="-1" placeholder=""  type="text" />
-  <div style="height: 40px" />
+  <div style="height: 40px"></div>
   <span id="money-slider-scale-msg" class="view-slider-scale-msg">0–17</span>
-  <div style="height: 30px" />
+  <div style="height: 30px"></div>
   <input id="money-slider-scale" __action="money/slider-scale" 
     class="view-slider-scale"
     type="range" min="-2" max="15" value="0" />
-  <div style="height: 40px" />
+  <div style="height: 40px"></div>
   <input __action="money/slider-main" id="money-slider-main" 
     class="view-slider-main"
     type="range" min="0" max="170" value="0" />
 </template>
 
 <template id="template-tag">
-  <div style="height: 30px" />
+  <div style="height: 30px" ></div>
   <input id="tag-input" __action="tag/input" class="view-input tag-input"
     tabindex="-1" placeholder=""  type="text" />
-  <div style="height: 20px" />
+  <div style="height: 20px" ></div>
   <span id="tag-slider-msg" 
     class="view-slider-scale-msg tag-slider-scale-msg">A</span>
-  <div style="height: 60px" />
+  <div style="height: 60px"></div>
   <input __action="tag/slider-main" id="tag-slider-main" 
     class="view-slider-main tag-slider-main"
     type="range" min="0" max="84" value="0" />
 </template>
 
 <template id="template-popup">
-  <div id="container-popup-nav" />
-  <div id="container-popup-main" />
+  <div id="container-popup-nav"></div>
+  <div id="container-popup-main"></div>
 </template>
 
 </html>
