@@ -38,7 +38,7 @@
     <span id="row-tag" class="row-tag" />
     <div class="row-comment">
       <hr />
-      <span id="row-comment" />
+      <span id="row-comment" class="row-comment-msg" />
     </div>
   </div>
 </template>
