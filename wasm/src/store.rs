@@ -1,4 +1,3 @@
-use std::cmp::Reverse;
 use std::str::FromStr;
 use wasm_bindgen::prelude::*;
 use web_sys::{window, console};
@@ -39,17 +38,21 @@ use web_sys::{window, console};
 //     }
 // }
 
-#[wasm_bindgen]
-pub struct Day<'a> {
+#[wasm_bindgen(getter_with_clone)]
+#[derive(Clone)]
+pub struct Day {
     pub date: u32,
     pub price: f32,
-    tag: String,
-    comment: String,
+    pub tag: String,
+    pub comment: String,
     pub id: usize,
 }
 
 #[wasm_bindgen]
 pub struct Store {}
+
+#[wasm_bindgen(getter_with_clone)]
+pub struct Row(pub bool, pub Day);
 
 #[wasm_bindgen]
 impl Store {
@@ -57,71 +60,82 @@ impl Store {
         window().unwrap().local_storage().unwrap().unwrap()
     }
 
-    fn set(key: &str, value: &str) -> Result<(), JsValue> {
-        Self::db().set_item(key, value)
+    fn set(key: &str, value: &str) {
+        match Self::db().set_item(key, value) {
+            Err(_) => {
+                let tmp = &format!("can not saved storage[{key}]");
+                console::error_1(&JsValue::from_str(tmp));
+            },
+            _ => (),
+        }
     }
 
-    fn get(key: &str) -> Result<String, JsValue> {
-        Store::db()
-            .get_item(key)?
-            .ok_or(JsValue::from_str(&format!("not found storage[{key}]")))
+    fn get(key: &str) -> Option<String> {
+        match Self::db().get_item(key) {
+            Err(_) => {
+                let tmp = &format!("not found storage[{key}]");
+                console::error_1(&JsValue::from_str(tmp));
+                None
+            },
+            Ok(x) => x,
+        }
     }
 
-    pub fn get_by(id: usize, key: &str) -> Result<String, JsValue> {
+    pub fn get_by(id: usize, key: &str) -> Option<String> {
         Self::get(&format!("{id}:{key}"))
     }
 
-    fn root() -> Result<usize, JsValue> {
+    fn root() -> Option<usize> {
         let root = Self::get("data:root")?;
-        Ok(root.parse::<usize>().unwrap())
+        root.parse::<usize>().ok()
     }  
 
-    fn value<T>(id: usize, key: &str) -> Result<T, JsValue> 
+    fn value<T>(id: usize, key: &str) -> Option<T> 
         where T: FromStr, <T as FromStr>::Err: std::fmt::Debug
     {
-        Ok(Self::get(&format!("data:{id}:{key}"))?.parse::<T>().unwrap())
+        Self::get(&format!("data:{id}:{key}"))?.parse::<T>().ok()
     } 
 
-    pub fn one(id: usize) -> Result<Day, JsValue> {
+    pub fn one(id: usize) -> Option<Day> {
         let price: f32 = Self::value(id, "price")?;
         let date: u32  = Self::value(id, "date")?;
         let tag: String  = Self::get_by(id, "tag")?;
         let comment: String  = Self::get_by(id, "comment")?;
-        Ok(Day { price, date, tag, id, comment })
+        Some(Day { price, date, tag, id, comment })
     }
 
-    fn all() -> Result<Vec<Day>, JsValue> {
+    pub fn all() -> Option<Vec<Day>> {
         let mut root = Self::root()?;
         let mut result = vec![Self::one(root)?];
-        while let Ok(next) = Self::value(root, "next") {
+        while let Some(next) = Self::value(root, "next") {
             result.push(Self::one(next)?);
             root = next;
         }
-        Ok(result)
+        Some(result)
     }
 
-    fn save_price(id: usize, price: f32) -> Result<(), JsValue> 
+    pub fn save_price(id: usize, price: f32) 
         { Self::set(&format!("data:{id}:price"), &price.to_string()) }
 
-    fn save_date(id: usize, date: u32) -> Result<(), JsValue> 
+    pub fn save_date(id: usize, date: u32) 
         { Self::set(&format!("data:{id}:date"), &date.to_string()) }
 
-    fn save_tag(id: usize, tag: &str) -> Result<(), JsValue> 
+    pub fn save_tag(id: usize, tag: &str) 
         { Self::set(&format!("data:{id}:tag"), tag) }
 
-    fn save_comment(id: usize, comment: &str) -> Result<(), JsValue> 
+    pub fn save_comment(id: usize, comment: &str) 
         { Self::set(&format!("data:{id}:comment"), comment) }
 
-    fn prepare(&self, mut days: Vec<Day>) -> Vec<(bool, Day)> {
-        days.sort_by_key(|x| Reverse(x.date));
+    pub fn prepare(mut days: Vec<Day>) -> Vec<Row> {
+        days.sort_by_key(|x| std::cmp::Reverse(x.date));
         days.into_iter().scan(0, |state, x| {
             let is_next = *state != x.date;
             *state = x.date;
-            Some((is_next, x))
+            Some(Row(is_next, x))
         }).collect()
     }
 
-    fn tags() -> Result<Vec<String>, JsValue> {
-        Ok(Self::all()?.into_iter().map(|x| x.tag).collect())
+    pub fn tags() -> Option<Vec<String>> {
+        Some(Self::all()?.into_iter().map(|x| x.tag).collect())
     }
 }
