@@ -3,6 +3,10 @@
     --tt-blue: rgba(35, 173, 278, 1);
 }
 
+html {
+    background: black;
+}
+
 body {
     font: 1rem "Fira Sans", sans-serif;
 }
