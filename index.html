@@ -22,8 +22,8 @@
     </script>
     <div id="main">
       <div id="container-list" class="container-list" ></div>
-      <div hidden="hidden" id="container-popup" class="container-popup"></div>
     </div>
+    <div hidden="hidden" id="container-popup" class="container-popup"></div>
   </body>
 </html>
 
@@ -71,7 +71,7 @@
   <div class="year-wrapper">
     <input id="year-input" __action="year/input" class="view-input year-input"
       tabindex="-1" placeholder="" type="text" />
-    <span id="year-msg"></span>
+    <span id="year-msg" class="year-msg"></span>
   </div>
 </template>
 
@@ -101,7 +101,7 @@
   <div style="height: 60px"></div>
   <input __action="tag/slider-main" id="tag-slider-main" 
     class="view-slider-main tag-slider-main"
-    type="range" min="0" max="6" value="0" />
+    type="range" min="0" max="32" value="0" />
 </template>
 
 <template id="template-popup">

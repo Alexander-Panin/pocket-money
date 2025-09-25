@@ -5,10 +5,16 @@
 
 html {
     background: black;
+    height: 100%;
+    padding: 0;
+    margin: 0;
 }
 
 body {
     font: 1rem "Fira Sans", sans-serif;
+    min-height: 100%;
+    padding: 0 8px;
+    margin: 0;
 }
 
 hr {
@@ -18,7 +24,7 @@ hr {
   background-color: black;
   height: 1px;
   width: 100%;
-  margin-top: 12px;
+  margin-bottom: 4px;
 }
 
 input[type=text] {
@@ -41,6 +47,7 @@ textarea:focus, input:focus {
     width: 100%;
     background-color: black;
     color: var(--tt-brown);
+    min-height: 100vh;
 }
 
 .title-sticky {
@@ -51,7 +58,7 @@ textarea:focus, input:focus {
     cursor: pointer;
     background: black;
     z-index: 100;
-    border-radius: 19px;
+    border-radius: 0 19px;
 }
 
 .title {
@@ -99,7 +106,6 @@ textarea:focus, input:focus {
 }
 
 .row-comment-msg {
-    padding-right: 5px;
     max-width: 92%;
 }
 
@@ -249,4 +255,8 @@ textarea:focus, input:focus {
     text-align: center;
     padding-top: 50px;
     font-size: xx-large;
+}
+
+.year-msg {
+    color: var(--tt-brown);
 }

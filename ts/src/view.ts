@@ -1,4 +1,4 @@
-type Wasm = Record<string, Function>;
+type Wasm = Record<string, any>;
 
 type Day = {
     id: number;
@@ -39,12 +39,13 @@ export class View {
 	}
 
 	list() {
+		const store = this.wasm.Store;
 		const container = document.querySelector("#container-row")!;
 		const row = (document.querySelector("#template-row") as HTMLTemplateElement).content;
 		const date = (document.querySelector("#template-date-row") as HTMLTemplateElement).content;
-		this.wasm.storage_all!().forEach(([isNext, day]: [boolean, Day]) => {
-			if (isNext) { container.appendChild(this.fillDate(date.cloneNode(true) as HTMLElement, day)); } 
-			container.appendChild(this.fill(row.cloneNode(true) as HTMLElement, day));
+		store.prepare(store.all()).forEach((x: [boolean, Day]) => {
+			if (x[0]) { container.appendChild(this.fillDate(date.cloneNode(true) as HTMLElement, x[1])); } 
+			container.appendChild(this.fill(row.cloneNode(true) as HTMLElement, x[1]));
 		});
 	}
 
