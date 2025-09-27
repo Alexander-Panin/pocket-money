@@ -1,11 +1,6 @@
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
-pub fn foobar() -> JsValue {
-    JsValue::NULL
-}
-
-#[wasm_bindgen]
 pub fn cent(price: f32) -> String {
     if price.round() == price { 
         " ".to_owned() 

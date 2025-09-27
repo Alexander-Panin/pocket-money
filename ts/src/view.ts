@@ -1,7 +1,7 @@
 type Wasm = Record<string, any>;
 
 type Day = {
-    id: number;
+    id: string;
     date: number;
     price: number;
     tag: string;
@@ -10,9 +10,11 @@ type Day = {
 
 export class View {
 	wasm: Wasm
+	ns: string;
 
-	constructor(wasm: Wasm) {
+	constructor(wasm: Wasm, ns: string) {
 		this.wasm = wasm;
+		this.ns = ns;
 	}
 
 	render() {
@@ -39,11 +41,10 @@ export class View {
 	}
 
 	list() {
-		const store = this.wasm.Store;
 		const container = document.querySelector("#container-row")!;
 		const row = (document.querySelector("#template-row") as HTMLTemplateElement).content;
 		const date = (document.querySelector("#template-date-row") as HTMLTemplateElement).content;
-		store.prepare(store.all()).forEach((x: [boolean, Day]) => {
+		this.wasm.Store.select(this.ns).forEach((x: [boolean, Day]) => {
 			if (x[0]) { container.appendChild(this.fillDate(date.cloneNode(true) as HTMLElement, x[1])); } 
 			container.appendChild(this.fill(row.cloneNode(true) as HTMLElement, x[1]));
 		});
@@ -55,7 +56,7 @@ export class View {
 	}
 
 	fill(x: HTMLElement, d: Day): HTMLElement {
-		x.querySelector("#row-id")!.setAttribute('__id', String(d.id));
+		x.querySelector("#row-id")!.setAttribute('__id', d.id);
 		x.querySelector("#row-money-euro")!.textContent = this.wasm.euro!(d.price);
 		x.querySelector("#row-money-cent")!.textContent = this.wasm.cent!(d.price);
 		x.querySelector("#row-tag")!.textContent = d.tag;

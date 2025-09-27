@@ -1,16 +1,15 @@
 type Day = {
+    id: string;
     date: number;
     price: number;
     tag: string;
     comment: string;
-    id: number;
-    save_price: (x: number) => void;  
-    save_date: (x: number) => void;  
-    save_tag: (x: string) => void;  
-    save_comment: (x: string) => void;  
+    save: () => void;
 };
 
 type Wasm = Record<string, any>;
+
+const NS = "2025:august";
 
 // todo maybe move to wasm
 function target(node: Element | null): Element | null {
@@ -33,7 +32,7 @@ export class Listener {
 		const node = target(event.target as Element);
 		if (!node?.attributes) return;
 		const action = node.attributes.getNamedItem('__action')?.value;
-		const id = parseInt(node.attributes.getNamedItem('__id')?.value ?? "0"); // todo 0
+		const id = node.attributes.getNamedItem('__id')?.value ?? "hmm...";
 		switch (action) {
 			case 'row':
 				this.focus(node as HTMLElement);
@@ -70,9 +69,9 @@ class Popup {
 	model: Day
 	view: Money | Comment | Tag | Year | null
 
-	constructor(wasm: Wasm, id: number, row: Element) {
+	constructor(wasm: Wasm, id: string, row: Element) {
 		this.wasm = wasm;
-		this.model = wasm.Store.one(id);
+		this.model = wasm.Day.fetch(id);
 		this.row = row;
 		this.view = null;
 		this.link();
@@ -160,7 +159,8 @@ class Year {
 
 	input(value: number) {
 		if (isNaN(value) || value < 1) return; // todo think about < 1
-	    this.model.save_date(value); 
+		this.model.date = value;
+		this.model.save();
 	}
 
 	fill(value: number) {
@@ -201,7 +201,8 @@ class Comment {
 	comment(comment: string) { 
 		(document.querySelector("#comment") as HTMLInputElement).value = comment; 
 		(this.row.querySelector('#row-comment') as HTMLElement).textContent = comment; 
-		this.model.save_comment(comment); 
+		this.model.comment = comment;
+		this.model.save();
 	}
 }
 
@@ -252,28 +253,32 @@ class Money {
 		(document.querySelector("#money-input") as HTMLInputElement).value = String(value / 10);
 	    (this.row.querySelector('#row-money-euro') as HTMLElement).textContent = this.wasm.euro!(value / 10); 
 	    (this.row.querySelector('#row-money-cent') as HTMLElement).textContent = this.wasm.cent!(value / 10);
-	    this.model.save_price!(value / 10); 
+	    this.model.price = value / 10;
+	    this.model.save(); 
 	}
 
 	input(value: number) {
 		if (isNaN(value)) return;
 	    (this.row.querySelector('#row-money-euro') as HTMLElement).textContent = this.wasm.euro!(value); 
 	    (this.row.querySelector('#row-money-cent') as HTMLElement).textContent = this.wasm.cent!(value);
-	    this.model.save_price!(value); 
+	    this.model.price = value;
+	    this.model.save(); 
 	}
 
 }
 
 
 class Tag {
+	wasm: Wasm
 	row: Element
 	model: Day
 	tags: string[]
 
 	constructor(wasm: Wasm, model: Day, row: Element) {
+		this.wasm = wasm;
 		this.model = model;
 		this.row = row;
-		this.tags = wasm.Store.tags();
+		this.tags = wasm.Store.tags(NS);
 		this.fill(model.tag);
 	}
 
@@ -301,12 +306,14 @@ class Tag {
 		(document.querySelector("#tag-input") as HTMLInputElement).value = newTag;
 		(document.querySelector("#tag-slider-msg") as HTMLInputElement).textContent = newTag[0]?.toUpperCase() ?? "";
 	    (this.row.querySelector('#row-tag') as HTMLElement).textContent = newTag; 
-	    this.model.save_tag(newTag); 
+	    this.model.tag = newTag;
+	    this.model.save();
 	}
 
 	input(value: string) {
-	    (this.row.querySelector('#row-tag') as HTMLElement).textContent = value; 
-	    this.model.save_tag(value); 
+	    (this.row.querySelector('#row-tag') as HTMLElement).textContent = value;
+	    this.model.tag = value;
+	    this.model.save(); 
 	}
 
 }

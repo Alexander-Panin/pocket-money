@@ -7,10 +7,15 @@ edition = "2024"
 crate-type = ["cdylib"]
 
 [dependencies]
-js-sys = "0.3.78"
-serde = { version = "1.0.219", features = ["derive"] }
-serde-wasm-bindgen = "0.6.5"
 wasm-bindgen = "0.2.100"
+
+[dependencies.uuid]
+version = "1.18.1"
+features = [
+    "v4",
+    "v7",
+    "js",
+]
 
 [dependencies.web-sys]
 version = "0.3.77"
@@ -19,10 +24,8 @@ features = [
   "Window",
   "Document",
   "Element",
-  "HtmlTemplateElement",
   "Node",
   "NodeList",
-  "DocumentFragment",
   "NamedNodeMap",
   "console",
 ]

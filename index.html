@@ -15,7 +15,7 @@
       import { Listener } from "./ts/dist/listen.js";
       import { View } from "./ts/dist/view.js";
 
-      init().then(() => new View(wasm).render());
+      init().then(() => new View(wasm, "2025:august").render());
       document
         .querySelector("body")
         .addEventListener('click', new Listener(wasm).handler);
@@ -49,7 +49,7 @@
 <template id="template-date-row">
   <div __action="date-row" class="row date-row">
     <span id="date-row" /></span>
-    <span style="color: black; font-size: xx-large">|</span>
+    <span style="color: black; font-size: xxx-large">|</span>
   </div>
   <hr />
 </template>
