@@ -14,7 +14,7 @@ fn get_item(id: &str, key: &str) -> Option<String>
 #[wasm_bindgen(getter_with_clone)]
 #[derive(Clone, Default)]
 pub struct Day {
-    pub date: u32,
+    pub date: i32,
     pub price: f32,
     pub tag: String,
     pub comment: String,
@@ -24,13 +24,13 @@ pub struct Day {
 #[wasm_bindgen]
 impl Day {
 
-    pub fn new_with_id() -> Self {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> Self {
         Self { id: Uuid::new_v4().to_string(), ..Self::default() }
     }
 
-    #[wasm_bindgen(constructor)]
-    pub fn new(d: Day) -> Self {
-        Self { ..d }
+    pub fn new_with_date(date: i32) -> Self {
+        Self { date, ..Self::new() }
     }
 
     pub fn save(&self) {
@@ -59,6 +59,9 @@ pub struct Store {}
 pub struct Row(pub bool, pub Day);
 
 #[wasm_bindgen]
+pub struct Stats { pub last_date: i32 }
+
+#[wasm_bindgen]
 impl Store {
 
     fn all(ns: &str) -> Option<Vec<Day>> {
@@ -68,10 +71,11 @@ impl Store {
             result.push(Day::fetch(&next));
             root = next;
         }
+        result.retain(|x| x.date >= 0);
         Some(result)
     }
 
-    pub fn append(ns: &str, day: Day) {
+    pub fn append(ns: &str, day: &Day) {
         get_item(ns, "root")
             .map(|root| set_item(&day.id, "next", &root));
         set_item(ns, "root", &day.id);
@@ -89,6 +93,12 @@ impl Store {
             *state = x.date;
             Some(Row(is_next, x))
         }).collect())
+    }
+
+    pub fn stats(ns: &str) -> Option<Stats> {
+        let xs = Store::select(ns)?;
+        let Row(_, x) = xs.first()?;
+        Some(Stats { last_date: x.date })
     }
 }
 

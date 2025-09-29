@@ -40,11 +40,19 @@ export class View {
 			);
 	}
 
+	add_empty_rows(container: Element, row: DocumentFragment) {
+		container.appendChild(row.cloneNode(true));
+		container.appendChild(row.cloneNode(true));
+		container.appendChild(row.cloneNode(true));
+	}
+
 	list() {
+		const xs = this.wasm.Store.select(this.ns) ?? [];
 		const container = document.querySelector("#container-row")!;
 		const row = (document.querySelector("#template-row") as HTMLTemplateElement).content;
 		const date = (document.querySelector("#template-date-row") as HTMLTemplateElement).content;
-		this.wasm.Store.select(this.ns).forEach((x: [boolean, Day]) => {
+		this.add_empty_rows(container, row);
+		xs.forEach((x: [boolean, Day]) => {
 			if (x[0]) { container.appendChild(this.fillDate(date.cloneNode(true) as HTMLElement, x[1])); } 
 			container.appendChild(this.fill(row.cloneNode(true) as HTMLElement, x[1]));
 		});

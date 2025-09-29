@@ -14,14 +14,14 @@ fn start() {
     let tags = ["амазон", "рестораны", "продукты"];
     for x in 1..100 {
         let d = Day {
-            date: x as u32 % 29 + 1,
+            date: x as i32 % 29 + 1,
             price: prices[x % prices.len()],
             tag: tags[x % tags.len()].to_string(),
             comment: "".to_owned(),
-            ..Day::new_with_id()
+            ..Day::new()
         };
         d.save();
-        Store::append(ns, d);
+        Store::append(ns, &d);
     }
 }
 

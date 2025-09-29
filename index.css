@@ -74,36 +74,33 @@ textarea:focus, input:focus {
 }
 
 .row-money-euro {
-    font-size: xxx-large;
+    font-size: 42px;
     min-width: 120px;
     display: inline-block;
     text-align: end;
 }
 
 .row-money-cent {
-    font-size: xx-large;
+    font-size: 42px;
     margin-left: -5px;
 }
 
 .row-tag {
     vertical-align: top;
-    font-size: larger;
+    font-size: 18px;
 }
 
 .row {
     text-align: start;
     border-radius: 10px;
-    padding-top: 5px;
     cursor: pointer;
+    padding: 7px 5px 0px 5px;
 }
 
 .row.date-row {
-    font-size: large;
+    font-size: 16px;
     text-align: end;
     cursor: auto;
-    padding-top: 0px;
-    padding-top: 5px;
-    margin-bottom: -5px;
 }
 
 .row:focus {
@@ -116,11 +113,10 @@ textarea:focus, input:focus {
 
 .row-comment {
     display: flex;
-    font-size: smaller;
+    font-size: 14px;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow:hidden;
-    margin-top: -5px;
 }
 
 .container-popup {
@@ -146,7 +142,7 @@ textarea:focus, input:focus {
 }
 
 .view-input {
-    font-size: xx-large;
+    font-size: 36px;
     max-width: 180px;
     color: var(--tt-brown);
     inputmode: decimal;
@@ -174,11 +170,11 @@ textarea:focus, input:focus {
     display: block;
     text-align: center;
     padding-right: 0px;
-    font-size: large;
+    font-size: 24px;
 }
 
 .nav {
-    font-size: larger;
+    font-size: 24px;
     cursor: pointer;
     float:right;
     margin-top: -40px;
@@ -234,34 +230,47 @@ textarea:focus, input:focus {
 
 .view-input.tag-input {
     inputmode: text;
+    max-width: 240px;
     padding: 5px;
     padding-top: 3px;
     border-radius: 5px;
     border: 1px solid var(--tt-brown);
+    font-size: 32px;
 }
 
 .view-slider-scale-msg.tag-slider-scale-msg {
     color: var(--tt-brown);
-    font-size: x-large;
+    font-size: 24px;
 }
 
 .view-slider-main.tag-slider-main {
     background: green;
+    width: 250px;
 }
 
 .view-input.year-input {
     inputmode: text;
     display: inline-block;
     max-width: 40px;
-    font-size: xx-large;
+    font-size: 32px;
+}
+
+.comment {
+    font-size: 16px;
 }
 
 .year-wrapper {
     text-align: center;
     padding-top: 50px;
-    font-size: xx-large;
+    font-size: 32px;
+}
+
+.year-parts {
+    color: var(--tt-brown);
 }
 
 .year-msg {
     color: var(--tt-brown);
+    font-size: 14px;
+    padding-top: 100px;
 }

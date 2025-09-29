@@ -8,36 +8,31 @@ type Day = {
 };
 
 type Wasm = Record<string, any>;
+const NS = "2025:august"; // todo
 
-const NS = "2025:august";
-
-// todo maybe move to wasm
-function target(node: Element | null): Element | null {
-	while (node?.attributes && !node?.attributes?.getNamedItem('__action')?.value) { 
-		node = node?.parentNode as Element | null; 
-	} 
-	return node;
-}
+const onceMapId = new Set();
 
 export class Listener {
 	wasm: Wasm
+	ns: string
 	popup: Popup | null
 
-	constructor(wasm: Wasm) {
+	constructor(wasm: Wasm, ns: string) {
 		this.wasm = wasm; 
 		this.popup = null;
+		this.ns = ns;
 	}
 
 	handler = (event: Event) => {
-		const node = target(event.target as Element);
+		const node = this.wasm.target(event.target as Element);
 		if (!node?.attributes) return;
 		const action = node.attributes.getNamedItem('__action')?.value;
-		const id = node.attributes.getNamedItem('__id')?.value ?? "hmm...";
+		const id = node.attributes.getNamedItem('__id')?.value ?? "";
 		switch (action) {
 			case 'row':
 				this.focus(node as HTMLElement);
 				this.popup?.destroy();
-				this.popup = new Popup(this.wasm, id, node);
+				this.popup = new Popup(this.wasm, this.ns, id, node);
 				return;
 			case 'list/on-top':
 				this.onTop();
@@ -63,21 +58,28 @@ export class Listener {
     }
 }
 
+function createModel(wasm: Wasm, ns: string, id: string) {
+	const model = Boolean(id) 
+		? wasm.Day.fetch(id) 
+		: wasm.Day.new_with_date(wasm.Store.stats(ns)?.last_date ?? 1);
+	if (!Boolean(id)) { onceMapId.add(model.id); }
+	return model;
+}
+
 class Popup {
 	wasm: Wasm
 	row: Element
 	model: Day
 	view: Money | Comment | Tag | Year | null
 
-	constructor(wasm: Wasm, id: string, row: Element) {
+	constructor(wasm: Wasm, ns: string, id: string, row: Element) {
 		this.wasm = wasm;
-		this.model = wasm.Day.fetch(id);
+		this.model = createModel(wasm, ns, id);
 		this.row = row;
 		this.view = null;
 		this.link();
 		this.show();
 	}
-
 
 	destroy() {
 		this.hide();
@@ -106,7 +108,19 @@ class Popup {
 	handler = (event: Event) => {
 		const action = (event.target as Element).attributes.getNamedItem('__action')?.value;
 		if (action !== 'nav/close') { event.stopImmediatePropagation(); }
-		if (this.view?.action(event)) { return; }
+		action?.startsWith('nav/') ? this.handleNav(action) : this.handleChildren(event);	 
+	}
+
+	handleChildren(event: Event) {
+		this.view?.action(event);
+		if (onceMapId.has(this.model.id)) {
+			this.row.setAttribute('__id', this.model.id);
+			onceMapId.delete(this.model.id);
+			this.wasm.Store.append(NS, this.model);
+		}
+	}
+
+	handleNav(action: string) {
 		switch (action) {
 			case 'nav/comment':
 				this.tab('comment');
@@ -151,14 +165,11 @@ class Year {
 		switch (action) {
 			case 'year/input':
 				this.input(parseInt((event.target as HTMLInputElement).value));
-				return true;
-			default: 
-				return false;
 		}
 	}
 
 	input(value: number) {
-		if (isNaN(value) || value < 1) return; // todo think about < 1
+		if (isNaN(value)) return; 
 		this.model.date = value;
 		this.model.save();
 	}
@@ -169,7 +180,6 @@ class Year {
 		(document.querySelector("#year-input") as HTMLInputElement).value = String(value); 
 	}
 }
-
 
 class Comment {
 	wasm: Wasm
@@ -188,9 +198,6 @@ class Comment {
 		switch (action) {
 			case 'comment':
 				this.comment((event.target as HTMLTextAreaElement).value);
-				return true;
-			default: 
-				return false;
 		}
 	}
 
@@ -205,7 +212,6 @@ class Comment {
 		this.model.save();
 	}
 }
-
 
 class Money {
 	wasm: Wasm
@@ -224,15 +230,12 @@ class Money {
 		switch (action) {
 			case 'money/slider-scale':
 				this.scale(parseInt((event.target as HTMLInputElement).value));
-				return true;
+				return;
 			case 'money/slider-main':
 				this.slider(parseInt((event.target as HTMLInputElement).value));
-				return true;
+				return;
 			case 'money/input':
 				this.input(parseFloat((event.target as HTMLInputElement).value));
-				return true;
-			default: 
-				return false;
 		}
 	}
 
@@ -287,12 +290,9 @@ class Tag {
 		switch (action) {
 			case 'tag/slider-main':
 				this.slider(parseInt((event.target as HTMLInputElement).value));
-				return true;
+				return;
 			case 'tag/input':
 				this.input((event.target as HTMLInputElement).value);
-				return true;
-			default: 
-				return false;
 		}
 	}
 
@@ -304,7 +304,7 @@ class Tag {
 	slider(value: number) {
 		const newTag = this.tags[value % this.tags.length] ?? "no tags yet";
 		(document.querySelector("#tag-input") as HTMLInputElement).value = newTag;
-		(document.querySelector("#tag-slider-msg") as HTMLInputElement).textContent = newTag[0]?.toUpperCase() ?? "";
+		(document.querySelector("#tag-slider-msg") as HTMLInputElement).textContent = newTag[0]?.toUpperCase() ?? "A";
 	    (this.row.querySelector('#row-tag') as HTMLElement).textContent = newTag; 
 	    this.model.tag = newTag;
 	    this.model.save();

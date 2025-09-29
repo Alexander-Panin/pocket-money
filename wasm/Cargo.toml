@@ -28,6 +28,7 @@ features = [
   "NodeList",
   "NamedNodeMap",
   "console",
+  "Attr",
 ]
 
 
