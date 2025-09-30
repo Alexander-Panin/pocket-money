@@ -190,29 +190,26 @@ textarea:focus, input:focus {
 }
 
 .nav.nav-close {
-    float: right;
+    margin-left: 5px;
+    float: left;
 }
 
 .nav.nav-money {
-    float: left;
-    margin-left: 10px;
+    margin-right: 150px;
 }
 
 .nav.nav-tag {
-    float: left;
-    margin-left: 55px;
+    margin-right: 105px;
     color: #357575;
 }
 
 .nav.nav-comment {
-    float: left;
-    margin-left: 100px;
+    margin-right: 60px;
     color: #3138aa;
 }
 
 .nav.nav-year {
-    float: left;
-    margin-left: 145px;
+    margin-right: 15px;
     color: #3b752f;
 }
 
