@@ -1,13 +1,3 @@
-type Wasm = Record<string, any>;
-
-type Day = {
-    id: string;
-    date: number;
-    price: number;
-    tag: string;
-    comment: string;
-};
-
 export class View {
 	wasm: Wasm
 	ns: string;

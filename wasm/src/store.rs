@@ -82,7 +82,10 @@ impl Store {
     }
 
     pub fn tags(ns: &str) -> Option<Vec<String>> {
-        Some(Self::all(ns)?.into_iter().map(|x| x.tag).collect())
+        let mut tags: Vec<_> = Self::all(ns)?.into_iter().map(|x| x.tag).collect();
+        tags.sort();
+        tags.dedup();
+        Some(tags)
     }
 
     pub fn select(ns: &str) -> Option<Vec<Row>> {

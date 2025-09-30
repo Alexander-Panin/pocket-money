@@ -3,10 +3,12 @@
   "type": "module",
   "version": "0.1.0",
   "scripts": {
-    "build": "tsc",
-    "check-type": "tsc --noEmit"
+    "esbuild": "esbuild ./src/lib.ts --bundle --platform=neutral  --outfile=./dist/out.js",
+    "check-type": "tsc --noEmit",
+    "build": "npm run check-type && npm run esbuild"
   },
-  "dependencies": {
+  "devDependencies": {
+    "esbuild": "^0.25.10",
     "typescript": "^5.9.2"
   }
 }

@@ -13,8 +13,7 @@
   <body>
     <script type="module">
       import init, * as wasm from "./wasm/pkg/wasm.js";
-      import { Listener } from "./ts/dist/listen.js";
-      import { View } from "./ts/dist/view.js";
+      import { Listener, View } from "./ts/dist/out.js";
 
       const namespace = "2025:august";
       init().then(() => new View(wasm, namespace).render());
