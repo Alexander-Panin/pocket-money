@@ -7,13 +7,13 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./index.css" fetchpriority="high" />
-    <link rel="manifest" href="./manifest.json" />
+    <link rel="stylesheet" href="/static/index.css" fetchpriority="high" />
+    <link rel="manifest" href="/static/manifest.json" />
   </head>
   <body>
     <script type="module">
-      import init, * as wasm from "./wasm/pkg/wasm.js";
-      import { Listener, View } from "./ts/dist/out.js";
+      import init, * as wasm from "/static/dist/pkg/wasm.js";
+      import { Listener, View } from "/static/dist/out.js";
 
       const namespace = "2025:august";
       init().then(() => new View(wasm, namespace).render());

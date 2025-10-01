@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.1.0",
   "scripts": {
-    "esbuild": "esbuild ./src/lib.ts --bundle --platform=neutral  --outfile=./dist/out.js",
+    "esbuild": "esbuild ./src/lib.ts --bundle --platform=neutral  --outfile=../static/dist/out.js",
     "check-type": "tsc --noEmit",
     "build": "npm run check-type && npm run esbuild"
   },
