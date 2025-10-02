@@ -2,6 +2,9 @@ use wasm_bindgen::prelude::*;
 use web_sys::{window};
 use uuid::Uuid;
 
+
+
+
 fn local_storage() -> web_sys::Storage 
 { window().unwrap().local_storage().unwrap().unwrap() }
 

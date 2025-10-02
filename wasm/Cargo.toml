@@ -22,12 +22,10 @@ version = "0.3.77"
 features = [
   "Storage",
   "Window",
-  "Document",
   "Element",
   "Node",
   "NodeList",
   "NamedNodeMap",
-  "console",
   "Attr",
 ]
 
