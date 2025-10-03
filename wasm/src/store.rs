@@ -11,10 +11,13 @@ extern "C" {
 }
 
 fn set_item(id: &JsValue, key: JsValue, item: JsValue) { setItem(id + key, item); }
-fn get_item(id: &JsValue, key: JsValue) -> JsValue { getItem(id + key) }
+fn get_item(id: &JsValue, key: JsValue) -> Option<JsValue> { 
+    let x = getItem(id + key); 
+    if x.is_null() { None } else { Some(x) }
+}
 
 #[wasm_bindgen(getter_with_clone)]
-#[derive(Clone, Default, Debug)]
+#[derive(Clone, Default)]
 pub struct Day {
     pub date: i32,
     pub price: u32,
@@ -48,10 +51,10 @@ impl Day {
 
     pub fn fetch(id: &JsValue) -> Option<Self> {
         Some(Day {
-            price: get_item(id, "price".into()).as_string()?.parse().ok()?,
-            date: get_item(id, "date".into()).as_string()?.parse().ok()?,
-            tag: get_item(id, "tag".into()),
-            comment: get_item(id, "comment".into()),
+            price: get_item(id, "price".into())?.as_string()?.parse().ok()?,
+            date: get_item(id, "date".into())?.as_string()?.parse().ok()?,
+            tag: get_item(id, "tag".into())?,
+            comment: get_item(id, "comment".into())?,
             id: id.clone(),
         })
     }
@@ -69,12 +72,10 @@ pub struct Stats { pub last_date: i32 }
 #[wasm_bindgen]
 impl Store {
 
-    fn all(ns: &JsValue) -> Option<Vec<Day>> {
-        let mut root = get_item(&ns, "root".into());
+    pub fn all(ns: &JsValue) -> Option<Vec<Day>> {
+        let mut root = get_item(&ns, "root".into())?;
         let mut result = vec![Day::fetch(&root)?];
-        loop {
-            let next = get_item(&root, "next".into());
-            if next.is_null() { break; }
+        while let Some(next) = get_item(&root, "next".into()) {
             result.push(Day::fetch(&next)?);
             root = next;
         }
@@ -83,17 +84,13 @@ impl Store {
     }
 
     pub fn append(ns: &JsValue, day: Day) {
-        let id = day.id;
-        let root = get_item(ns, "root".into());
-        if !root.is_null() { set_item(&id, "next".into(), root); }
-        set_item(ns, "root".into(), id);
+        get_item(ns, "root".into())
+            .map(|root| set_item(&day.id, "next".into(), root));
+        set_item(ns, "root".into(), day.id);
     }
 
     pub fn tags(ns: &JsValue) -> Option<Vec<JsValue>> {
-        let tags: Vec<_> = Self::all(ns)?.into_iter().map(|x| x.tag).collect();
-        // tags.sort();
-        // tags.dedup();
-        Some(tags)
+        Some(Self::all(ns)?.into_iter().map(|x| x.tag).collect())
     }
 
     pub fn select(ns: &JsValue) -> Option<Vec<Row>> {

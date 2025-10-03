@@ -1,13 +1,15 @@
 use wasm_bindgen::prelude::*;
-use web_sys::window;
 use crate::store::{Day, Store};
 
-fn local_storage() -> web_sys::Storage 
-{ window().unwrap().local_storage().unwrap().unwrap() }
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_namespace = ["window", "localStorage"])]
+    pub fn clear();
+}
 
 #[wasm_bindgen(start)]
 fn start() {
-    let _ = local_storage().clear();
+    clear();
     let ns = "2025:august".into();
     let prices = [23543, 420, 40, 456, 10, 200, 451];
     let tags = ["амазон", "рестораны", "продукты"];
