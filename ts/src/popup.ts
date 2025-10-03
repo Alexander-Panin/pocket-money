@@ -46,7 +46,7 @@ export class Popup {
 
 	show() {
 		this.tab('money'); // default tab
-		this.view = new tabs.Money(this.wasm, this.model, this.row);
+		this.view = new tabs.Money(this.model, this.row);
 	}
 
 	hide() { (document.querySelector("#container-popup") as HTMLElement).hidden = true; }
@@ -70,19 +70,19 @@ export class Popup {
 		switch (action) {
 			case 'nav/comment':
 				this.tab('comment');
-				this.view = new tabs.Comment(this.wasm, this.model, this.row);
+				this.view = new tabs.Comment(this.model, this.row);
 				return;
 			case 'nav/money':
 				this.tab('money');
-				this.view = new tabs.Money(this.wasm, this.model, this.row);
+				this.view = new tabs.Money(this.model, this.row);
 				return;
 			case 'nav/tag':
 				this.tab('tag');
-				this.view = new tabs.Tag(this.wasm, this.model, this.row);
+				this.view = new tabs.Tag(this.model, this.row, this.wasm.Store.tags(NS));
 				return;
 			case 'nav/year':
 				this.tab('year');
-				this.view = new tabs.Year(this.wasm, this.model);
+				this.view = new tabs.Year(this.model);
 				return;
 		}
 	}

@@ -1,27 +1,26 @@
 use wasm_bindgen::prelude::*;
-use web_sys::{window};
 use uuid::Uuid;
 
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_namespace = ["window", "localStorage"])]
+    pub fn getItem(key: JsValue) -> JsValue;  
 
+    #[wasm_bindgen(js_namespace = ["window", "localStorage"])]
+    pub fn setItem(key: JsValue, item: JsValue);
+}
 
-
-fn local_storage() -> web_sys::Storage 
-{ window().unwrap().local_storage().unwrap().unwrap() }
-
-fn set_item(id: &str, key: &str, item: &str) 
-{ let _ = local_storage().set_item(&format!("{id}:{key}"), item); }
-
-fn get_item(id: &str, key: &str) -> Option<String> 
-{ local_storage().get_item(&format!("{id}:{key}")).unwrap() }
+fn set_item(id: &JsValue, key: JsValue, item: JsValue) { setItem(id + key, item); }
+fn get_item(id: &JsValue, key: JsValue) -> JsValue { getItem(id + key) }
 
 #[wasm_bindgen(getter_with_clone)]
-#[derive(Clone, Default)]
+#[derive(Clone, Default, Debug)]
 pub struct Day {
     pub date: i32,
-    pub price: f32,
-    pub tag: String,
-    pub comment: String,
-    pub id: String,
+    pub price: u32,
+    pub tag: JsValue,
+    pub comment: JsValue,
+    pub id: JsValue,
 }
 
 #[wasm_bindgen]
@@ -29,7 +28,10 @@ impl Day {
 
     #[wasm_bindgen(constructor)]
     pub fn new() -> Self {
-        Self { id: Uuid::new_v4().to_string(), ..Self::default() }
+        Self { 
+            id: Uuid::new_v4().to_string().into(), 
+            ..Self::default() 
+        }
     }
 
     pub fn new_with_date(date: i32) -> Self {
@@ -37,21 +39,21 @@ impl Day {
     }
 
     pub fn save(&self) {
-        let (id, price, date) = (&self.id, self.price, self.date); 
-        set_item(id, "price", &price.to_string());
-        set_item(id, "date", &date.to_string());
-        set_item(id, "tag", &self.tag);
-        set_item(id, "comment", &self.comment);
+        let id = &self.id;
+        set_item(id, "price".into(), self.price.into()); 
+        set_item(id, "date".into(), self.date.into()); 
+        set_item(id, "tag".into(), self.tag.clone());
+        set_item(id, "comment".into(), self.comment.clone());
     }
 
-    pub fn fetch(id: &str) -> Self {
-        Day {
-            price: get_item(id, "price").and_then(|x| x.parse().ok()).unwrap(),
-            date: get_item(id, "date").and_then(|x| x.parse().ok()).unwrap(),
-            tag: get_item(id, "tag").unwrap(),
-            comment: get_item(id, "comment").unwrap(),
-            id: id.to_owned()
-        } 
+    pub fn fetch(id: &JsValue) -> Option<Self> {
+        Some(Day {
+            price: get_item(id, "price".into()).as_string()?.parse().ok()?,
+            date: get_item(id, "date".into()).as_string()?.parse().ok()?,
+            tag: get_item(id, "tag".into()),
+            comment: get_item(id, "comment".into()),
+            id: id.clone(),
+        })
     }
 }
 
@@ -67,31 +69,34 @@ pub struct Stats { pub last_date: i32 }
 #[wasm_bindgen]
 impl Store {
 
-    fn all(ns: &str) -> Option<Vec<Day>> {
-        let mut root = get_item(ns, "root")?;
-        let mut result = vec![Day::fetch(&root)];
-        while let Some(next) = get_item(&root, "next") {
-            result.push(Day::fetch(&next));
+    fn all(ns: &JsValue) -> Option<Vec<Day>> {
+        let mut root = get_item(&ns, "root".into());
+        let mut result = vec![Day::fetch(&root)?];
+        loop {
+            let next = get_item(&root, "next".into());
+            if next.is_null() { break; }
+            result.push(Day::fetch(&next)?);
             root = next;
         }
         result.retain(|x| x.date >= 0);
         Some(result)
     }
 
-    pub fn append(ns: &str, day: &Day) {
-        get_item(ns, "root")
-            .map(|root| set_item(&day.id, "next", &root));
-        set_item(ns, "root", &day.id);
+    pub fn append(ns: &JsValue, day: Day) {
+        let id = day.id;
+        let root = get_item(ns, "root".into());
+        if !root.is_null() { set_item(&id, "next".into(), root); }
+        set_item(ns, "root".into(), id);
     }
 
-    pub fn tags(ns: &str) -> Option<Vec<String>> {
-        let mut tags: Vec<_> = Self::all(ns)?.into_iter().map(|x| x.tag).collect();
-        tags.sort();
-        tags.dedup();
+    pub fn tags(ns: &JsValue) -> Option<Vec<JsValue>> {
+        let tags: Vec<_> = Self::all(ns)?.into_iter().map(|x| x.tag).collect();
+        // tags.sort();
+        // tags.dedup();
         Some(tags)
     }
 
-    pub fn select(ns: &str) -> Option<Vec<Row>> {
+    pub fn select(ns: &JsValue) -> Option<Vec<Row>> {
         let mut days = Self::all(ns)?;
         days.sort_by_key(|x| std::cmp::Reverse(x.date));
         Some(days.into_iter().scan(0, |state, x| {
@@ -101,7 +106,7 @@ impl Store {
         }).collect())
     }
 
-    pub fn stats(ns: &str) -> Option<Stats> {
+    pub fn stats(ns: &JsValue) -> Option<Stats> {
         let xs = Store::select(ns)?;
         let Row(_, x) = xs.first()?;
         Some(Stats { last_date: x.date })

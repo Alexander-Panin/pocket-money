@@ -1,10 +1,10 @@
+import * as utils from "./utils";
+
 export class View {
-	wasm: Wasm
-	ns: string;
+	days: [boolean, Day][]
 
 	constructor(wasm: Wasm, ns: string) {
-		this.wasm = wasm;
-		this.ns = ns;
+		this.days = wasm.Store.select(ns) ?? [];
 	}
 
 	render() {
@@ -37,12 +37,11 @@ export class View {
 	}
 
 	list() {
-		const xs = this.wasm.Store.select(this.ns) ?? [];
 		const container = document.querySelector("#container-row")!;
 		const row = (document.querySelector("#template-row") as HTMLTemplateElement).content;
 		const date = (document.querySelector("#template-date-row") as HTMLTemplateElement).content;
 		this.add_empty_rows(container, row);
-		xs.forEach((x: [boolean, Day]) => {
+		this.days.forEach((x: [boolean, Day]) => {
 			if (x[0]) { container.appendChild(this.fillDate(date.cloneNode(true) as HTMLElement, x[1])); } 
 			container.appendChild(this.fill(row.cloneNode(true) as HTMLElement, x[1]));
 		});
@@ -55,8 +54,8 @@ export class View {
 
 	fill(x: HTMLElement, d: Day): HTMLElement {
 		x.querySelector("#row-id")!.setAttribute('__id', d.id);
-		x.querySelector("#row-money-euro")!.textContent = this.wasm.euro!(d.price);
-		x.querySelector("#row-money-cent")!.textContent = this.wasm.cent!(d.price);
+		x.querySelector("#row-money-euro")!.textContent = utils.euro(d.price);
+		x.querySelector("#row-money-cent")!.textContent = utils.cent(d.price);
 		x.querySelector("#row-tag")!.textContent = d.tag;
 		x.querySelector("#row-comment")!.textContent = d.comment;
 		return x;
