@@ -11,9 +11,9 @@ extern "C" {
 fn start() {
     clear();
     let ns = "2025:august".into();
-    let prices = [23543, 420, 40, 456, 10, 200, 451];
+    let prices = [235.43, 42.0, 4.0, 4.56, 10.0, 20.0, 4.51];
     let tags = ["амазон", "рестораны", "продукты"];
-    for x in 1..2 {
+    for x in 1..50 {
         let d = Day {
             date: x as i32 % 29 + 1,
             price: prices[x % prices.len()],
@@ -22,7 +22,7 @@ fn start() {
             ..Day::new()
         };
         d.save();
-        Store::append(&ns, d);
+        Store::append(&ns, &d);
     }
 }
 

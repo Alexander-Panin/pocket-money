@@ -20,7 +20,7 @@ fn get_item(id: &JsValue, key: JsValue) -> Option<JsValue> {
 #[derive(Clone, Default)]
 pub struct Day {
     pub date: i32,
-    pub price: u32,
+    pub price: f32,
     pub tag: JsValue,
     pub comment: JsValue,
     pub id: JsValue,
@@ -93,10 +93,10 @@ impl Store {
         Some(store(ns).filter(|d| d.date >= 0).collect())
     }
 
-    pub fn append(ns: &JsValue, day: Day) {
+    pub fn append(ns: &JsValue, day: &Day) {
         get_item(ns, "root".into())
             .map(|root| set_item(&day.id, "next".into(), root));
-        set_item(ns, "root".into(), day.id);
+        set_item(ns, "root".into(), day.id.clone());
     }
 
     pub fn tags(ns: &JsValue) -> Option<Vec<JsValue>> {

@@ -100,17 +100,17 @@ export class Money {
 
 	slider(value: number) {
 		(document.querySelector("#money-input") as HTMLInputElement).value = String(value / 10);
-	    (this.row.querySelector('#row-money-euro') as HTMLElement).textContent = utils.euro(value * 10); 
-	    (this.row.querySelector('#row-money-cent') as HTMLElement).textContent = utils.cent(value * 10);
-	    this.model.price = value * 10;
+	    (this.row.querySelector('#row-money-euro') as HTMLElement).textContent = utils.euro(value / 10); 
+	    (this.row.querySelector('#row-money-cent') as HTMLElement).textContent = utils.cent(value / 10);
+	    this.model.price = value / 10;
 	    this.model.save(); 
 	}
 
 	input(value: number) {
 		if (isNaN(value)) return;
-	    (this.row.querySelector('#row-money-euro') as HTMLElement).textContent = utils.euro(value * 100); 
-	    (this.row.querySelector('#row-money-cent') as HTMLElement).textContent = utils.cent(value * 100);
-	    this.model.price = Math.round(value * 100);
+	    (this.row.querySelector('#row-money-euro') as HTMLElement).textContent = utils.euro(value); 
+	    (this.row.querySelector('#row-money-cent') as HTMLElement).textContent = utils.cent(value);
+	    this.model.price = value;
 	    this.model.save(); 
 	}
 }

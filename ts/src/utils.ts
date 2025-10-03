@@ -1,11 +1,12 @@
 export function cent(price: number): string {
-    return price % 100 == 0 ? " " : String(price % 100);
+    let x = Math.floor(price);
+    return price == x ? " " : String(Math.round((price - x) * 100));
 }
 
 export function euro(price: number): string {
-    return String(Math.floor(price / 100));
+    return String(Math.floor(price)) + ",";
 }
 
-export function money(price: number): string {
-    return String(price / 10);
+export function money(price: number, k: number = 1): string {
+    return String(Math.round(price * 10) / 10);
 }
