@@ -12,7 +12,7 @@ extern "C" {
 
 fn set_item(id: &JsValue, key: JsValue, item: JsValue) { setItem(id + key, item); }
 fn get_item(id: &JsValue, key: JsValue) -> Option<JsValue> { 
-    let x = getItem(id + key); 
+    let x = getItem(id + key);
     if x.is_null() { None } else { Some(x) }
 }
 
@@ -60,9 +60,6 @@ impl Day {
     }
 }
 
-#[wasm_bindgen]
-pub struct Store {}
-
 #[wasm_bindgen(getter_with_clone)]
 pub struct Row(pub bool, pub Day);
 
@@ -70,17 +67,30 @@ pub struct Row(pub bool, pub Day);
 pub struct Stats { pub last_date: i32 }
 
 #[wasm_bindgen]
+pub struct Store {
+    root: Option<JsValue> 
+}
+
+fn store(ns: &JsValue) -> Store {
+    Store { root: get_item(ns, "root".into()) }
+}
+
+impl Iterator for Store {
+    type Item = Day;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let root = &self.root.take()?;
+        let tmp = Day::fetch(root);
+        self.root = get_item(root, "next".into());
+        tmp
+    }
+}
+
+#[wasm_bindgen]
 impl Store {
 
     pub fn all(ns: &JsValue) -> Option<Vec<Day>> {
-        let mut root = get_item(&ns, "root".into())?;
-        let mut result = vec![Day::fetch(&root)?];
-        while let Some(next) = get_item(&root, "next".into()) {
-            result.push(Day::fetch(&next)?);
-            root = next;
-        }
-        result.retain(|x| x.date >= 0);
-        Some(result)
+        Some(store(ns).filter(|d| d.date >= 0).collect())
     }
 
     pub fn append(ns: &JsValue, day: Day) {
