@@ -10,7 +10,10 @@ async fn greet(name: web::Path<String>) -> impl Responder {
 async fn main() -> std::io::Result<()> {
     HttpServer::new(|| { 
         App::new()
-            .service(Files::new("/static", "../static").prefer_utf8(true))
+            .service(
+                Files::new("/", "../static")
+                    .index_file("index.html")
+                    .prefer_utf8(true))
             .service(greet)
     })
         .bind(("127.0.0.1", 8080))?
