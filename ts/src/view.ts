@@ -1,18 +1,24 @@
 import * as utils from "./utils";
 
 export class View {
-	days: [boolean, Day][]
+	days: [boolean, Day][] = []
 
-	constructor(wasm: Wasm, ns: string) {
-		this.days = wasm.Store.select(ns) ?? [];
-	}
-
-	render() {
+	constructor() {
 		document
 			.querySelector("#container-list")!
 			.appendChild(
 				(document.querySelector("#template-list") as HTMLTemplateElement).content
 			);
+
+		const row = (document.querySelector("#template-row") as HTMLTemplateElement).content;
+		const container = document.querySelector("#container-row")!;
+		container.appendChild(row.cloneNode(true));
+		container.appendChild(row.cloneNode(true));
+		container.appendChild(row.cloneNode(true));
+	}
+
+	render(wasm: Wasm, ns: string) {
+		this.days = wasm.Store.select(ns) ?? [];
 		this.list();
 		this.popup();
 	}
@@ -30,17 +36,10 @@ export class View {
 			);
 	}
 
-	add_empty_rows(container: Element, row: DocumentFragment) {
-		container.appendChild(row.cloneNode(true));
-		container.appendChild(row.cloneNode(true));
-		container.appendChild(row.cloneNode(true));
-	}
-
 	list() {
 		const container = document.querySelector("#container-row")!;
 		const row = (document.querySelector("#template-row") as HTMLTemplateElement).content;
 		const date = (document.querySelector("#template-date-row") as HTMLTemplateElement).content;
-		this.add_empty_rows(container, row);
 		this.days.forEach((x: [boolean, Day]) => {
 			if (x[0]) { container.appendChild(this.fillDate(date.cloneNode(true) as HTMLElement, x[1])); } 
 			container.appendChild(this.fill(row.cloneNode(true) as HTMLElement, x[1]));
