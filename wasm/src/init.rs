@@ -9,7 +9,7 @@ extern "C" {
 
 #[wasm_bindgen(start)]
 fn start() {
-    clear();
+    return;
     let ns = "2025:august".into();
     let prices = [235.43, 42.0, 4.0, 4.56, 10.0, 20.0, 4.51];
     let tags = ["амазон", "рестораны", "продукты"];

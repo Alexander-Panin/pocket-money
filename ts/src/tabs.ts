@@ -50,9 +50,10 @@ export class Comment {
 	}
 
 	fill(comment: string) { 
-		(document.querySelector("#comment") as HTMLInputElement).value = comment;
-		(document.querySelector("#comment") as HTMLInputElement).placeholder = comment; 
+		(document.querySelector("#comment") as HTMLInputElement).value = comment ?? "";
+		(document.querySelector("#comment") as HTMLInputElement).placeholder = comment ?? ""; 
 	}
+
 	comment(comment: string) { 
 		(document.querySelector("#comment") as HTMLInputElement).value = comment; 
 		(this.row.querySelector('#row-comment') as HTMLElement).textContent = comment; 
@@ -115,6 +116,11 @@ export class Money {
 	}
 }
 
+function dedup(xs: string[]) {
+	const tmp = Array.from(new Set(xs));
+	tmp.sort();
+	return tmp;
+}
 
 export class Tag {
 	row: Element
@@ -124,7 +130,7 @@ export class Tag {
 	constructor(model: Day, row: Element, tags: string[]) {
 		this.model = model;
 		this.row = row;
-		this.tags = tags;
+		this.tags = dedup(tags);
 		this.fill(model.tag);
 	}
 
@@ -140,8 +146,10 @@ export class Tag {
 	}
 
 	fill(tag: string) { 
-		(document.querySelector("#tag-input") as HTMLInputElement).value = tag;
-		(document.querySelector("#tag-input") as HTMLInputElement).placeholder = tag;
+		(document.querySelector("#tag-input") as HTMLInputElement).value = tag ?? "";
+		(document.querySelector("#tag-input") as HTMLInputElement).placeholder = tag ?? "";
+		const slider = (document.querySelector('#tag-slider-main') as HTMLInputElement);
+		slider.max = String(Math.min(Number(slider.max), this.tags.length)); 
 	}
 
 	slider(value: number) {

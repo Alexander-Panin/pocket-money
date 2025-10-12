@@ -1,0 +1,30 @@
+.tag-input {
+    text-align: center;
+    margin: auto;
+    display: block;
+    color: var(--tt-brown);
+    inputmode: text;
+    max-width: 240px;
+    padding: 5px;
+    padding-top: 3px;
+    border-radius: 5px;
+    border: 1px solid var(--tt-brown);
+    font-size: 32px;
+    background: transparent;
+}
+
+.tag-slider-scale-msg {
+    display: block;
+    margin: auto;
+    width: 100px;
+    color: var(--tt-brown);
+    font-size: 24px;
+    text-align: center;
+}
+
+.tag-slider-main {
+    display: block;
+    margin: auto;
+    background: green;
+    width: 250px;
+}

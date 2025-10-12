@@ -29,7 +29,8 @@
 </html>
 
 <template id="template-list">
-  <h1 __action="list/on-top" class="title-sticky" >&#160;</h1>
+  <style type="text/css"> @import url("/styles/row.css") </style>
+  <h1 __action="list/on-top" class="title-sticky">&#160;</h1>
   <div id="container-row" class="container-row" __action="list/todo">
     <h1 __action="list/todo" id="list-title" class="title" >Август 2025</h1>
   </div>
@@ -71,7 +72,7 @@
 
 <template id="template-year">
   <div class="year-wrapper">
-    <input id="year-input" __action="year/input" class="view-input year-input"
+    <input id="year-input" __action="year/input" class="year-input"
       tabindex="-1" placeholder="" type="text" />
     <span id="year-msg" class="year-parts"></span>
     <div class="year-msg">Negative values are allowed but would not be shown</div>
@@ -80,34 +81,39 @@
 
 <template id="template-money">
   <div style="height: 20px"></div>
-  <input id="money-input" __action="money/input" class="view-input"
+  <input id="money-input" __action="money/input" class="money-input"
     tabindex="-1" placeholder=""  type="text" />
   <div style="height: 40px"></div>
-  <span id="money-slider-scale-msg" class="view-slider-scale-msg">0–17</span>
+  <span id="money-slider-scale-msg" class="money-slider-scale-msg">0–17</span>
   <div style="height: 30px"></div>
   <input id="money-slider-scale" __action="money/slider-scale" 
-    class="view-slider-scale"
+    class="money-slider-scale"
     type="range" min="-2" max="15" value="0" />
   <div style="height: 40px"></div>
   <input __action="money/slider-main" id="money-slider-main" 
-    class="view-slider-main"
+    class="money-slider-main"
     type="range" min="0" max="170" value="0" />
 </template>
 
 <template id="template-tag">
   <div style="height: 30px" ></div>
-  <input id="tag-input" __action="tag/input" class="view-input tag-input"
+  <input id="tag-input" __action="tag/input" class="tag-input"
     tabindex="-1" placeholder=""  type="text" />
   <div style="height: 20px" ></div>
-  <span id="tag-slider-msg" 
-    class="view-slider-scale-msg tag-slider-scale-msg">A</span>
+  <span id="tag-slider-msg" class="tag-slider-scale-msg">A</span>
   <div style="height: 60px"></div>
   <input __action="tag/slider-main" id="tag-slider-main" 
-    class="view-slider-main tag-slider-main"
+    class="tag-slider-main"
     type="range" min="0" max="32" value="0" />
 </template>
 
 <template id="template-popup">
+  <style type="text/css"> @import url("/styles/popup.css"); </style>
+  <style type="text/css"> @import url("/styles/tag.css"); </style>
+  <style type="text/css"> @import url("/styles/money.css"); </style>
+  <style type="text/css"> @import url("/styles/year.css"); </style>
+  <style type="text/css"> @import url("/styles/comment.css"); </style>
+  <style type="text/css"> @import url("/styles/navigation.css") </style>
   <div id="container-popup-nav"></div>
   <div id="container-popup-main"></div>
 </template>

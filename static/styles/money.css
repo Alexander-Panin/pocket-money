@@ -1,0 +1,34 @@
+.money-input {
+    font-size: 36px;
+    max-width: 180px;
+    color: var(--tt-brown);
+    inputmode: decimal;
+    display: block;
+    margin: auto;
+    text-align: center;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--tt-brown);
+}
+
+.money-slider-scale {
+    display: block;
+    margin: auto;
+    background: rgb(168, 13, 13);
+    width: 100px;
+}
+
+.money-slider-main {
+    display: block;
+    margin: auto;
+    background: green; 
+    width: 200px;
+}
+
+.money-slider-scale-msg {
+    color: #af1e1e;
+    display: block;
+    text-align: center;
+    padding-right: 0px;
+    font-size: 24px;
+}
