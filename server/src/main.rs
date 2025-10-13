@@ -8,6 +8,12 @@ async fn greet(name: web::Path<String>) -> impl Responder {
 
 #[actix_web::main] // or #[tokio::main]
 async fn main() -> std::io::Result<()> {
+    let port = std::env::args().nth(1)
+        .and_then(|x| x.parse().ok())
+        .unwrap_or(8080);
+    let addr = "0.0.0.0";
+    println!("prepare to listen on {addr}:{port}");
+    
     HttpServer::new(|| { 
         App::new()
             .service(
@@ -16,7 +22,7 @@ async fn main() -> std::io::Result<()> {
                     .prefer_utf8(true))
             .service(greet)
     })
-        .bind(("127.0.0.1", 8080))?
+        .bind((addr, port))?
         .run()
         .await
 }

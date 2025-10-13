@@ -30,3 +30,6 @@ pitfalls:
 9. ts ctor/dtor helps with subscribing and rendering 
 10. rust server file server (static) and plus some rest api
 11. manifist.json
+12. breaks big css file in small ones (and problems with import url)
+13. fast rendering without wasm
+14. JsValue default may be not what excepted

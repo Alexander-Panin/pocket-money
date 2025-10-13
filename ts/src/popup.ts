@@ -7,7 +7,7 @@ const NS = "2025:august"; // todo
 function createModel(wasm: Wasm, id: string) {
 	const model = Boolean(id) 
 		? wasm.Day.fetch(id) 
-		: wasm.Day.new_with_date(wasm.Store.stats(NS)?.last_date ?? 1);
+		: wasm.Day.new_with_date(wasm.Store.stats(NS)?.last_date ?? new Date().getDate());
 	if (!Boolean(id)) { onceMapId.add(model.id); }
 	return model;
 }

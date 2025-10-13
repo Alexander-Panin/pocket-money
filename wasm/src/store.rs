@@ -17,13 +17,25 @@ fn get_item(id: &JsValue, key: JsValue) -> Option<JsValue> {
 }
 
 #[wasm_bindgen(getter_with_clone)]
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct Day {
     pub date: i32,
     pub price: f32,
     pub tag: JsValue,
     pub comment: JsValue,
     pub id: JsValue,
+}
+
+impl Default for Day {
+    fn default() -> Self {  
+        Day { 
+            date: 1,
+            price: 0.0,
+            tag: "".into(),
+            comment: "".into(),
+            id: JsValue::UNDEFINED,
+        }
+    }
 }
 
 #[wasm_bindgen]
@@ -90,7 +102,7 @@ impl Iterator for Store {
 impl Store {
 
     pub fn all(ns: &JsValue) -> Option<Vec<Day>> {
-        Some(store(ns).filter(|d| d.date >= 0).collect())
+        Some(store(ns).filter(|d| d.date > 0).collect())
     }
 
     pub fn append(ns: &JsValue, day: &Day) {
