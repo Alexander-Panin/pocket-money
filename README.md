@@ -5,16 +5,24 @@ uninstall
 2. rm -rf pocket_money
 3. cargo uninstall wasm-pack
 4. rustup self uninstall
+5. rm -rf ~/.nvm
 
 install 
-1. cd ~
-2. git checkout git@github.com:Alexander-Panin/pocket-money.git
-3. cd pocket_money
-3. curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-4. cargo install wasm-pack
-5. cd wasm && chmod +x build.sh && ./build.sh --release && cd -
-6. cd ts && npm install && npm run build:prod && cd -
-7. cd server && cargo run --release 80
+1. curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+2. curl https://drager.github.io/wasm-pack/installer/init.sh -sSf | bash
+3. curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+4. cd ~
+5. git clone --depth=1 https://github.com:Alexander-Panin/pocket-money.git
+6. cd pocket_money
+7. cd wasm && ./build.sh --release && cd -
+8. cd ts && npm install && npm run build:prod && cd -
+9. cd server && cargo run --release 80 &
+
+ubuntu
+apt-get update 
+apt install git
+apt install vim
+apt-get install libc6-dev (if not exists) 
 
 
 pitfalls:
