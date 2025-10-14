@@ -23,15 +23,20 @@
       import init, * as wasm from "/dist/pkg/wasm.js";
       import { Listener, View } from "/dist/out.js";
 
+      const isTouchDevice = (('ontouchstart' in window) ||
+        (navigator.maxTouchPoints > 0) ||
+        (navigator.msMaxTouchPoints > 0));
+      const onclick = isTouchDevice ? "touchstart" : "click";
+
       const view = new View();
       const namespace = "2025:august";
       init()
         .then(() => view.render(wasm, namespace));
       document
         .querySelector("body")
-        .addEventListener('click', new Listener(wasm, namespace).handler);
+        .addEventListener(onclick, new Listener(wasm, namespace).handler);
     </script>
-    <div id="main">
+    <div id="main" onclick="void(0);">
       <div id="container-list" class="container-list" ></div>
     </div>
     <div hidden="hidden" id="container-popup" class="container-popup"></div>
@@ -92,9 +97,9 @@
   <div style="height: 20px"></div>
   <input id="money-input" __action="money/input" class="money-input"
     tabindex="-1" placeholder=""  type="text" />
-  <div style="height: 50px"></div>
+  <div style="height: 40px"></div>
   <span id="money-slider-scale-msg" class="money-slider-scale-msg">0–17</span>
-  <div style="height: 10px"></div>
+  <div style="height: 20px"></div>
   <input __action="money/slider-main" id="money-slider-main" 
     class="money-slider-main"
     type="range" min="0" max="170" value="0" />

@@ -28,7 +28,8 @@ pitfalls:
 7. css sticky element (stick to parent)
 8. rust data layer: list(append) and model(save, fetch)
 9. ts ctor/dtor helps with subscribing and rendering 
-10. rust server file server (static) and plus some rest api
+9a. problems with state - e.g. current row for popup
+10. rust file server (static) and plus some rest api
 11. manifist.json
 12. breaks big css file in small ones (and problems with import url)
 13. fast rendering without wasm
