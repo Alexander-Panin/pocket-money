@@ -9,6 +9,7 @@
     background: transparent;
     border: none;
     border-bottom: 1px solid var(--tt-brown);
+    border-radius: 0px;
 }
 
 .money-slider-scale {

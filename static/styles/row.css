@@ -13,6 +13,7 @@
 .row-tag {
     vertical-align: top;
     font-size: 18px;
+    text-transform: capitalize;
 }
 
 .row {

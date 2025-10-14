@@ -117,7 +117,8 @@ export class Money {
 }
 
 function dedup(xs: string[]) {
-	const tmp = Array.from(new Set(xs));
+	const init = ["продукты", "ресторан", "амазон"];
+	const tmp = Array.from(new Set(init.concat(xs)));
 	tmp.sort();
 	return tmp;
 }
@@ -162,8 +163,9 @@ export class Tag {
 	}
 
 	input(value: string) {
-	    (this.row.querySelector('#row-tag') as HTMLElement).textContent = value;
-	    this.model.tag = value;
+		const newValue = value.trim().toLowerCase();
+	    (this.row.querySelector('#row-tag') as HTMLElement).textContent = newValue;
+	    this.model.tag = newValue;
 	    this.model.save(); 
 	}
 
