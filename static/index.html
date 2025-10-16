@@ -23,18 +23,13 @@
       import init, * as wasm from "/dist/pkg/wasm.js";
       import { Listener, View } from "/dist/out.js";
 
-      const isTouchDevice = (('ontouchstart' in window) ||
-        (navigator.maxTouchPoints > 0) ||
-        (navigator.msMaxTouchPoints > 0));
-      const onclick = isTouchDevice ? "touchstart" : "click";
-
       const view = new View();
-      const namespace = "2025:august";
+      const namespace = "2025:august"; // TODO
       init()
         .then(() => view.render(wasm, namespace));
       document
         .querySelector("body")
-        .addEventListener(onclick, new Listener(wasm, namespace).handler);
+        .addEventListener("click", new Listener(wasm, namespace).handler);
     </script>
     <div id="main" onclick="void(0);">
       <div id="container-list" class="container-list" ></div>
@@ -87,7 +82,7 @@
 <template id="template-year">
   <div class="year-wrapper">
     <input id="year-input" __action="year/input" class="year-input"
-      tabindex="-1" placeholder="" type="text" />
+      tabindex="-1" placeholder="" type="text" inputmode="decimal" />
     <span id="year-msg" class="year-parts"></span>
     <div class="year-msg">Negative values are allowed but would not be shown</div>
   </div>
@@ -96,18 +91,18 @@
 <template id="template-money">
   <div style="height: 20px"></div>
   <input id="money-input" __action="money/input" class="money-input"
-    tabindex="-1" placeholder=""  type="text" />
-  <div style="height: 40px"></div>
+    tabindex="-1" placeholder="" inputmode="decimal" type="text" />
+  <div style="height: 30px"></div>
   <span id="money-slider-scale-msg" class="money-slider-scale-msg">0–17</span>
-  <div style="height: 20px"></div>
+  <div style="height: 25px"></div>
+  <input id="money-slider-scale" __action="money/slider-scale" 
+    class="money-slider-scale"
+    type="range" min="-2" max="15" value="0" />
+  <div style="height: 50px"></div>
   <input __action="money/slider-main" id="money-slider-main" 
     class="money-slider-main"
     type="range" min="0" max="170" value="0" />
   <div style="height: 40px"></div>
-  <input id="money-slider-scale" __action="money/slider-scale" 
-    class="money-slider-scale"
-    type="range" min="-2" max="15" value="0" />
-  <div style="height: 10px"></div>
 </template>
 
 <template id="template-tag">

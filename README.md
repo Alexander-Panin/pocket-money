@@ -35,7 +35,8 @@ pitfalls:
 6. html template/class namespaces naming
 7. css sticky element (stick to parent)
 8. rust data layer: list(append) and model(save, fetch)
-9. ts ctor/dtor helps with subscribing and rendering 
+8a. localStorage data format (e.g. csv and how to save vector) 
+9.  ts ctor/dtor helps with subscribing and rendering 
 9a. problems with state - e.g. current row for popup
 10. rust file server (static) and plus some rest api
 11. manifist.json

@@ -15,15 +15,14 @@
 }
 
 .year-input {
-    margin: auto;
     text-align: center;
     display: block;
     color: var(--tt-brown);
-    inputmode: text;
     display: inline-block;
     max-width: 40px;
     font-size: 32px;
     background: transparent;
     border: none;
     border-bottom: 1px solid var(--tt-brown);
+    border-radius: 0px;
 }

@@ -10,6 +10,7 @@ export class Listener {
 	}
 
 	handler = (event: Event) => {
+		event.preventDefault();
 		const node = this.wasm.target(event.target as Element);
 		if (!node?.attributes) return;
 		const action = node.attributes.getNamedItem('__action')?.value;
