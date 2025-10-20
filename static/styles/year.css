@@ -11,7 +11,6 @@
 .year-msg {
     color: var(--tt-brown);
     font-size: 14px;
-    padding-top: 100px;
 }
 
 .year-input {
@@ -25,4 +24,11 @@
     border: none;
     border-bottom: 1px solid var(--tt-brown);
     border-radius: 0px;
+}
+
+.year-slider {
+    display: block;
+    margin: auto;
+    background: green; 
+    width: 200px;
 }

@@ -4,13 +4,14 @@
     display: block;
     color: var(--tt-brown);
     inputmode: text;
-    max-width: 240px;
+    max-width: 270px;
     padding: 5px;
     padding-top: 3px;
-    border-radius: 5px;
-    border: 1px solid var(--tt-brown);
     font-size: 32px;
     background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--tt-brown);
+    border-radius: 0px;
 }
 
 .tag-slider-scale-msg {
@@ -26,5 +27,5 @@
     display: block;
     margin: auto;
     background: green;
-    width: 150px;
+    width: 280px;
 }

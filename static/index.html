@@ -89,6 +89,11 @@
     <input id="year-input" __action="year/input" class="year-input"
       tabindex="-1" placeholder="" type="text" inputmode="decimal" />
     <span id="year-msg" class="year-parts"></span>
+    <div style="height: 50px"></div>
+    <input __action="year/slider" id="year-slider" 
+      class="year-slider"
+      type="range" min="-1" max="31" value="0" />
+    <div style="height: 50px"></div>
     <div class="year-msg">Negative values are allowed but would not be shown</div>
   </div>
 </template>
@@ -98,15 +103,15 @@
   <input id="money-input" __action="money/input" class="money-input"
     tabindex="-1" placeholder="" inputmode="decimal" type="text" />
   <div style="height: 30px"></div>
-  <span id="money-slider-scale-msg" class="money-slider-scale-msg">0–17</span>
+  <span id="money-slider-scale-msg" class="money-slider-scale-msg">0–11</span>
   <div style="height: 25px"></div>
   <input id="money-slider-scale" __action="money/slider-scale" 
     class="money-slider-scale"
-    type="range" min="-2" max="15" value="0" />
+    type="range" min="-1" max="10" value="0" />
   <div style="height: 50px"></div>
   <input __action="money/slider-main" id="money-slider-main" 
     class="money-slider-main"
-    type="range" min="0" max="170" value="0" />
+    type="range" min="0" max="110" value="0" />
   <div style="height: 40px"></div>
 </template>
 
@@ -114,9 +119,9 @@
   <div style="height: 30px" ></div>
   <input id="tag-input" __action="tag/input" class="tag-input"
     tabindex="-1" placeholder=""  type="text" />
-  <div style="height: 20px" ></div>
+  <div style="height: 40px" ></div>
   <span id="tag-slider-msg" class="tag-slider-scale-msg">A</span>
-  <div style="height: 60px"></div>
+  <div style="height: 40px"></div>
   <input __action="tag/slider-main" id="tag-slider-main" 
     class="tag-slider-main"
     type="range" min="0" max="32" value="0" />

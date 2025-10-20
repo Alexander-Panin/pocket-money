@@ -1,6 +1,6 @@
 import * as utils from "./utils";
 
-const NS = "2025:august"; // todo
+const NS = "2025:august"; // TODO
 
 export class Year {
 	model: Day
@@ -15,6 +15,9 @@ export class Year {
 		switch (action) {
 			case 'year/input':
 				this.input(parseInt((event.target as HTMLInputElement).value));
+				return;
+			case 'year/slider':
+				this.slider(parseInt((event.target as HTMLInputElement).value));
 		}
 	}
 
@@ -24,10 +27,17 @@ export class Year {
 		this.model.save();
 	}
 
+	slider(value: number) {
+		(document.querySelector("#year-input") as HTMLInputElement).value = String(value);
+	    this.model.date = value;
+	    this.model.save(); 
+	}
+
 	fill(value: number) {
-		const msg = `/ 08 / 2025`; // todo later 
+		const msg = `/ 08 / 2025`; // TODO later 
 		(document.querySelector("#year-msg") as HTMLElement).textContent = msg; 
 		(document.querySelector("#year-input") as HTMLInputElement).value = String(value); 
+		(document.querySelector("#year-slider") as HTMLInputElement).value = String(value); 
 	}
 }
 
@@ -92,7 +102,8 @@ export class Money {
 	}
 
 	scale(value: number) {
-		const [min, max] = [Math.round(25*value/10), Math.round(1.7**value+16)];
+		const koef = value;
+		const [min, max] = [Math.round(10*koef), Math.round(10*(koef+1) + 1.7**koef)];
 		document.querySelector('#money-slider-scale-msg')!.textContent = `${min}–${max}`;
 		const slider = (document.querySelector('#money-slider-main') as HTMLInputElement);
 		slider.min = String(min*10);

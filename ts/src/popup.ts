@@ -2,7 +2,7 @@ import * as tabs from "./tabs";
 
 const onceMapId = new Set();
 
-const NS = "2025:august"; // todo
+const NS = "2025:august"; // TODO
 
 function createModel(wasm: Wasm, id: string) {
 	const model = Boolean(id) 
