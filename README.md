@@ -26,7 +26,17 @@ apt-get install libc6-dev (if not exists)
 
 
 cmd:
-RUST_LOG=access_log=info cargo r -r 2>&1 | tee -a access.log 
+RUST_LOG=access_log=info cargo r -r 2>&1 | tee -a /var/log/pocket-money/access.log
+
+logrotate:
+/var/log/pocket-money/access.log { 
+    daily 
+    missingok 
+    notifempty 
+    maxsize 100M 
+    rotate 8 
+} 
+logrotate -d /etc/logrotate.conf # to check it 
 
 pitfalls:
 
