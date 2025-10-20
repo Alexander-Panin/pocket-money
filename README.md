@@ -25,6 +25,9 @@ apt install vim
 apt-get install libc6-dev (if not exists) 
 
 
+cmd:
+RUST_LOG=access_log=info cargo r -r 2>&1 | tee -a access.log 
+
 pitfalls:
 
 1. Rust String values +60kb in release build (better to use JsValue)
