@@ -98,11 +98,16 @@ impl Iterator for Store {
     }
 }
 
+
 #[wasm_bindgen]
 impl Store {
 
-    pub fn all(ns: &JsValue) -> Option<Vec<Day>> {
-        Some(store(ns).filter(|d| d.date > 0).collect())
+    fn all(ns: &JsValue) -> Option<Vec<Day>> {
+        Self::all_with(ns, |x| x.date >= 0)
+    }
+
+    fn all_with<F: FnMut(&Day) -> bool>(ns: &JsValue, f: F) -> Option<Vec<Day>> {
+        Some(store(ns).filter(f).collect())
     }
 
     pub fn append(ns: &JsValue, day: &Day) {
@@ -118,7 +123,7 @@ impl Store {
     pub fn select(ns: &JsValue) -> Option<Vec<Row>> {
         let mut days = Self::all(ns)?;
         days.sort_by_key(|x| std::cmp::Reverse(x.date));
-        Some(days.into_iter().scan(0, |state, x| {
+        Some(days.into_iter().scan(-1, |state, x| {
             let is_next = *state != x.date;
             *state = x.date;
             Some(Row(is_next, x))
@@ -126,9 +131,14 @@ impl Store {
     }
 
     pub fn stats(ns: &JsValue) -> Option<Stats> {
-        let xs = Store::select(ns)?;
-        let Row(_, x) = xs.first()?;
-        Some(Stats { last_date: x.date })
+        let mut days = Store::all_with(ns, |x| x.date > 0)?;
+        days.sort_by_key(|x| std::cmp::Reverse(x.date));
+        Some(Stats { last_date: days.first()?.date })
+    }
+
+    pub fn sum(ns: &JsValue) -> Option<f32> {
+        let days = Store::all(ns)?;
+        Some(days.into_iter().map(|x| x.price).sum::<f32>().round())
     }
 }
 
