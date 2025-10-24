@@ -3,10 +3,10 @@
   "type": "module",
   "version": "0.1.0",
   "scripts": {
-    "esbuild": "esbuild ./src/lib.ts --bundle --platform=neutral  --outfile=../static/dist/out.js",
+    "esbuild:month": "esbuild ./src/month/ --bundle --platform=neutral  --outfile=../static/dist/out.js",
     "esbuild:prod": "esbuild ./src/lib.ts --bundle --minify --platform=neutral  --outfile=../static/dist/out.js",
     "check-type": "tsc --noEmit",
-    "build": "npm run check-type && npm run esbuild",
+    "build": "npm run check-type && npm run esbuild:month",
     "build:prod": "npm run esbuild:prod"
   },
   "devDependencies": {

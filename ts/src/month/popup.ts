@@ -1,26 +1,33 @@
+import getWasm from "./wasm";
 import * as tabs from "./tabs";
 
 const onceMapId = new Set();
 
-const NS = "2025:august"; // TODO
-
-function createModel(wasm: Wasm, id: string) {
+function createModel(id: string, ns: string) {
 	const model = Boolean(id) 
-		? wasm.Day.fetch(id) 
-		: wasm.Day.new_with_date(wasm.Store.stats(NS)?.last_date ?? new Date().getDate());
+		? getWasm().Day.fetch(id) 
+		: getWasm().Day.new_with_date(getWasm().Store.stats(ns)?.last_date ?? new Date().getDate());
 	if (!Boolean(id)) { onceMapId.add(model.id); }
 	return model;
 }
 
+function appendModelIfNeeded(model: Day, row: Element, ns: string) {
+	if (onceMapId.has(model.id)) {
+		row.setAttribute('__id', model.id);
+		onceMapId.delete(model.id);
+		getWasm().Store.append(ns, model);
+	}
+}
+
 export class Popup {
-	wasm: Wasm
+	ns: string
 	row: Element
 	model: Day
 	view: tabs.Money | tabs.Comment | tabs.Tag | tabs.Year | null
 
-	constructor(wasm: Wasm, id: string, row: Element) {
-		this.wasm = wasm;
-		this.model = createModel(wasm, id);
+	constructor(id: string, row: Element, ns: string) {
+		this.ns = ns;
+		this.model = createModel(id, ns);
 		this.row = row;
 		this.view = null;
 		this.link();
@@ -59,11 +66,7 @@ export class Popup {
 
 	handleChildren(event: Event) {
 		this.view?.action(event);
-		if (onceMapId.has(this.model.id)) {
-			this.row.setAttribute('__id', this.model.id);
-			onceMapId.delete(this.model.id);
-			this.wasm.Store.append(NS, this.model);
-		}
+		appendModelIfNeeded(this.model, this.row, this.ns);
 	}
 
 	handleNav(action: string) {
@@ -78,11 +81,11 @@ export class Popup {
 				return;
 			case 'nav/tag':
 				this.tab('tag');
-				this.view = new tabs.Tag(this.model, this.row, this.wasm.Store.tags(NS));
+				this.view = new tabs.Tag(this.model, this.row, getWasm().Store.tags(this.ns));
 				return;
 			case 'nav/year':
 				this.tab('year');
-				this.view = new tabs.Year(this.model);
+				this.view = new tabs.Year(this.model, this.ns);
 				return;
 		}
 	}

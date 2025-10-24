@@ -1,17 +1,18 @@
 import { Popup } from "./popup";
+import getWasm from "./wasm";
 
 export class Listener {
-	wasm: Wasm
+	ns: string
 	popup: Popup | null
 
-	constructor(wasm: Wasm, ns: string) {
-		this.wasm = wasm; 
+	constructor(ns: string) {
+		this.ns = ns;
 		this.popup = null;
 	}
 
 	handler = (event: Event) => {
 		event.preventDefault();
-		const node = this.wasm.target(event.target as Element);
+		const node = getWasm().target(event.target as Element);
 		if (!node?.attributes) return;
 		const action = node.attributes.getNamedItem('__action')?.value;
 		const id = node.attributes.getNamedItem('__id')?.value ?? "";
@@ -19,7 +20,7 @@ export class Listener {
 			case 'row':
 				this.focus(node as HTMLElement);
 				this.popup?.destroy();
-				this.popup = new Popup(this.wasm, id, node);
+				this.popup = new Popup(id, node, this.ns);
 				return;
 			case 'list/on-top':
 				this.onTop();

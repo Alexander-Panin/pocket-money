@@ -19,15 +19,16 @@
   <body>
     <script type="module">
       import init, * as wasm from "/dist/pkg/wasm.js";
-      import { Listener, View } from "/dist/out.js";
+      import { Listener, View, route } from "/dist/out.js";
+      window.__wasm = wasm;
 
-      const view = new View();
-      const namespace = "2025:august"; // TODO
+      const namespace = route.getNamespace(window.location.search);
+      const view = new View(namespace).prerender();
       init()
-        .then(() => view.render(wasm, namespace));
+        .then(() => new View(namespace).render());
       document
         .querySelector("body")
-        .addEventListener("click", new Listener(wasm, namespace).handler);
+        .addEventListener("click", new Listener(namespace).handler);
     </script>
     <div id="main" onclick="void(0);">
       <div id="container-list" class="container-list" ></div>
@@ -39,7 +40,7 @@
 <template id="template-list">
   <h1 __action="list/on-top" class="title-sticky">&#160;</h1>
   <div id="container-row" class="container-row" __action="list/todo">
-    <h1 __action="list/todo" id="list-title" class="title" >Август 2025</h1>
+    <h1 __action="list/todo" id="list-title" class="title" ></h1>
   </div>
 </template>
 

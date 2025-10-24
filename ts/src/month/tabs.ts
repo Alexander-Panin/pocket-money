@@ -1,12 +1,12 @@
 import * as utils from "./utils";
 
-const NS = "2025:august"; // TODO
-
 export class Year {
 	model: Day
+	ns: string
 
-	constructor(day: Day) {
+	constructor(day: Day, ns: string) {
 		this.model = day;
+		this.ns = ns;
 		this.fill(day.date);
 	}
 
@@ -34,7 +34,8 @@ export class Year {
 	}
 
 	fill(value: number) {
-		const msg = `/ 08 / 2025`; // TODO later 
+		const tmp = this.ns.split(':');
+		const msg = `/ ${tmp[1]} / ${tmp[0]}`; 
 		(document.querySelector("#year-msg") as HTMLElement).textContent = msg; 
 		(document.querySelector("#year-input") as HTMLInputElement).value = String(value); 
 		(document.querySelector("#year-slider") as HTMLInputElement).value = String(value); 
@@ -129,7 +130,8 @@ export class Money {
 
 function dedup(xs: string[]) {
 	const init = ["продукты", "ресторан", "амазон"];
-	const tmp = Array.from(new Set(init.concat(xs)));
+	const newXs = xs.map(x => x.trim().toLowerCase());
+	const tmp = Array.from(new Set(init.concat(newXs)));
 	tmp.sort();
 	return tmp;
 }

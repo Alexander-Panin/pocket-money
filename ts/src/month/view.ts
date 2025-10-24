@@ -1,14 +1,19 @@
+import getWasm from "./wasm";
 import * as utils from "./utils";
+import * as route from "./route";
 
 export class View {
-	days: [boolean, Day][] = []
+	ns: string
+	constructor(ns: string) { this.ns = ns; }
 
-	constructor() {
+	prerender() {
 		document
 			.querySelector("#container-list")!
 			.appendChild(
 				(document.querySelector("#template-list") as HTMLTemplateElement).content
 			);
+		const {month, year} = route.getParams(this.ns);
+		document.querySelector('#list-title')!.textContent = `${route.getMonthBy(month, 'ru')} ${year}`; 
 
 		const row = (document.querySelector("#template-row") as HTMLTemplateElement).content;
 		const container = document.querySelector("#container-row")!;
@@ -17,9 +22,9 @@ export class View {
 		container.appendChild(row.cloneNode(true));
 	}
 
-	render(wasm: Wasm, ns: string) {
-		this.days = wasm.Store.select(ns) ?? [];
-		this.list();
+	render() {
+		const days = getWasm().Store.select(this.ns) ?? [];
+		this.list(days);
 		this.popup();
 	}
 
@@ -36,11 +41,11 @@ export class View {
 			);
 	}
 
-	list() {
+	list(days: [boolean, Day][]) {
 		const container = document.querySelector("#container-row")!;
 		const row = (document.querySelector("#template-row") as HTMLTemplateElement).content;
 		const date = (document.querySelector("#template-date-row") as HTMLTemplateElement).content;
-		this.days.forEach((x: [boolean, Day]) => {
+		days.forEach((x: [boolean, Day]) => {
 			if (x[0]) { container.appendChild(this.fillDate(date.cloneNode(true) as HTMLElement, x[1])); } 
 			container.appendChild(this.fill(row.cloneNode(true) as HTMLElement, x[1]));
 		});

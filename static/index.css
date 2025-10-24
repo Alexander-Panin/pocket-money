@@ -61,6 +61,7 @@ textarea:focus, input:focus {
     margin: 0;
     padding-bottom: 20px;
     text-align: center;
+    text-transform: capitalize;
 }
 
 .container-row {

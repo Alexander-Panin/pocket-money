@@ -45,8 +45,9 @@ pitfalls:
 4. ts listener: better do not couple with dom (react like) due to additional state
 5. esbuild with flag --platform=neutral to use ts bundle like a lib
 6. html template/class namespaces naming
-7. css sticky element (stick to parent)
-8. rust data layer: list(append) and model(save, fetch)
+7.  css sticky element (stick to parent)
+7a. no external deps (ts 10kb)
+8.  rust data layer: list(append) and model(save, fetch)
 8a. localStorage data format (e.g. csv and how to save vector) 
 9.  ts ctor/dtor helps with subscribing and rendering 
 9a. problems with state - e.g. current row for popup
@@ -55,3 +56,4 @@ pitfalls:
 12. breaks big css file in small ones (and problems with import url)
 13. fast rendering without wasm
 14. JsValue default may be not what excepted
+15. Direct and invert operation keeps together (route ns and params)
