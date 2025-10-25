@@ -64,6 +64,10 @@ textarea:focus, input:focus {
     text-transform: capitalize;
 }
 
+.title-link {
+    color: var(--tt-brown);
+}
+
 .container-row {
     padding-bottom: 350px;
 }
