@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Pocket Money</title>
+    <meta name="apple-mobile-wep-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/index.css" fetchpriority="high" />
+    <link rel="stylesheet" href="/styles/calendar/row.css" />
+    <link rel="stylesheet" href="/styles/calendar/year.css" />
+  </head>
+  <body>
+    <script type="module">
+      import init, * as wasm from "/script/pkg/wasm.js";
+      import { View } from "/script/calendar.js";
+      window.__wasm = wasm;
+
+      new View().prerender();
+      init().then(() => new View().render());
+    </script>
+
+    <div id="main" onclick="void(0);">
+      <div id="container-list" class="container-list" ></div>
+    </div>
+  </body>
+</html>
+
+<template id="template-list">
+  <h1 __action="list/on-top" class="title-sticky">&#160;</h1>
+  <div id="container-row" class="container-row" __action="list/todo">
+    <h1 __action="list/todo" id="list-title" class="title" >Календарь</h1>
+    <div class="list-year">2025</div>
+  </div>
+</template>
+
+<template id="template-row">
+  <p>
+    <div class="row-month">
+      <a id="row-link" class="row-link"></a>
+    </div>
+    <span id="row-sum" class="row-sum"></span>
+  </p>
+</template>

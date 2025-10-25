@@ -26,18 +26,6 @@ pub struct Day {
     pub id: JsValue,
 }
 
-impl Default for Day {
-    fn default() -> Self {  
-        Day { 
-            date: 1,
-            price: 0.0,
-            tag: "".into(),
-            comment: "".into(),
-            id: JsValue::UNDEFINED,
-        }
-    }
-}
-
 #[wasm_bindgen]
 impl Day {
 
@@ -45,7 +33,10 @@ impl Day {
     pub fn new() -> Self {
         Self { 
             id: Uuid::new_v4().to_string().into(), 
-            ..Self::default() 
+            date: 1,
+            price: 0.0,
+            tag: "".into(),
+            comment: "".into(),
         }
     }
 
@@ -98,7 +89,6 @@ impl Iterator for Store {
     }
 }
 
-
 #[wasm_bindgen]
 impl Store {
 
@@ -110,7 +100,10 @@ impl Store {
         Some(store(ns).filter(f).collect())
     }
 
+    // note: linear operation due to idempotence (based on uuid) 
     pub fn append(ns: &JsValue, day: &Day) {
+        if Self::all_with(ns, |_| true).unwrap_or(vec![]).into_iter()
+            .any(|x| x.id == day.id) { return; }
         get_item(ns, "root".into())
             .map(|root| set_item(&day.id, "next".into(), root));
         set_item(ns, "root".into(), day.id.clone());

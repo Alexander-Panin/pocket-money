@@ -1,0 +1,14 @@
+.row-month {
+	display: inline-block;
+	width: 120px;
+	padding-left: 20px;
+	font-size: 20px;
+}
+
+.row-link {
+	color: green;
+}
+
+.row-sum {
+	font-size: 24px;
+}

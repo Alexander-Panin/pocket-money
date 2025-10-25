@@ -4,6 +4,7 @@ data
 dist
 
 pkg
+static/script
 
 **/*.log
 

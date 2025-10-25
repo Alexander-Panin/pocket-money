@@ -1,0 +1,1 @@
+export default function getWasm(): Wasm { return (globalThis as any).__wasm; }

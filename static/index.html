@@ -7,19 +7,19 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/index.css" fetchpriority="high" />
-    <link rel="stylesheet" href="/styles/row.css" fetchpriority="high" />
-    <link rel="stylesheet" href="/styles/popup.css" async />
-    <link rel="stylesheet" href="/styles/navigation.css" async />
-    <link rel="stylesheet" href="/styles/money.css" async />
-    <link rel="stylesheet" href="/styles/tag.css" async />
-    <link rel="stylesheet" href="/styles/comment.css" async />
-    <link rel="stylesheet" href="/styles/year.css" async />
+    <link rel="stylesheet" href="/styles/index.css" fetchpriority="high" />
+    <link rel="stylesheet" href="/styles/month/row.css" fetchpriority="high" />
+    <link rel="stylesheet" href="/styles/month/popup.css" async />
+    <link rel="stylesheet" href="/styles/month/navigation.css" async />
+    <link rel="stylesheet" href="/styles/month/money.css" async />
+    <link rel="stylesheet" href="/styles/month/tag.css" async />
+    <link rel="stylesheet" href="/styles/month/comment.css" async />
+    <link rel="stylesheet" href="/styles/month/year.css" async />
   </head>
   <body>
     <script type="module">
-      import init, * as wasm from "/dist/pkg/wasm.js";
-      import { Listener, View, route } from "/dist/out.js";
+      import init, * as wasm from "/script/pkg/wasm.js";
+      import { Listener, View, route } from "/script/month.js";
       window.__wasm = wasm;
 
       const namespace = route.getNamespace(window.location.search);

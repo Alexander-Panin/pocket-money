@@ -3,11 +3,13 @@
   "type": "module",
   "version": "0.1.0",
   "scripts": {
-    "esbuild:month": "esbuild ./src/month/ --bundle --platform=neutral  --outfile=../static/dist/out.js",
-    "esbuild:prod": "esbuild ./src/lib.ts --bundle --minify --platform=neutral  --outfile=../static/dist/out.js",
+    "esbuild:month": "esbuild ./src/month/ --bundle --platform=neutral  --outfile=../static/script/month.js",
+    "esbuild:calendar": "esbuild ./src/calendar/ --bundle --platform=neutral  --outfile=../static/script/calendar.js",
+    "esbuild:month:prod": "esbuild ./src/month/ --bundle --minify --platform=neutral  --outfile=../static/script/month.js",
+    "esbuild:calender:prod": "esbuild ./src/calendar/ --bundle --minify --platform=neutral  --outfile=../static/script/calendar.js",
     "check-type": "tsc --noEmit",
-    "build": "npm run check-type && npm run esbuild:month",
-    "build:prod": "npm run esbuild:prod"
+    "build": "npm run check-type && npm run esbuild:month && npm run esbuild:calendar",
+    "build:prod": "npm run esbuild:month:prod && npm run esbuild:calendar:prod"
   },
   "devDependencies": {
     "esbuild": "^0.25.10",

@@ -1,23 +1,13 @@
 import getWasm from "./wasm";
 import * as tabs from "./tabs";
 
-const onceMapId = new Set();
-
-function createModel(id: string, ns: string) {
-	const model = Boolean(id) 
+function fetch(id: string, ns: string) {
+	const date = getWasm().Store.stats(ns)?.last_date ?? new Date().getDate();
+	return Boolean(id) 
 		? getWasm().Day.fetch(id) 
-		: getWasm().Day.new_with_date(getWasm().Store.stats(ns)?.last_date ?? new Date().getDate());
-	if (!Boolean(id)) { onceMapId.add(model.id); }
-	return model;
+		: getWasm().Day.new_with_date(date);
 }
 
-function appendModelIfNeeded(model: Day, row: Element, ns: string) {
-	if (onceMapId.has(model.id)) {
-		row.setAttribute('__id', model.id);
-		onceMapId.delete(model.id);
-		getWasm().Store.append(ns, model);
-	}
-}
 
 export class Popup {
 	ns: string
@@ -27,7 +17,7 @@ export class Popup {
 
 	constructor(id: string, row: Element, ns: string) {
 		this.ns = ns;
-		this.model = createModel(id, ns);
+		this.model = fetch(id, ns);
 		this.row = row;
 		this.view = null;
 		this.link();
@@ -66,7 +56,8 @@ export class Popup {
 
 	handleChildren(event: Event) {
 		this.view?.action(event);
-		appendModelIfNeeded(this.model, this.row, this.ns);
+		this.row.setAttribute('__id', this.model.id);
+		getWasm().Store.append(this.ns, this.model);
 	}
 
 	handleNav(action: string) {
