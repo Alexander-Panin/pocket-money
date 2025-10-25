@@ -6,7 +6,8 @@
 }
 
 .row-link {
-	color: green;
+	color: var(--tt-brown);
+	text-transform: capitalize;
 }
 
 .row-sum {

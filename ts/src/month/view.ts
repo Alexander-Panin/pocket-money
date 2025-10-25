@@ -1,4 +1,5 @@
-import getWasm from "./wasm";
+import getWasm from "../common/wasm";
+import { getMonthBy } from "../common/utils";
 import * as utils from "./utils";
 import * as route from "./route";
 
@@ -13,7 +14,7 @@ export class View {
 				(document.querySelector("#template-list") as HTMLTemplateElement).content
 			);
 		const {month, year} = route.getParams(this.ns);
-		document.querySelector('#list-title')!.textContent = `${route.getMonthBy(month, 'ru')} ${year}`; 
+		document.querySelector('#list-title')!.textContent = `${getMonthBy(month, 'ru')} ${year}`; 
 
 		const row = (document.querySelector("#template-row") as HTMLTemplateElement).content;
 		const container = document.querySelector("#container-row")!;

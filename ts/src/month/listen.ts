@@ -1,5 +1,5 @@
 import { Popup } from "./popup";
-import getWasm from "./wasm";
+import getWasm from "../common/wasm";
 
 export class Listener {
 	ns: string

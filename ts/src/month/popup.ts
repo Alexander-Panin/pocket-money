@@ -1,4 +1,4 @@
-import getWasm from "./wasm";
+import getWasm from "../common/wasm";
 import * as tabs from "./tabs";
 
 function fetch(id: string, ns: string) {

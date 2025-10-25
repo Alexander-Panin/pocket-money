@@ -1,13 +1,5 @@
-export function getMonths(locale: string = 'en'): string[] {
-  return locale === 'ru'
-    ? ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь']
-    : ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
-}
+import { getMonths } from "../common/utils";
 
-export function getMonthBy(month: string, locale: string): string {
-  return getMonths(locale)[getMonths().indexOf(month)] ?? "not found"; 
-}
-      
 export function getNamespace(search: string): string {
     const params = new URLSearchParams(search);
     const [a,m] = [parseInt(params.get('year') ?? "0"), params.get('month')];

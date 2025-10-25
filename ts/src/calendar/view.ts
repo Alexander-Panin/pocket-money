@@ -1,4 +1,5 @@
-import getWasm from "./wasm";
+import getWasm from "../common/wasm";
+import { getMonthBy } from "../common/utils";
 
 export class View {
 	constructor() {}
@@ -23,7 +24,7 @@ export class View {
 
 	row(x: HTMLElement, sum: number, month: string) {
   		x.querySelector('#row-sum')!.textContent = String(sum);
-  		x.querySelector('#row-link')!.textContent = month;
+  		x.querySelector('#row-link')!.textContent = getMonthBy(month, 'ru');
   		(x.querySelector('#row-link') as HTMLAnchorElement)!.href = `/?month=${month}&year=2025`;
   		return x;
 	}

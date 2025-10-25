@@ -6,7 +6,7 @@
     "esbuild:month": "esbuild ./src/month/ --bundle --platform=neutral  --outfile=../static/script/month.js",
     "esbuild:calendar": "esbuild ./src/calendar/ --bundle --platform=neutral  --outfile=../static/script/calendar.js",
     "esbuild:month:prod": "esbuild ./src/month/ --bundle --minify --platform=neutral  --outfile=../static/script/month.js",
-    "esbuild:calender:prod": "esbuild ./src/calendar/ --bundle --minify --platform=neutral  --outfile=../static/script/calendar.js",
+    "esbuild:calendar:prod": "esbuild ./src/calendar/ --bundle --minify --platform=neutral  --outfile=../static/script/calendar.js",
     "check-type": "tsc --noEmit",
     "build": "npm run check-type && npm run esbuild:month && npm run esbuild:calendar",
     "build:prod": "npm run esbuild:month:prod && npm run esbuild:calendar:prod"
