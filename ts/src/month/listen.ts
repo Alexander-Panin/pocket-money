@@ -15,7 +15,8 @@ export class Listener {
 		if (!node?.attributes) return;
 		const action = node.attributes.getNamedItem('__action')?.value;
 		const id = node.attributes.getNamedItem('__id')?.value ?? "";
-		if (action != "ns/skip") event.preventDefault();
+		if (action === "ns/skip") return;
+		event.preventDefault();
 		switch (action) {
 			case 'row':
 				this.focus(node as HTMLElement);

@@ -16,14 +16,14 @@
     display: block;
     margin: auto;
     background: rgb(168, 13, 13);
-    width: 100px;
+    width: 150px;
 }
 
 .money-slider-main {
     display: block;
     margin: auto;
     background: green; 
-    width: 200px;
+    width: 250px;
 }
 
 .money-slider-scale-msg {
