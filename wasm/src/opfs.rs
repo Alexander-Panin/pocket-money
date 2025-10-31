@@ -1,67 +1,49 @@
 use wasm_bindgen::prelude::*;
-use web_sys::{window, FileSystemGetFileOptions, FileSystemDirectoryHandle, FileSystemFileHandle, FileSystemWritableFileStream, File};
+use web_sys::{
+    window, 
+    FileSystemGetFileOptions, 
+    FileSystemDirectoryHandle, 
+    FileSystemFileHandle, 
+    FileSystemWritableFileStream, 
+    File, 
+};
+use web_sys::js_sys::{Promise};
 use wasm_bindgen_futures::{JsFuture};
 
-#[wasm_bindgen]
-pub async fn write(filename: &str) -> Result<(), JsValue> {
+async fn future<T: JsCast>(p: Promise) -> Result<T, JsValue> {
+    JsFuture::from(p).await?.dyn_into::<T>()
+}
+
+async fn file_handle(key: &str, should_create: bool) -> Result<FileSystemFileHandle, JsValue> {
     let p = window().unwrap().navigator().storage().get_directory();
-    let root = JsFuture::from(p).await?
-        .dyn_into::<FileSystemDirectoryHandle>()
-        .unwrap();
+    let root: FileSystemDirectoryHandle = future(p).await?;
+    let p = if should_create {
+        let options = FileSystemGetFileOptions::new();
+        options.set_create(true);
+        root.get_file_handle_with_options(key, &options)
+    } else {
+        root.get_file_handle(key)
+    };
+    future(p).await
+}
 
-    let options = FileSystemGetFileOptions::new();
-    options.set_create(true);
-    let p = root.get_file_handle_with_options(filename, &options);
-    let file = JsFuture::from(p).await?
-        .dyn_into::<FileSystemFileHandle>()
-        .unwrap();
+pub async fn read(id: &str, name: &str) -> Result<JsValue, JsValue> {
+    let key = &[id, name].join(":");
+    let handle = file_handle(key, false).await?;
+    let p = handle.get_file();
+    let file: File = future(p).await?;
+    Ok(JsFuture::from(file.text()).await?)
+}
 
-    let p = file.create_writable();
-    let ws = JsFuture::from(p).await?
-        .dyn_into::<FileSystemWritableFileStream>()
-        .unwrap();
-
-    let p = ws.write_with_str("hello123").unwrap();
+pub async fn write(id: &str, name: &str, value: &str) -> Result<(), JsValue> {
+    let key = &[id, name].join(":");
+    let handle = file_handle(key, true).await?;
+    let p = handle.create_writable();
+    let ws: FileSystemWritableFileStream = future(p).await?;
+    let p = ws.write_with_str(value)?;
     let _ = JsFuture::from(p).await?;
     JsFuture::from(ws.close()).await?;
     Ok(())
 }
 
-#[wasm_bindgen]
-pub async fn read(filename: &str) -> Result<JsValue, JsValue> {
-    let p = window().unwrap().navigator().storage().get_directory();
-    let root = JsFuture::from(p).await?
-        .dyn_into::<FileSystemDirectoryHandle>()
-        .unwrap();
 
-    let p = root.get_file_handle(filename);
-    let file = JsFuture::from(p).await?
-        .dyn_into::<FileSystemFileHandle>()
-        .unwrap();
-
-    let p = file.get_file();
-    let file = JsFuture::from(p).await?
-        .dyn_into::<File>()
-        .unwrap();
-
-    let p = file.text();
-    let text = JsFuture::from(p).await?;
-    Ok(text)
-}
-
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(js_namespace = console)]
-    fn log(s: JsValue);
-}
-
-#[wasm_bindgen(start)]
-async fn run() {
-    log("hello world".into());
-    log("write".into());
-    let _ = write("foobar").await;
-    log("read".into());
-    let t = read("foobar").await;
-    log("value".into());
-    log(t.unwrap());
-}

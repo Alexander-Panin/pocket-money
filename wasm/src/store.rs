@@ -1,20 +1,6 @@
 use wasm_bindgen::prelude::*;
 use uuid::Uuid;
-
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(js_namespace = ["window", "localStorage"])]
-    pub fn getItem(key: JsValue) -> JsValue;  
-
-    #[wasm_bindgen(js_namespace = ["window", "localStorage"])]
-    pub fn setItem(key: JsValue, item: JsValue);
-}
-
-fn set_item(id: &JsValue, key: JsValue, item: JsValue) { setItem(id + key, item); }
-fn get_item(id: &JsValue, key: JsValue) -> Option<JsValue> { 
-    let x = getItem(id + key);
-    if x.is_null() { None } else { Some(x) }
-}
+use crate::opfs::{read, write};
 
 #[wasm_bindgen(getter_with_clone)]
 #[derive(Clone)]
@@ -44,21 +30,23 @@ impl Day {
         Self { date, ..Self::new() }
     }
 
-    pub fn save(&self) {
-        let id = &self.id;
-        set_item(id, "price".into(), self.price.into()); 
-        set_item(id, "date".into(), self.date.into()); 
-        set_item(id, "tag".into(), self.tag.clone());
-        set_item(id, "comment".into(), self.comment.clone());
+    pub async fn save(&self) -> Option<bool> {
+        let id = &self.id.as_string()?;
+        let _ = write(id, "price", &self.price.to_string()).await;
+        let _ = write(id, "date", &self.date.to_string()).await;
+        let _ = write(id, "tag", &self.tag.as_string()?).await; 
+        let _ = write(id, "comment", &self.comment.as_string()?).await; 
+        Some(true)
     }
 
-    pub fn fetch(id: &JsValue) -> Option<Self> {
+    pub async fn fetch(id: &JsValue) -> Option<Self> {
+        let id = &id.as_string()?;
         Some(Day {
-            price: get_item(id, "price".into())?.as_string()?.parse().ok()?,
-            date: get_item(id, "date".into())?.as_string()?.parse().ok()?,
-            tag: get_item(id, "tag".into())?,
-            comment: get_item(id, "comment".into())?,
-            id: id.clone(),
+            price: read(id, "price").await.ok()?.as_string()?.parse().ok()?,
+            date: read(id, "date").await.ok()?.as_string()?.parse().ok()?,
+            tag: read(id, "tag").await.ok()?,
+            comment: read(id, "comment").await.ok()?,
+            id: id.into(),
         })
     }
 }
@@ -70,51 +58,47 @@ pub struct Row(pub bool, pub Day);
 pub struct Stats { pub last_date: i32 }
 
 #[wasm_bindgen]
-pub struct Store {
-    root: Option<JsValue> 
-}
+pub struct Store {}
 
-fn store(ns: &JsValue) -> Store {
-    Store { root: get_item(ns, "root".into()) }
-}
-
-impl Iterator for Store {
-    type Item = Day;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        let root = &self.root.take()?;
-        let tmp = Day::fetch(root);
-        self.root = get_item(root, "next".into());
-        tmp
+async fn store(ns: &JsValue) -> Option<Vec<Day>> {
+    let mut p = read(&ns.as_string()?, "root").await;
+    let mut v = vec![];
+    while let Ok(id) = p {
+        v.push( Day::fetch(&id).await? );
+        p = read(&id.as_string()?, "next").await;
     }
+    Some(v)
 }
 
 #[wasm_bindgen]
 impl Store {
 
-    fn all(ns: &JsValue) -> Option<Vec<Day>> {
-        Self::all_with(ns, |x| x.date >= 0)
+    async fn all(ns: &JsValue) -> Option<Vec<Day>> {
+        Self::all_with(ns, |x| x.date >= 0).await
     }
 
-    fn all_with<F: FnMut(&Day) -> bool>(ns: &JsValue, f: F) -> Option<Vec<Day>> {
-        Some(store(ns).filter(f).collect())
+    async fn all_with<F: FnMut(&Day) -> bool>(ns: &JsValue, f: F) -> Option<Vec<Day>> {
+        let mut v = store(ns).await?;
+        v.retain(f);
+        Some(v)
     }
 
-    // note: linear operation due to idempotence (based on uuid) 
-    pub fn append(ns: &JsValue, day: &Day) {
-        if Self::all_with(ns, |_| true).unwrap_or(vec![]).into_iter()
-            .any(|x| x.id == day.id) { return; }
-        get_item(ns, "root".into())
-            .map(|root| set_item(&day.id, "next".into(), root));
-        set_item(ns, "root".into(), day.id.clone());
+    pub async fn append(ns: &JsValue, day: &Day) -> Option<bool> {
+        let ns = &ns.as_string()?;
+        let id = &day.id.as_string()?; 
+        if let Ok(root) = read(ns, "root").await {
+            let _ = write(id, "next", &root.as_string()?).await;
+        }
+        let _ = write(ns, "root", id).await;
+        Some(true)  
     }
 
-    pub fn tags(ns: &JsValue) -> Option<Vec<JsValue>> {
-        Some(Self::all(ns)?.into_iter().map(|x| x.tag).collect())
+    pub async fn tags(ns: &JsValue) -> Option<Vec<JsValue>> {
+        Some(Self::all(ns).await?.into_iter().map(|x| x.tag).collect())
     }
 
-    pub fn select(ns: &JsValue) -> Option<Vec<Row>> {
-        let mut days = Self::all(ns)?;
+    pub async fn select(ns: &JsValue) -> Option<Vec<Row>> {
+        let mut days = Self::all(ns).await?;
         days.sort_by_key(|x| std::cmp::Reverse(x.date));
         Some(days.into_iter().scan(-1, |state, x| {
             let is_next = *state != x.date;
@@ -123,14 +107,14 @@ impl Store {
         }).collect())
     }
 
-    pub fn stats(ns: &JsValue) -> Option<Stats> {
-        let mut days = Store::all_with(ns, |x| x.date > 0)?;
+    pub async fn stats(ns: &JsValue) -> Option<Stats> {
+        let mut days = Store::all_with(ns, |x| x.date > 0).await?;
         days.sort_by_key(|x| std::cmp::Reverse(x.date));
         Some(Stats { last_date: days.first()?.date })
     }
 
-    pub fn sum(ns: &JsValue) -> Option<f32> {
-        let days = Store::all(ns)?;
+    pub async fn sum(ns: &JsValue) -> Option<f32> {
+        let days = Store::all(ns).await?;
         Some(days.into_iter().map(|x| x.price).sum::<f32>().round())
     }
 }
