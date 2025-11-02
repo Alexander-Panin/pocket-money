@@ -1,13 +1,22 @@
 import getWasm from "../common/wasm";
 import * as tabs from "./tabs";
 
-function fetch(id: string, ns: string) {
-	const date = getWasm().Store.stats(ns)?.last_date ?? new Date().getDate();
-	return Boolean(id) 
-		? getWasm().Day.fetch(id) 
-		: getWasm().Day.new_with_date(date);
+const newIds: Set<string> = new Set();
+
+async function fetch(ns: string, id: string) {
+	const shouldCreate = !Boolean(id);
+	const model = shouldCreate ? getWasm().Day.new() : await getWasm().Day.fetch(id);
+	if (shouldCreate) { newIds.add(model.id); }
+	return model;
 }
 
+async function appendIf(ns: string, model: Day) {
+	if (newIds.delete(model.id)) {  
+		const date = await getWasm().Store.stats(ns)?.last_date;
+		await getWasm().Store.append(ns, model.id);
+		await getWasm().save_date(model.id, String(date ?? new Date().getDate()));
+	}
+}
 
 export class Popup {
 	ns: string
@@ -17,11 +26,14 @@ export class Popup {
 
 	constructor(id: string, row: Element, ns: string) {
 		this.ns = ns;
-		this.model = fetch(id, ns);
 		this.row = row;
 		this.view = null;
 		this.link();
-		this.show();
+		this.model = getWasm().Day.empty();
+		fetch(ns, id).then(m => {
+			this.model = m;
+			this.show();
+		});
 	}
 
 	destroy() {
@@ -57,7 +69,7 @@ export class Popup {
 	handleChildren(event: Event) {
 		this.view?.action(event);
 		this.row.setAttribute('__id', this.model.id);
-		getWasm().Store.append(this.ns, this.model);
+		appendIf(this.ns, this.model);
 	}
 
 	handleNav(action: string) {
@@ -72,7 +84,7 @@ export class Popup {
 				return;
 			case 'nav/tag':
 				this.tab('tag');
-				this.view = new tabs.Tag(this.model, this.row, getWasm().Store.tags(this.ns));
+				this.view = new tabs.Tag(this.model, this.row, this.ns);
 				return;
 			case 'nav/year':
 				this.tab('year');

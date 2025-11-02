@@ -23,8 +23,10 @@ export class View {
 		container.appendChild(row.cloneNode(true));
 	}
 
-	render() {
-		const days = getWasm().Store.select(this.ns) ?? [];
+	async render() {
+		const tmp = await getWasm().Store.select(this.ns) ?? [];
+		console.log(tmp);
+		const days = tmp ?? [];
 		this.list(days);
 		this.popup();
 	}

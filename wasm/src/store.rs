@@ -3,7 +3,7 @@ use uuid::Uuid;
 use crate::opfs::{read, write};
 
 #[wasm_bindgen(getter_with_clone)]
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Day {
     pub date: i32,
     pub price: f32,
@@ -13,40 +13,54 @@ pub struct Day {
 }
 
 #[wasm_bindgen]
+pub async fn save_price(id: &JsValue, price: &JsValue) -> Result<(), JsValue> {
+    write(id, &"price".into(), price).await
+}
+
+#[wasm_bindgen]
+pub async fn save_date(id: &JsValue, date: &JsValue) -> Result<(), JsValue> {
+    write(id, &"date".into(), date).await
+}
+// tema -> 123
+
+#[wasm_bindgen]
+pub async fn save_comment(id: &JsValue, comment: &JsValue) -> Result<(), JsValue> {
+    write(id, &"comment".into(), comment).await
+}
+
+#[wasm_bindgen]
+pub async fn save_tag(id: &JsValue, tag: &JsValue) -> Result<(), JsValue> {
+    write(id, &"tag".into(), tag).await
+}
+
+#[wasm_bindgen]
 impl Day {
 
-    #[wasm_bindgen(constructor)]
     pub fn new() -> Self {
         Self { 
             id: Uuid::new_v4().to_string().into(), 
             date: 1,
-            price: 0.0,
-            tag: "".into(),
-            comment: "".into(),
+            ..Self::default()
         }
     }
 
-    pub fn new_with_date(date: i32) -> Self {
-        Self { date, ..Self::new() }
-    }
-
-    pub async fn save(&self) -> Option<bool> {
-        let id = &self.id.as_string()?;
-        let _ = write(id, "price", &self.price.to_string()).await;
-        let _ = write(id, "date", &self.date.to_string()).await;
-        let _ = write(id, "tag", &self.tag.as_string()?).await; 
-        let _ = write(id, "comment", &self.comment.as_string()?).await; 
-        Some(true)
+    pub fn empty() -> Self {
+        Self::default()
     }
 
     pub async fn fetch(id: &JsValue) -> Option<Self> {
-        let id = &id.as_string()?;
         Some(Day {
-            price: read(id, "price").await.ok()?.as_string()?.parse().ok()?,
-            date: read(id, "date").await.ok()?.as_string()?.parse().ok()?,
-            tag: read(id, "tag").await.ok()?,
-            comment: read(id, "comment").await.ok()?,
-            id: id.into(),
+            price: read(id, &"price".into()).await.ok()
+                .map(|x| x.unchecked_into_f64() as f32)
+                .unwrap_or(0.0),
+            date: read(id, &"date".into()).await.ok()
+                .map(|x| x.unchecked_into_f64() as i32)
+                .unwrap_or(1),
+            tag: read(id, &"tag".into()).await.ok()
+                .unwrap_or("".into()),
+            comment: read(id, &"comment".into()).await.ok()
+                .unwrap_or("".into()),
+            id: id.clone(),
         })
     }
 }
@@ -61,11 +75,11 @@ pub struct Stats { pub last_date: i32 }
 pub struct Store {}
 
 async fn store(ns: &JsValue) -> Option<Vec<Day>> {
-    let mut p = read(&ns.as_string()?, "root").await;
+    let mut p = read(&ns, &"root".into()).await;
     let mut v = vec![];
     while let Ok(id) = p {
         v.push( Day::fetch(&id).await? );
-        p = read(&id.as_string()?, "next").await;
+        p = read(&id, &"next".into()).await;
     }
     Some(v)
 }
@@ -83,13 +97,11 @@ impl Store {
         Some(v)
     }
 
-    pub async fn append(ns: &JsValue, day: &Day) -> Option<bool> {
-        let ns = &ns.as_string()?;
-        let id = &day.id.as_string()?; 
-        if let Ok(root) = read(ns, "root").await {
-            let _ = write(id, "next", &root.as_string()?).await;
+    pub async fn append(ns: &JsValue, id: &JsValue) -> Option<bool> {
+        if let Ok(root) = read(ns, &"root".into()).await {
+            let _ = write(id, &"next".into(), &root).await;
         }
-        let _ = write(ns, "root", id).await;
+        let _ = write(ns, &"root".into(), id).await;
         Some(true)  
     }
 

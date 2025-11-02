@@ -1,3 +1,4 @@
+import getWasm from "../common/wasm";
 import * as utils from "./utils";
 
 export class Year {
@@ -21,16 +22,16 @@ export class Year {
 		}
 	}
 
-	input(value: number) {
+	async input(value: number) {
 		if (isNaN(value)) return; 
+		await getWasm().save_date(this.model.id, String(value));
 		this.model.date = value;
-		this.model.save();
 	}
 
-	slider(value: number) {
+	async slider(value: number) {
 		(document.querySelector("#year-input") as HTMLInputElement).value = String(value);
-	    this.model.date = value;
-	    this.model.save(); 
+		await getWasm().save_date(this.model.id, String(value));
+		this.model.date = value;
 	}
 
 	fill(value: number) {
@@ -65,11 +66,11 @@ export class Comment {
 		(document.querySelector("#comment") as HTMLInputElement).placeholder = comment ?? ""; 
 	}
 
-	comment(comment: string) { 
+	async comment(comment: string) { 
 		(document.querySelector("#comment") as HTMLInputElement).value = comment; 
 		(this.row.querySelector('#row-comment') as HTMLElement).textContent = comment; 
+		await getWasm().save_comment(this.model.id, comment);
 		this.model.comment = comment;
-		this.model.save();
 	}
 }
 
@@ -77,7 +78,7 @@ export class Money {
 	row: Element
 	model: Day
 
-	constructor( model: Day, row: Element) {
+	constructor(model: Day, row: Element) {
 		this.model = model;
 		this.row = row;
 		this.fill(utils.money(model.price));
@@ -111,20 +112,20 @@ export class Money {
 		slider.max = String(max*10);
 	}
 
-	slider(value: number) {
+	async slider(value: number) {
 		(document.querySelector("#money-input") as HTMLInputElement).value = String(value / 10);
 	    (this.row.querySelector('#row-money-euro') as HTMLElement).textContent = utils.euro(value / 10); 
 	    (this.row.querySelector('#row-money-cent') as HTMLElement).textContent = utils.cent(value / 10);
+	    await getWasm().save_price(this.model.id, String(value / 10)); 
 	    this.model.price = value / 10;
-	    this.model.save(); 
 	}
 
-	input(value: number) {
+	async input(value: number) {
 		if (isNaN(value)) return;
 	    (this.row.querySelector('#row-money-euro') as HTMLElement).textContent = utils.euro(value); 
 	    (this.row.querySelector('#row-money-cent') as HTMLElement).textContent = utils.cent(value);
+	    await getWasm().save_price(this.model.id, String(value)); 
 	    this.model.price = value;
-	    this.model.save(); 
 	}
 }
 
@@ -141,11 +142,14 @@ export class Tag {
 	model: Day
 	tags: string[]
 
-	constructor(model: Day, row: Element, tags: string[]) {
+	constructor(model: Day, row: Element, ns: string) {
 		this.model = model;
 		this.row = row;
-		this.tags = dedup(tags);
-		this.fill(model.tag);
+		this.tags = []
+		getWasm().Store.tags(ns).then((xs: string[]) => { 
+			this.tags = dedup(xs); 
+			this.fill(this.model.tag);
+		});
 	}
 
 	action(event: Event) {
@@ -166,20 +170,20 @@ export class Tag {
 		slider.max = String(Math.min(Number(slider.max), this.tags.length)); 
 	}
 
-	slider(value: number) {
+	async slider(value: number) {
 		const newTag = this.tags[value % this.tags.length] ?? "no tags yet";
 		(document.querySelector("#tag-input") as HTMLInputElement).value = newTag;
 		(document.querySelector("#tag-slider-msg") as HTMLInputElement).textContent = newTag[0]?.toUpperCase() ?? "A";
 	    (this.row.querySelector('#row-tag') as HTMLElement).textContent = newTag; 
+	    await getWasm().save_tag(this.model.id, newTag);
 	    this.model.tag = newTag;
-	    this.model.save();
 	}
 
-	input(value: string) {
+	async input(value: string) {
 		const newValue = value.trim().toLowerCase();
 	    (this.row.querySelector('#row-tag') as HTMLElement).textContent = newValue;
+	    await getWasm().save_tag(this.model.id, newValue);
 	    this.model.tag = newValue;
-	    this.model.save(); 
 	}
 
 }

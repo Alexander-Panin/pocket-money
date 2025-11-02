@@ -27,16 +27,17 @@ async fn file_handle(key: &str, should_create: bool) -> Result<FileSystemFileHan
     future(p).await
 }
 
-pub async fn read(id: &str, name: &str) -> Result<JsValue, JsValue> {
-    let key = &[id, name].join(":");
+pub async fn read(id: &JsValue, name: &JsValue) -> Result<JsValue, JsValue> {
+    let key = &(id + name).as_string().ok_or(JsValue::NULL)?;
     let handle = file_handle(key, false).await?;
     let p = handle.get_file();
     let file: File = future(p).await?;
     Ok(JsFuture::from(file.text()).await?)
 }
 
-pub async fn write(id: &str, name: &str, value: &str) -> Result<(), JsValue> {
-    let key = &[id, name].join(":");
+pub async fn write(id: &JsValue, name: &JsValue, value: &JsValue) -> Result<(), JsValue> {
+    let key = &(id + name).as_string().ok_or(JsValue::TRUE)?;
+    let value = &value.as_string().ok_or(JsValue::UNDEFINED)?;
     let handle = file_handle(key, true).await?;
     let p = handle.create_writable();
     let ws: FileSystemWritableFileStream = future(p).await?;
