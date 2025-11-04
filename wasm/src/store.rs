@@ -21,7 +21,6 @@ pub async fn save_price(id: &JsValue, price: &JsValue) -> Result<(), JsValue> {
 pub async fn save_date(id: &JsValue, date: &JsValue) -> Result<(), JsValue> {
     write(id, &"date".into(), date).await
 }
-// tema -> 123
 
 #[wasm_bindgen]
 pub async fn save_comment(id: &JsValue, comment: &JsValue) -> Result<(), JsValue> {
@@ -97,12 +96,11 @@ impl Store {
         Some(v)
     }
 
-    pub async fn append(ns: &JsValue, id: &JsValue) -> Option<bool> {
+    pub async fn append(ns: &JsValue, id: &JsValue) {
         if let Ok(root) = read(ns, &"root".into()).await {
             let _ = write(id, &"next".into(), &root).await;
         }
         let _ = write(ns, &"root".into(), id).await;
-        Some(true)  
     }
 
     pub async fn tags(ns: &JsValue) -> Option<Vec<JsValue>> {
