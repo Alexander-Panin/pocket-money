@@ -12,7 +12,7 @@ async function fetch(ns: string, id: string) {
 
 async function appendIf(ns: string, model: Day) {
 	if (newIds.delete(model.id)) {  
-		const date = await getWasm().Store.stats(ns)?.last_date;
+		const date = (await getWasm().Store.stats(ns))?.last_date;
 		await getWasm().Store.append(ns, model.id);
 		await getWasm().save_date(model.id, String(date ?? new Date().getDate()));
 	}

@@ -58,4 +58,5 @@ pitfalls:
 14. JsValue default may be not what excepted
 15. Direct and invert operation keeps together (route ns and params)
 16. err: Uncaught Error: recursive use of an object detected which would lead to unsafe aliasing in rust
-17. to read the whole struct but to write by parts (Day/write/read) 
+17. to read the whole struct but to write by parts (Day/write/read)
+18. What to do on read when part of struct failed, on when one of many failed  

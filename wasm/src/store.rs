@@ -130,3 +130,38 @@ impl Store {
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+#[cfg(test)]
+mod tests {
+
+use super::*;
+
+#[wasm_bindgen]
+extern "C" {
+    fn alert(s: &str);
+}
+
+#[wasm_bindgen(start)]
+async fn start() {
+    let xs = [1.0, 10.0, 100.0];
+    for x in 1..50 {
+        let mut d = Day::new();
+        d.date = x as i32;
+        let _ = save_date(&d.id, &d.date.to_string().into()).await;
+        let _ = save_price(&d.id, &xs[x % xs.len()].to_string().into()).await;
+        Store::append(&"2025:august".into(), &d.id).await;
+    }
+}
+
+}

@@ -19,11 +19,22 @@
 
       new View().prerender();
       init().then(() => new View().render());
+
     </script>
 
     <div id="main" onclick="void(0);">
       <div id="container-list" class="container-list" ></div>
+      <div id="quota"></div>
+      <div id="quota-usage"></div>
     </div>
+    <script>
+      navigator.storage.estimate()
+        .then(s => {
+          document.querySelector('#quota').textContent = `quota ${s.quota / 2**30} Gb`;
+          document.querySelector('#quota-usage')
+            .textContent = `quota usage ${s.usage / 2**30} Gb`;
+        })
+    </script>
   </body>
 </html>
 

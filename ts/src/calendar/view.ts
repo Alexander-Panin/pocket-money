@@ -15,8 +15,8 @@ export class View {
 	render() {
 		const months = ['august', 'september', 'october', 'november', 'december'];
 		const container = document.querySelector("#container-row")!;
-		months.forEach(month => {
-      		const sum = getWasm().Store.sum(`2025:${month}`);
+		months.forEach(async (month) => {
+      		const sum = await getWasm().Store.sum(`2025:${month}`);
       		const row = (document.querySelector("#template-row") as HTMLTemplateElement).content;
       		container.appendChild(this.fill(row.cloneNode(true) as HTMLElement, sum, month));
 		});

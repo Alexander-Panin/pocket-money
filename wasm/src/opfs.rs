@@ -30,16 +30,14 @@ async fn file_handle(key: &str, should_create: bool) -> Result<FileSystemFileHan
 pub async fn read(id: &JsValue, name: &JsValue) -> Result<JsValue, JsValue> {
     let key = &(id + name).as_string().ok_or(JsValue::NULL)?;
     let handle = file_handle(key, false).await?;
-    let p = handle.get_file();
-    let file: File = future(p).await?;
+    let file: File = future(handle.get_file()).await?;
     Ok(JsFuture::from(file.text()).await?)
 }
 
 pub async fn write(id: &JsValue, name: &JsValue, value: &JsValue) -> Result<(), JsValue> {
-    let key = &(id + name).as_string().ok_or(JsValue::TRUE)?;
-    let value = &value.as_string().ok_or(JsValue::UNDEFINED)?;
-    let handle = file_handle(key, true).await?;
-    let p = handle.create_writable();
+    let key = &(id + name).as_string().ok_or(JsValue::NULL)?;
+    let value = &value.as_string().ok_or(JsValue::NULL)?;
+    let p = file_handle(key, true).await?.create_writable();
     let ws: FileSystemWritableFileStream = future(p).await?;
     let p = ws.write_with_str(value)?;
     let _ = JsFuture::from(p).await?;

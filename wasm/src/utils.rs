@@ -12,3 +12,4 @@ pub fn target(mut node: Option<Element>) -> Option<Element> {
     }
     None
 }
+
