@@ -1,4 +1,5 @@
 use actix_web::{get, App, HttpServer, Responder, middleware::Logger};
+use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod, SslAcceptorBuilder};
 use actix_files::Files;
 use env_logger;
 
@@ -11,8 +12,17 @@ fn files() -> Files {
 fn args() -> (&'static str, u16) {
     let port = std::env::args().nth(1)
         .and_then(|x| x.parse().ok())
-        .unwrap_or(8080);
+        .unwrap_or(443);
     ("0.0.0.0", port)
+}
+
+fn cert() -> SslAcceptorBuilder {
+    let mut builder = SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();
+    builder
+        .set_private_key_file("nopass.pem", SslFiletype::PEM)
+        .unwrap();
+    builder.set_certificate_chain_file("cert.pem").unwrap();
+    builder
 }
 
 #[get("/ping")]
@@ -31,7 +41,7 @@ async fn main() -> std::io::Result<()> {
             .service(ping)
             .service(files())
     })
-        .bind((addr, port))?
+        .bind_openssl((addr, port), cert())?
         .run()
         .await
 }
