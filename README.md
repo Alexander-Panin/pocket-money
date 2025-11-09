@@ -94,3 +94,12 @@ sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp   
 sudo ufw enable
 sudo ufw status verbose
+
+
+clean up browser storage:
+
+var dir = await navigator.storage.getDirectory();
+for await (var [name, handle] of dir) {
+    console.log(name, handle);
+    dir.removeEntry(name, {recursive: true});
+} 

@@ -1,4 +1,5 @@
-use actix_web::{get, App, HttpServer, Responder, middleware::Logger};
+use actix_web::{get, App, HttpServer, Responder};
+use actix_web::middleware::{ Logger, Compress };
 use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod, SslAcceptorBuilder};
 use actix_files::Files;
 use env_logger;
@@ -36,6 +37,7 @@ async fn main() -> std::io::Result<()> {
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
     HttpServer::new(|| { 
         App::new()
+            .wrap(Compress::default())
             .wrap(Logger::default()
                 .log_target("access_log"))
             .service(ping)

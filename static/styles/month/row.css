@@ -45,3 +45,20 @@
     text-overflow: ellipsis;
     overflow:hidden;
 }
+
+.row {
+  animation-duration: 1s;
+  animation-name: slide-in;
+}
+
+@keyframes slide-in {
+  from {
+    translate: 20vw 0;
+    opacity: 0;
+  }
+
+  to {
+    translate: 0 0;
+    opacity: 1;
+  }
+}
