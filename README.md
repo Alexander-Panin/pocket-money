@@ -16,16 +16,17 @@ install
 6. cd pocket_money
 7. cd wasm && ./build.sh --release && cd -
 8. cd ts && npm install && npm run build:prod && cd -
-9. cd server && cargo run --release 80 &
+9. cd cli && node build_html.js && cd -
+10. cd server && RUST_LOG=access_log=info cargo run --release 2>&1 | tee -a /var/log/pocket-money/access.log &
 
 ubuntu
 apt-get update 
 apt install git
 apt install vim
-apt-get install libc6-dev (if not exists) 
-
-cmd:prod
-cd server && RUST_LOG=access_log=info cargo run --release 80 2>&1 | tee -a /var/log/pocket-money/access.log &
+apt-get install libc6-dev (if not exists)
+apt-get install libssl-dev 
+apt install pkg-config
+apt install silversearcher-ag
 
 logrotate:
 /var/log/pocket-money/access.log { 
@@ -60,3 +61,36 @@ pitfalls:
 16. err: Uncaught Error: recursive use of an object detected which would lead to unsafe aliasing in rust
 17. to read the whole struct but to write by parts (Day/write/read)
 18. What to do on read when part of struct failed, on when one of many failed  
+
+generate dev cert:
+
+1. openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem \
+    -days 365 -sha256 -subj "/C=US/ST=California/L=/O=PocketMoney/OU=HmmOrg/CN=hmmPocketMoney"
+2. openssl rsa -in key.pem -out nopass.pem
+
+
+minimal setup for vds:
+
+sudo adduser v_kuuo
+sudo usermod -aG sudo v_kuuo
+openssl rand -base64 32
+
+ssh-keygen -t ed25519 -C "some comment"
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+touch ~/.ssh/authorized_keys
+
+sudo vim /etc/ssh/sshd_config
+Port 2288
+PasswordAuthentication no
+PubkeyAuthentication yes
+sudo systemctl restart ssh
+
+sudo apt update -y && sudo apt install ufw -y
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow 2288/tcp  
+sudo ufw allow 80/tcp    
+sudo ufw allow 443/tcp   
+sudo ufw enable
+sudo ufw status verbose

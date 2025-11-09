@@ -7,19 +7,19 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/styles/index.css" fetchpriority="high" />
-    <link rel="stylesheet" href="/styles/month/row.css" fetchpriority="high" />
-    <link rel="stylesheet" href="/styles/month/popup.css" async />
-    <link rel="stylesheet" href="/styles/month/navigation.css" async />
-    <link rel="stylesheet" href="/styles/month/money.css" async />
-    <link rel="stylesheet" href="/styles/month/tag.css" async />
-    <link rel="stylesheet" href="/styles/month/comment.css" async />
-    <link rel="stylesheet" href="/styles/month/year.css" async />
+    <link rel="stylesheet" href="/styles/index.css?t=1762681185936" fetchpriority="high" />
+    <link rel="stylesheet" href="/styles/month/row.css?t=1762681185936" fetchpriority="high" />
+    <link rel="stylesheet" href="/styles/month/popup.css?t=1762681185936" async />
+    <link rel="stylesheet" href="/styles/month/navigation.css?t=1762681185936" async />
+    <link rel="stylesheet" href="/styles/month/money.css?t=1762681185936" async />
+    <link rel="stylesheet" href="/styles/month/tag.css?t=1762681185936" async />
+    <link rel="stylesheet" href="/styles/month/comment.css?t=1762681185936" async />
+    <link rel="stylesheet" href="/styles/month/year.css?t=1762681185936" async />
   </head>
   <body>
     <script type="module">
-      import init, * as wasm from "/script/pkg/wasm.js";
-      import { Listener, View, route } from "/script/month.js";
+      import init, * as wasm from "/script/pkg/wasm.js?t=1762681185936";
+      import { Listener, View, route } from "/script/month.js?t=1762681185936";
       window.__wasm = wasm;
 
       const namespace = route.getNamespace(window.location.search);
@@ -103,16 +103,16 @@
   <div style="height: 20px"></div>
   <input id="money-input" __action="money/input" class="money-input"
     tabindex="-1" placeholder="" inputmode="decimal" type="text" />
-  <div style="height: 30px"></div>
-  <span id="money-slider-scale-msg" class="money-slider-scale-msg">0–11</span>
-  <div style="height: 25px"></div>
+  <div style="height: 20px"></div>
+  <span id="money-slider-scale-msg" class="money-slider-scale-msg">0–5</span>
+  <div style="height: 35px"></div>
   <input id="money-slider-scale" __action="money/slider-scale" 
     class="money-slider-scale"
-    type="range" min="-1" max="10" value="0" />
+    type="range" min="0" max="17" value="0" />
   <div style="height: 50px"></div>
   <input __action="money/slider-main" id="money-slider-main" 
     class="money-slider-main"
-    type="range" min="0" max="110" value="0" />
+    type="range" min="0" max="50" value="0" />
   <div style="height: 40px"></div>
 </template>
 

@@ -7,14 +7,14 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/styles/index.css" fetchpriority="high" />
-    <link rel="stylesheet" href="/styles/calendar/row.css" />
-    <link rel="stylesheet" href="/styles/calendar/year.css" />
+    <link rel="stylesheet" href="/styles/index.css?t=1762681185950" fetchpriority="high" />
+    <link rel="stylesheet" href="/styles/calendar/row.css?t=1762681185950" />
+    <link rel="stylesheet" href="/styles/calendar/year.css?t=1762681185950" />
   </head>
   <body>
     <script type="module">
-      import init, * as wasm from "/script/pkg/wasm.js";
-      import { View } from "/script/calendar.js";
+      import init, * as wasm from "/script/pkg/wasm.js?t=1762681185950";
+      import { View } from "/script/calendar.js?t=1762681185950";
       window.__wasm = wasm;
 
       new View().prerender();

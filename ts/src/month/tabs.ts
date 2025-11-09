@@ -104,8 +104,8 @@ export class Money {
 	}
 
 	scale(value: number) {
-		const koef = value;
-		const [min, max] = [Math.round(10*koef), Math.round(10*(koef+1) + 1.7**koef)];
+		const koef = Math.max(value,0);
+		const [min, max] = [koef*5, (koef+1)*5];
 		document.querySelector('#money-slider-scale-msg')!.textContent = `${min}–${max}`;
 		const slider = (document.querySelector('#money-slider-main') as HTMLInputElement);
 		slider.min = String(min*10);
