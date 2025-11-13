@@ -24,7 +24,7 @@ export class Listener {
 		download
 			.setLinksAttrs(link, hash)
 			.click();
-		// window.URL.revokeObjectURL(hash);
+		window.URL.revokeObjectURL(hash);
 	}
 }
 
