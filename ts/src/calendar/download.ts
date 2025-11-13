@@ -31,7 +31,8 @@ export function setLinksAttrs(link: HTMLAnchorElement, hash: string): HTMLAnchor
 	attr.value = "ns/skip";
 	link.attributes.setNamedItem(attr);
 	// link.href = hash;
-	link.setAttribute('href', 'data:text/plain;charset=UTF-8,' + encodeURIComponent(hash));
+	// link.setAttribute('href', 'data:text/plain;charset=UTF-8,' + encodeURIComponent(hash));
+	link.setAttribute('href', 'data:text/plain;charset=UTF-8;base64,' + btoa(unescape(encodeURIComponent(hash))));
 	return link;
 }
 
