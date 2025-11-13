@@ -1,3 +1,3 @@
 export * from "./listen"; 
 export * from "./view"; 
-export * as route from "./route";
+export * as route from "../common/route";

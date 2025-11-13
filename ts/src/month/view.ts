@@ -1,7 +1,7 @@
 import getWasm from "../common/wasm";
+import * as route from "../common/route";
 import { getMonthBy } from "../common/utils";
 import * as utils from "./utils";
-import * as route from "./route";
 
 export class View {
 	ns: string

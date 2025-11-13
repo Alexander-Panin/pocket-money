@@ -26,9 +26,13 @@ export class View {
   		x.querySelector('#row-sum')!.textContent = String(sum);
   		x.querySelector('#row-link')!.textContent = getMonthBy(month, 'ru');
   		(x.querySelector('#row-link') as HTMLAnchorElement)!.href = `/?month=${month}&year=2025`;
+  		x.querySelector('#row-download')!.setAttribute('__id', `2025:${month}`);
+  		x.querySelector('#row-download')!.setAttribute('download', `2025_${month}.csv`);
   		return x;
 	}
 }
+
+
 
 
 

@@ -15,11 +15,16 @@
   <body>
     <script type="module">
       import init, * as wasm from "/script/pkg/wasm.js?t=1762691718498";
-      import { View } from "/script/calendar.js?t=1762691718498";
+      import { View, Listener, route } from "/script/calendar.js?t=1762691718498";
       window.__wasm = wasm;
 
+      const namespace = route.getNamespace(window.location.search);
       new View().prerender();
       init().then(() => new View().render());
+
+      document
+        .querySelector("body")
+        .addEventListener("click", new Listener(namespace).handler);
 
     </script>
 
@@ -50,8 +55,16 @@
 <template id="template-row">
   <div class="row-container">
     <div class="row-month">
-      <a id="row-link" class="row-link"></a>
+      <a __action="ns/skip" id="row-link" class="row-link"></a>
     </div>
     <span id="row-sum" class="row-sum"></span>
+    <a 
+      id="row-download" 
+      __action="download"
+      class="row-download"
+      download="" 
+    >
+      csv
+    </a>
   </div>
 </template>

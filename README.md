@@ -27,6 +27,7 @@ apt-get install libc6-dev (if not exists)
 apt-get install libssl-dev 
 apt install pkg-config
 apt install silversearcher-ag
+apt install xclip 
 
 logrotate:
 /var/log/pocket-money/access.log { 
@@ -89,7 +90,8 @@ sudo systemctl restart ssh
 sudo apt update -y && sudo apt install ufw -y
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
-sudo ufw allow 2288/tcp  
+sudo ufw allow 2288/tcp
+sudo ufw allow 1194/udp   
 sudo ufw allow 80/tcp    
 sudo ufw allow 443/tcp   
 sudo ufw enable
