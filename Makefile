@@ -1,4 +1,4 @@
-wasm:
+wasm.prod:
 	cd wasm && ./build.sh --release && cd -
 
 wasm.dev:
@@ -7,21 +7,21 @@ wasm.dev:
 ts.install:
 	cd ts && npm install && cd -
 
-ts:
+ts.prod:
 	cd ts && npm run build:prod && cd -
 
 ts.dev:
 	cd ts && npm run build && cd -
 
-version:
+version.create:
 	cd cli && node build_html.js && cd -
 
-pull:
+pull.update:
 	git checkout -- .
 	git pull origin master
 
-build: wasm.dev ts.dev version
+build: wasm.dev ts.dev version.create
 
-deploy: pull wasm ts.install ts version
+deploy: pull.update wasm.prod ts.install ts.prod version.create
 
 
