@@ -1,0 +1,67 @@
+[tasks.wasm]
+script = '''
+echo "========= WASM ================"
+cd wasm && ./build.sh --release && cd -
+echo "========= WASM OK================"
+'''
+
+[tasks.wasm-dev]
+script = '''
+echo "========= WASM ================"
+cd wasm && ./build.sh && cd -
+echo "========= WASM OK================"
+'''
+
+[tasks.ts-install]
+script = '''
+echo "========= NPM ================"
+cd ts && npm install && cd -
+echo "========= NPM OK================"
+'''
+
+[tasks.ts]
+script = '''
+echo "========= TS ================"
+cd ts && npm run build:prod && cd -
+echo "========= TS OK================"
+'''
+
+[tasks.ts-dev]
+script = '''
+echo "========= TS ================"
+cd ts && npm run build && cd -
+echo "========= TS OK================"
+'''
+
+[tasks.version]
+script = '''
+echo "========= VERSION  ================"
+cd cli && node build_html.js && cd -
+echo "========= VERSION OK================"
+'''
+
+[tasks.pull]
+script = '''
+echo "========= PULL ================"
+git checkout -- .
+git pull origin master
+echo "========= PULL OK================"
+'''
+
+[tasks.b]
+dependencies = [
+    "wasm-dev",
+    "ts-dev",
+    "version"
+]
+
+[tasks.deploy]
+dependencies = [
+    "pull",
+    "wasm",
+    "ts-install",
+    "ts",
+    "version"
+]
+
+
