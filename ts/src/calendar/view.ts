@@ -12,14 +12,14 @@ export class View {
 			);
 	}
 
-	render() {
+	async render() {
 		const months = ['august', 'september', 'october', 'november', 'december'];
 		const container = document.querySelector("#container-row")!;
-		months.forEach(async (month) => {
+		for (const month of months) {
       		const sum = await getWasm().Store.sum(`2025:${month}`);
       		const row = (document.querySelector("#template-row") as HTMLTemplateElement).content;
       		container.appendChild(this.fill(row.cloneNode(true) as HTMLElement, sum, month));
-		});
+		};
 	}
 
 	fill(x: HTMLElement, sum: number, month: string) {

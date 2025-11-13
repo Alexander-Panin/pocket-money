@@ -19,7 +19,7 @@ async function csv(ns: string): Promise<string> {
 
 export async function payload(ns: string): Promise<string> {
 	const content = await csv(ns);
-	const blob = new Blob([content], {type: "data:application/octet-stream;base64"});
+	const blob = new Blob([content], {type: "data:text/csv;charset=UTF-8"});
 	return window.URL.createObjectURL(blob);
 }
 
