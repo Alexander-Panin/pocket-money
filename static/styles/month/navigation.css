@@ -17,6 +17,8 @@
 .nav.nav-close {
     margin-left: 12px;
     float: left;
+    background: transparent;
+    border: 1px dotted;
 }
 
 .nav.nav-money {
