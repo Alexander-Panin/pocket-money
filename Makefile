@@ -20,8 +20,6 @@ pull.update:
 	git checkout -- .
 	git pull origin master
 
-build: wasm.dev ts.dev version.create
+build: wasm.dev ts.dev 
 
 deploy: pull.update wasm.prod ts.install ts.prod version.create
-
-

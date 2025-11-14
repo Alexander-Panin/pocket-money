@@ -47,13 +47,13 @@
 }
 
 .row {
-  animation-duration: 1s;
+  animation-duration: 0.5s;
   animation-name: slide-in;
 }
 
 @keyframes slide-in {
   from {
-    translate: 20vw 0;
+    translate: 10vw 0;
     opacity: 0;
   }
 

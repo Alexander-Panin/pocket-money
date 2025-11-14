@@ -3,17 +3,21 @@ import getWasm from "../common/wasm";
 function one(x: Day, isNext: boolean) {
 	return [
 		isNext ? String(Math.round(x.date)) : "", 
-		String(Math.round(x.price * 10) / 10),
-		`"${x.tag}"`, 
-		`"${x.comment}"`
+		JSON.stringify(String(Math.round(x.price * 10) / 10).replace(".", ",")),
+		JSON.stringify(x.tag), 
+		JSON.stringify(x.comment), 
 	];
 }
 
+type Row = [boolean, Day];
 async function csv(ns: string): Promise<string> {
 	const data = await getWasm().Store.select(ns);
+	data.sort((x: Row, y: Row) => x[1].date - y[1].date);
 	return ["date,price,tag,comment"]
 		.concat(
-			data.map((x: [boolean, Day]) => one(x[1],x[0]).join(","))
+			data.map((x: Row) => 
+				(x[0] ? ",,,\n" : "") + one(x[1], x[0]).join(",")
+			)
 		).join("\n");
 }
 
