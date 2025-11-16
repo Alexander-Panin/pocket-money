@@ -20,6 +20,9 @@ pull.update:
 	git checkout -- .
 	git pull origin master
 
-build: wasm.dev ts.dev 
+.PHONY: b deploy
+
+b: wasm.dev ts.dev 
 
 deploy: pull.update wasm.prod ts.install ts.prod version.create
+

@@ -11,8 +11,7 @@ function one(x: Day, isNext: boolean) {
 
 type Row = [boolean, Day];
 async function csv(ns: string): Promise<string> {
-	const data = await getWasm().Store.select(ns);
-	data.sort((x: Row, y: Row) => x[1].date - y[1].date);
+	const data = await getWasm().Store.select(ns, 0 /* asc */);
 	return ["date,price,tag,comment"]
 		.concat(
 			data.map((x: Row) => 

@@ -24,7 +24,7 @@ export class View {
 	}
 
 	async render() {
-		const tmp = await getWasm().Store.select(this.ns) ?? [];
+		const tmp = await getWasm().Store.select(this.ns, 1 /* desc */) ?? [];
 		const days = tmp ?? [];
 		this.list(days);
 		this.popup();

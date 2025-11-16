@@ -83,6 +83,10 @@ async fn store(ns: &JsValue) -> Option<Vec<Day>> {
     Some(v)
 }
 
+#[derive(PartialEq)]
+#[wasm_bindgen]
+pub enum Sort { Asc, Desc }
+
 #[wasm_bindgen]
 impl Store {
 
@@ -105,9 +109,16 @@ impl Store {
         Some(Self::all(ns).await?.into_iter().map(|x| x.tag).collect())
     }
 
-    pub async fn select(ns: &JsValue) -> Option<Vec<Row>> {
-        let mut days = Self::all(ns).await?;
-        days.sort_by_key(|x| std::cmp::Reverse(x.date));
+    fn sort(mut days: Vec<Day>, ordering: Sort) -> Vec<Day> {
+        days.sort_by(match ordering {
+            Sort::Asc => |x: &Day, y: &Day| x.date.cmp(&y.date),
+            Sort::Desc => |x: &Day, y: &Day| y.date.cmp(&x.date),
+        });
+        days
+    }
+
+    pub async fn select(ns: &JsValue, ordering: Sort) -> Option<Vec<Row>> {
+        let days = Self::sort(Self::all(ns).await?, ordering);
         Some(days.into_iter().scan(-1, |state, x| {
             let is_next = *state != x.date;
             *state = x.date;
