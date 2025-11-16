@@ -8,7 +8,7 @@ html {
     height: 100%;
     padding: 0;
     margin: 0;
-    overflow-x: hidden;
+    overflow-x: clip;
 }
 
 body {
@@ -16,6 +16,7 @@ body {
     min-height: 100%;
     padding: 0 8px;
     margin: 0;
+    overflow-x: clip;
 }
 
 hr {
@@ -43,6 +44,7 @@ textarea:focus, input:focus {
     background-color: black;
     color: var(--tt-brown);
     min-height: 100vh;
+    overflow-x: clip;
 }
 
 .title-sticky {
