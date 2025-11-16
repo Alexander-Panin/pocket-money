@@ -91,9 +91,7 @@ impl Store {
     }
 
     async fn all_with<F: FnMut(&Day) -> bool>(ns: &JsValue, f: F) -> Option<Vec<Day>> {
-        let mut v = store(ns).await?;
-        v.retain(f);
-        Some(v)
+        let mut v = store(ns).await?; v.retain(f); Some(v)
     }
 
     pub async fn append(ns: &JsValue, id: &JsValue) {
