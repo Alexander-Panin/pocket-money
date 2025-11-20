@@ -24,10 +24,18 @@ export class View {
 	}
 
 	async render() {
-		const tmp = await getWasm().Store.select(this.ns, 1 /* desc */) ?? [];
-		const days = tmp ?? [];
+		const days = await getWasm().Store.select(this.ns, 1 /* desc */);
 		this.list(days);
 		this.popup();
+		this.repeatRegular(days);
+	}
+
+	async repeatRegular(days: [boolean, Day][]) {
+		if (!Boolean(days.find(x => x[1].date === 0))) {
+			const prevNs = route.getPrevNamespace(this.ns);
+			const regular = await getWasm().Store.repeat_regular(this.ns, prevNs);
+			this.list(getWasm().Store.transform(regular));
+		}
 	}
 
 	popup() {

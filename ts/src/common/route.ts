@@ -15,5 +15,11 @@ export function getParams(ns: string): Params {
     year: parseInt(year) || 0,
     month,
   };
-} 
+}
 
+export function getPrevNamespace(ns: string) {
+  const {year, month} = getParams(ns);
+  const newMonth = (11 + getMonths().indexOf(month)) % 12;
+  const newYear = newMonth === 11 ? year-1 : year;
+  return `${newYear}:${getMonths()[newMonth]}`;
+}
