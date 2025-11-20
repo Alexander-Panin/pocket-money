@@ -1,3 +1,4 @@
+use std::collections::HashSet;
 use wasm_bindgen::prelude::*;
 use uuid::Uuid;
 use crate::opfs::{read, write};
@@ -72,6 +73,11 @@ impl Day {
     }
 }
 
+#[wasm_bindgen]
+extern "C" {
+    pub fn alert(s: &str);
+}
+
 #[wasm_bindgen(getter_with_clone)]
 pub struct Row(pub bool, pub Day);
 
@@ -81,17 +87,29 @@ pub struct Stats { pub last_date: i32 }
 #[wasm_bindgen]
 pub struct Store {}
 
-async fn store(ns: &JsValue) -> Vec<Day> {
-    let mut p = read(&ns, &"root".into()).await;
+async fn collect_ids(ns: &JsValue) -> Vec<JsValue> {
     let mut result = vec![];
+    let mut set: HashSet<String> = HashSet::new();
+    let mut p = read(&ns, &"root".into()).await;
     while let Ok(id) = p {
-        result.push( Day::fetch(&id).await );
+        if !set.insert(id.as_string().unwrap()) { 
+            alert("Corrupted data - cycle detected"); 
+            break; 
+        }
         p = read(&id, &"next".into()).await;
+        result.push(id); 
     }
     result
 }
 
-#[derive(PartialEq)]
+async fn store(ns: &JsValue) -> Vec<Day> {
+    let mut result = vec![];
+    for id in collect_ids(ns).await { 
+        result.push( Day::fetch(&id).await ); 
+    }
+    result
+}
+
 #[wasm_bindgen]
 pub enum Sort { Asc, Desc }
 
