@@ -203,11 +203,17 @@ impl Store {
 
 
 
-
 #[cfg(test)]
 mod tests {
 
 use super::*;
+
+use wasm_bindgen_test::*;
+
+#[wasm_bindgen_test]
+fn pass() {
+    assert_eq!(1, 1);
+}
 
 #[wasm_bindgen]
 extern "C" {
