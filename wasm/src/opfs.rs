@@ -14,7 +14,7 @@ async fn future<T: JsCast>(p: Promise) -> Result<T, JsValue> {
     JsFuture::from(p).await?.dyn_into::<T>()
 }
 
-pub async fn read(id: &JsValue, name: &JsValue) -> Result<JsValue, JsValue> {
+pub async fn read(id: JsValue, name: JsValue) -> Result<JsValue, JsValue> {
     let key = &(id + name).as_string().ok_or(JsValue::NULL)?;
     let handle = file_handle(key).await?;
     let file: File = future(handle.get_file()).await?;

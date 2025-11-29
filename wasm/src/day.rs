@@ -53,15 +53,15 @@ impl Day {
 
     pub async fn fetch(id: &JsValue) -> Self {
         Day {
-            price: read(id, &"price".into()).await
+            price: read(id.clone(), "price".into()).await
                 .map(|x| x.unchecked_into_f64() as f32)
                 .unwrap_or(0.0),
-            date: read(id, &"date".into()).await
+            date: read(id.clone(), "date".into()).await
                 .map(|x| x.unchecked_into_f64() as i32)
                 .unwrap_or(1),
-            tag: read(id, &"tag".into()).await
+            tag: read(id.clone(), "tag".into()).await
                 .unwrap_or("".into()),
-            comment: read(id, &"comment".into()).await
+            comment: read(id.clone(), "comment".into()).await
                 .unwrap_or("".into()),
             id: id.clone(),
         }

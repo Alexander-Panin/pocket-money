@@ -17,10 +17,21 @@ pub struct Store {}
 
 async fn store(ns: &JsValue) -> Vec<Day> {
     let mut result = vec![];
-    for id in linked::collect_ids(ns).await { 
+    for id in linked::collect_ids(ns, read).await { 
         result.push( Day::fetch(&id).await ); 
     }
     result
+}
+
+async fn append<T,F>(ns: JsValue, id: JsValue, read: T) 
+    where
+        T: Fn(JsValue, JsValue) -> F, 
+        F: Future<Output = Result<JsValue, JsValue>> 
+{
+    if let Ok(root) = read(ns.clone(), "root".into()).await {
+        let _ = write(&id, &"next".into(), &root).await;
+    }
+    let _ = write(&ns, &"root".into(), &id).await;
 }
 
 #[wasm_bindgen]
@@ -50,12 +61,8 @@ impl Store {
     }
 
     // ui -- create new record
-    pub async fn append(ns: &JsValue, id: &JsValue) {
-        if let Ok(root) = read(ns, &"root".into()).await {
-            let _ = write(id, &"next".into(), &root).await;
-        }
-        let _ = write(ns, &"root".into(), id).await;
-    }
+    pub async fn append(ns: &JsValue, id: &JsValue) 
+    { append(ns.clone(), id.clone(), read).await }
 
     // ui -- prepare for rendering
     pub fn transform(days: Vec<Day>) -> Vec<Row> {
