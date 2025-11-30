@@ -3,3 +3,4 @@ pub mod store;
 pub mod opfs;
 pub mod linked;
 pub mod day;
+pub mod provider;

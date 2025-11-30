@@ -21,7 +21,7 @@ pub async fn read(id: JsValue, name: JsValue) -> Result<JsValue, JsValue> {
     Ok(JsFuture::from(file.text()).await?)
 }
 
-pub async fn write(id: &JsValue, name: &JsValue, value: &JsValue) -> Result<(), JsValue> {
+pub async fn write(id: JsValue, name: JsValue, value: JsValue) -> Result<(), JsValue> {
     let key = &(id + name).as_string().ok_or(JsValue::NULL)?;
     let value = &value.as_string().ok_or(JsValue::NULL)?;
     let p = file_handle_create_if_needed(key).await?.create_writable();

@@ -4,22 +4,22 @@ use crate::opfs::{read, write};
 
 #[wasm_bindgen]
 pub async fn save_price(id: &JsValue, price: &JsValue) -> Result<(), JsValue> {
-    write(id, &"price".into(), price).await
+    write(id.clone(), "price".into(), price.clone()).await
 }
 
 #[wasm_bindgen]
 pub async fn save_date(id: &JsValue, date: &JsValue) -> Result<(), JsValue> {
-    write(id, &"date".into(), date).await
+    write(id.clone(), "date".into(), date.clone()).await
 }
 
 #[wasm_bindgen]
 pub async fn save_tag(id: &JsValue, tag: &JsValue) -> Result<(), JsValue> {
-    write(id, &"tag".into(), tag).await
+    write(id.clone(), "tag".into(), tag.clone()).await
 }
 
 #[wasm_bindgen]
 pub async fn save_comment(id: &JsValue, comment: &JsValue) -> Result<(), JsValue> {
-    write(id, &"comment".into(), comment).await
+    write(id.clone(), "comment".into(), comment.clone()).await
 }
 
 #[wasm_bindgen(getter_with_clone)]
@@ -69,10 +69,10 @@ impl Day {
 
     pub async fn save(&self) {
         let id = &self.id;
-        let _ = write(id, &"price".into(), &self.price.to_string().into()).await;
-        let _ = write(id, &"date".into(), &self.date.to_string().into()).await;
-        let _ = write(id, &"tag".into(), &self.tag).await;
-        let _ = write(id, &"comment".into(), &self.comment).await;
+        let _ = write(id.clone(), "price".into(), self.price.to_string().into()).await;
+        let _ = write(id.clone(), "date".into(), self.date.to_string().into()).await;
+        let _ = write(id.clone(), "tag".into(), self.tag.clone()).await;
+        let _ = write(id.clone(), "comment".into(), self.comment.clone()).await;
     }
 }
 
