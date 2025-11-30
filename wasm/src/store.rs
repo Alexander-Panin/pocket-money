@@ -1,5 +1,5 @@
 use wasm_bindgen::prelude::*;
-use crate::opfs::{read, write};
+use crate::{opfs, local_storage};
 use crate::day::{Day};
 use crate::provider::{Provider};
 
@@ -19,7 +19,7 @@ pub struct Store {}
 impl Store {
 
     async fn all_with<F: FnMut(&Day) -> bool>(ns: JsValue, f: F) -> Vec<Day> {
-        let mut result = Provider{read, write}.all(ns).await; 
+        let mut result = Provider{read: opfs::read, write: opfs::write}.all(ns).await;
         result.retain(f); 
         result
     }
@@ -38,7 +38,7 @@ impl Store {
 
     // ui -- create new record
     pub async fn append(ns: &JsValue, id: &JsValue) { 
-        Provider{read, write}.append(ns.clone(), id.clone()).await 
+        Provider{read: opfs::read, write: opfs::write}.append(ns.clone(), id.clone()).await 
     }
 
     // ui -- prepare for rendering
@@ -65,7 +65,10 @@ impl Store {
     pub async fn repeat_regular(ns: &JsValue, prev_ns: &JsValue) -> Vec<Day> {
         let mut result = vec![];
         for x in Self::regular(prev_ns).await {
-            result.push(Provider{read, write}.copy(ns.clone(), x).await); 
+            result.push(Provider{
+                read: opfs::read, 
+                write: opfs::write
+            }.copy(ns.clone(), x).await); 
         }
         result
     }
@@ -90,9 +93,6 @@ impl Store {
 }
 
 
-
-
-
 #[cfg(test)]
 mod tests {
     use wasm_bindgen_test::*;
@@ -102,5 +102,3 @@ mod tests {
         assert_eq!(1, 1);
     }
 }
-
-

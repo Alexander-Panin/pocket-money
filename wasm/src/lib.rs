@@ -4,3 +4,4 @@ pub mod opfs;
 pub mod linked;
 pub mod day;
 pub mod provider;
+pub mod local_storage;
