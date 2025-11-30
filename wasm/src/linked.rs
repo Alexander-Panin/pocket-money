@@ -40,6 +40,38 @@ mod tests {
         Err("err".into())
     }
 
+    async fn many(id: JsValue, _name: JsValue) -> Result<JsValue, JsValue> {
+        if id.as_string().unwrap().len() > 7 {
+            Err("err".into())
+        } else {
+            let x: JsValue = "a".into(); 
+            Ok(x + id)
+        }
+    }
+
+    async fn many_with_loop(id: JsValue, _name: JsValue) -> Result<JsValue, JsValue> {
+        if id.as_string().unwrap().len() > 7 {
+            Ok("aaa".into())
+        } else {
+            let x: JsValue = "a".into(); 
+            Ok(x + id)
+        }
+    }
+
+    #[wasm_bindgen_test]
+    async fn many_with_loop_test() {
+        let x = collect_ids("a".into(), many_with_loop).await;
+        let result: Vec<JsValue> = vec!["aa".into(), "aaa".into(), "aaaa".into(), "aaaaa".into(), "aaaaaa".into(), "aaaaaaa".into(), "aaaaaaaa".into()];
+        assert_eq!(result, x);
+    }    
+
+    #[wasm_bindgen_test]
+    async fn many_test() {
+        let x = collect_ids("a".into(), many).await;
+        let result: Vec<JsValue> = vec!["aa".into(), "aaa".into(), "aaaa".into(), "aaaaa".into(), "aaaaaa".into(), "aaaaaaa".into(), "aaaaaaaa".into()];
+        assert_eq!(result, x);
+    }
+
     #[wasm_bindgen_test]
     async fn singleton_test() {
         let x = collect_ids("adf".into(), singleton).await;
