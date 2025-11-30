@@ -1,5 +1,6 @@
 use wasm_bindgen::prelude::*;
-use crate::{opfs, local_storage};
+use crate::opfs::{read, write};
+use crate::local_storage::{read as fastread, write as fastwrite};
 use crate::day::{Day};
 use crate::provider::{Provider};
 
@@ -19,14 +20,24 @@ pub struct Store {}
 impl Store {
 
     async fn all_with<F: FnMut(&Day) -> bool>(ns: JsValue, f: F) -> Vec<Day> {
-        let mut result = Provider{read: opfs::read, write: opfs::write}.all(ns).await;
+        let mut result = Provider{read, write}.all(ns).await;
         result.retain(f); 
         result
-    }
+    }    
 
     async fn all(ns: JsValue) -> Vec<Day> {
         Self::all_with(ns, |x| x.date >= 0).await
     }    
+
+    async fn all_fast(ns: JsValue) -> Vec<Day> {
+        Self::all_with_fast(ns, |x| x.date >= 0).await
+    }    
+    
+    async fn all_with_fast<F: FnMut(&Day) -> bool>(ns: JsValue, f: F) -> Vec<Day> {
+        let mut result = Provider{read: fastread, write: fastwrite}.all(ns).await;
+        result.retain(f); 
+        result
+    }
 
     fn sort(mut days: Vec<Day>, ordering: Sort) -> Vec<Day> {
         days.sort_by(match ordering {
@@ -37,8 +48,9 @@ impl Store {
     }
 
     // ui -- create new record
-    pub async fn append(ns: &JsValue, id: &JsValue) { 
-        Provider{read: opfs::read, write: opfs::write}.append(ns.clone(), id.clone()).await 
+    pub async fn append(ns: &JsValue, id: &JsValue) {
+        use crate::opfs::{read, write}; 
+        Provider{read, write}.append(ns.clone(), id.clone()).await 
     }
 
     // ui -- prepare for rendering
@@ -54,6 +66,12 @@ impl Store {
     pub async fn select(ns: &JsValue, ordering: Sort) -> Vec<Row> {
         let days = Self::sort(Self::all(ns.clone()).await, ordering);
         Self::transform(days) 
+    }    
+
+    // ui -- data for (first fast) rendering
+    pub async fn select_fast(ns: &JsValue, ordering: Sort) -> Vec<Row> {
+        let days = Self::sort(Self::all_fast(ns.clone()).await, ordering);
+        Self::transform(days) 
     }
 
     // ui -- every month records
@@ -63,12 +81,10 @@ impl Store {
 
     // ui -- copy every month records
     pub async fn repeat_regular(ns: &JsValue, prev_ns: &JsValue) -> Vec<Day> {
+        use crate::opfs::{read, write}; 
         let mut result = vec![];
         for x in Self::regular(prev_ns).await {
-            result.push(Provider{
-                read: opfs::read, 
-                write: opfs::write
-            }.copy(ns.clone(), x).await); 
+            result.push(Provider{read, write}.copy(ns.clone(), x).await);
         }
         result
     }

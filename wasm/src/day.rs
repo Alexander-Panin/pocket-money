@@ -1,25 +1,31 @@
 use wasm_bindgen::prelude::*;
 use uuid::Uuid;
 use crate::opfs::{read, write};
+use crate::local_storage::{read as fastread, write as fastwrite};
+use crate::provider::{Provider};
 
 #[wasm_bindgen]
 pub async fn save_price(id: &JsValue, price: &JsValue) -> Result<(), JsValue> {
-    write(id.clone(), "price".into(), price.clone()).await
+    Provider{read,write}.save_price(id.clone(), price.clone()).await?;
+    Provider{read: fastread, write: fastwrite}.save_price(id.clone(), price.clone()).await
 }
 
 #[wasm_bindgen]
 pub async fn save_date(id: &JsValue, date: &JsValue) -> Result<(), JsValue> {
-    write(id.clone(), "date".into(), date.clone()).await
+    Provider{read,write}.save_date(id.clone(), date.clone()).await?;
+    Provider{read: fastread, write: fastwrite}.save_date(id.clone(), date.clone()).await
 }
 
 #[wasm_bindgen]
 pub async fn save_tag(id: &JsValue, tag: &JsValue) -> Result<(), JsValue> {
-    write(id.clone(), "tag".into(), tag.clone()).await
+    Provider{read,write}.save_tag(id.clone(), tag.clone()).await?;
+    Provider{read: fastread, write: fastwrite}.save_tag(id.clone(), tag.clone()).await
 }
 
 #[wasm_bindgen]
 pub async fn save_comment(id: &JsValue, comment: &JsValue) -> Result<(), JsValue> {
-    write(id.clone(), "comment".into(), comment.clone()).await
+    Provider{read,write}.save_comment(id.clone(), comment.clone()).await?;
+    Provider{read: fastread, write: fastwrite}.save_comment(id.clone(), comment.clone()).await
 }
 
 #[wasm_bindgen(getter_with_clone)]
@@ -35,6 +41,7 @@ pub struct Day {
 #[wasm_bindgen]
 impl Day {
 
+    // ui - create new record
     pub fn new() -> Self {
         Self { 
             id: Uuid::new_v4().to_string().into(), 
@@ -43,6 +50,7 @@ impl Day {
         }
     }
 
+    // ui - placeholder for record    
     pub fn empty() -> Self {
         Self::default()
     }
@@ -51,28 +59,9 @@ impl Day {
         Day{ id: Uuid::new_v4().to_string().into(), ..self }
     }
 
+    // ui - fullfill record
     pub async fn fetch(id: &JsValue) -> Self {
-        Day {
-            price: read(id.clone(), "price".into()).await
-                .map(|x| x.unchecked_into_f64() as f32)
-                .unwrap_or(0.0),
-            date: read(id.clone(), "date".into()).await
-                .map(|x| x.unchecked_into_f64() as i32)
-                .unwrap_or(1),
-            tag: read(id.clone(), "tag".into()).await
-                .unwrap_or("".into()),
-            comment: read(id.clone(), "comment".into()).await
-                .unwrap_or("".into()),
-            id: id.clone(),
-        }
-    }
-
-    pub async fn save(&self) {
-        let id = &self.id;
-        let _ = write(id.clone(), "price".into(), self.price.to_string().into()).await;
-        let _ = write(id.clone(), "date".into(), self.date.to_string().into()).await;
-        let _ = write(id.clone(), "tag".into(), self.tag.clone()).await;
-        let _ = write(id.clone(), "comment".into(), self.comment.clone()).await;
+        Provider{read, write}.fetch(id.clone()).await
     }
 }
 

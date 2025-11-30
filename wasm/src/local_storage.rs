@@ -7,9 +7,6 @@ extern "C" {
 
     #[wasm_bindgen(js_namespace = ["window", "localStorage"])]
     pub fn setItem(a: JsValue, b: JsValue);
-
-    #[wasm_bindgen(js_namespace = ["window", "localStorage"])]
-    pub fn clear();
 }
 
 pub async fn read(id: JsValue, name: JsValue) -> Result<JsValue, JsValue> {
