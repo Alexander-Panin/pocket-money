@@ -29,16 +29,16 @@ impl<T,F,T2,F2> Provider<T,F,T2,F2>
         result
     }
 
-    pub async fn append(&self, ns: JsValue, id: JsValue) {
+    pub async fn append(&self, ns: JsValue, id: JsValue) -> Result<(), JsValue> {
         if let Ok(root) = (self.read)(ns.clone(), "root".into()).await {
-            let _ = (self.write)(id.clone(), "next".into(), root).await;
+            (self.write)(id.clone(), "next".into(), root).await?;
         }
-        let _ = (self.write)(ns, "root".into(), id).await;
+        (self.write)(ns, "root".into(), id).await
     }
 
     pub async fn copy(&self, ns: JsValue, day: Day) -> Day {
         let x = day.r#move(); 
-        self.append(ns, x.id.clone()).await; 
+        let _ = self.append(ns, x.id.clone()).await; 
         self.save(&x).await;
         return x;
     }

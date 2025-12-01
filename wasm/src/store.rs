@@ -32,7 +32,7 @@ impl Store {
     async fn all_fast(ns: JsValue) -> Vec<Day> {
         Self::all_with_fast(ns, |x| x.date >= 0).await
     }    
-    
+
     async fn all_with_fast<F: FnMut(&Day) -> bool>(ns: JsValue, f: F) -> Vec<Day> {
         let mut result = Provider{read: fastread, write: fastwrite}.all(ns).await;
         result.retain(f); 
@@ -48,9 +48,9 @@ impl Store {
     }
 
     // ui -- create new record
-    pub async fn append(ns: &JsValue, id: &JsValue) {
-        use crate::opfs::{read, write}; 
-        Provider{read, write}.append(ns.clone(), id.clone()).await 
+    pub async fn append(ns: &JsValue, id: &JsValue) -> Result<(), JsValue> {
+        Provider{read, write}.append(ns.clone(), id.clone()).await?; 
+        Provider{read: fastread, write: fastwrite}.append(ns.clone(), id.clone()).await 
     }
 
     // ui -- prepare for rendering
