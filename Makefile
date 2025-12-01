@@ -4,6 +4,9 @@ wasm.prod:
 wasm.dev:
 	cd wasm && ./build.sh && cd -
 
+wasm.test:
+	cd wasm && ./test.sh && cd -
+
 ts.install:
 	cd ts && npm install && cd -
 
@@ -24,5 +27,5 @@ pull.update:
 
 b: wasm.dev ts.dev 
 
-deploy: pull.update wasm.prod ts.install ts.prod version.create
+deploy: pull.update wasm.test wasm.prod ts.install ts.prod version.create
 

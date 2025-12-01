@@ -5,7 +5,8 @@ import * as utils from "./utils";
 
 export class View {
 	ns: string
-	constructor(ns: string) { this.ns = ns; }
+	tmpNodes: Array<Element>
+	constructor(ns: string) { this.ns = ns; this.tmpNodes = []; }
 
 	prerender() {
 		document
@@ -24,10 +25,28 @@ export class View {
 	}
 
 	async render() {
+		await Promise.all([
+			this.renderFastMemory(),
+			this.renderSlowMemory()
+		]);
+		this.cleanUpFastRender();
+	}
+
+	cleanUpFastRender() {
+		this.tmpNodes.forEach(x => x.remove()); 
+		this.tmpNodes = [];
+	}
+
+	async renderSlowMemory() {
 		const days = await getWasm().Store.select(this.ns, 1 /* desc */);
 		this.list(days);
 		this.popup();
 		this.repeatRegular(days);
+	}
+
+	async renderFastMemory() {
+		const days = await getWasm().Store.select_fast(this.ns, 1 /* desc */);
+		this.tmpNodes = this.list(days);
 	}
 
 	async repeatRegular(days: [boolean, Day][]) {
@@ -51,14 +70,23 @@ export class View {
 			);
 	}
 
-	list(days: [boolean, Day][]) {
+	list(days: [boolean, Day][]): Array<Element> {
 		const container = document.querySelector("#container-row")!;
 		const row = (document.querySelector("#template-row") as HTMLTemplateElement).content;
 		const date = (document.querySelector("#template-date-row") as HTMLTemplateElement).content;
+		const result: Array<Element> = [];
 		days.forEach((x: [boolean, Day]) => {
-			if (x[0]) { container.appendChild(this.fillDate(date.cloneNode(true) as HTMLElement, x[1])); } 
-			container.appendChild(this.fill(row.cloneNode(true) as HTMLElement, x[1]));
+			const [isNext, day] = [x[0], x[1]];
+			if (isNext) {
+				const node = date.cloneNode(true) as HTMLElement; 
+				container.appendChild(this.fillDate(node, day)); 
+				result.push( container.lastElementChild! );
+			}
+			const node = row.cloneNode(true) as HTMLElement;
+			container.appendChild(this.fill(node, day));
+			result.push( container.lastElementChild! );
 		});
+		return result;
 	}
 
 	fillDate(x: HTMLElement, d: Day): HTMLElement {
