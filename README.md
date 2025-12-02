@@ -71,7 +71,8 @@ pitfalls:
 18. What to do on read when part of struct failed, on when one of many failed  
 19. Move semantic better than ref (easier to negotiate with type system about await and not only) 
 20. Everyday new things in Rust just very easy by practice
-21. Tests inside module - very nice
+21. Tests inside module (rust) - very nice
+22. snake_case for rust and camelCase for ts
 
 generate dev cert:
 
