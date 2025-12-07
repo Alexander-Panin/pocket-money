@@ -145,7 +145,7 @@ export class Tag {
 	constructor(model: Day, row: Element, ns: string) {
 		this.model = model;
 		this.row = row;
-		this.tags = []
+		this.tags = [];
 		getWasm().Store.tags(ns).then((xs: string[]) => { 
 			this.tags = dedup(xs); 
 			this.fill(this.model.tag);
@@ -185,5 +185,4 @@ export class Tag {
 	    await getWasm().save_tag(this.model.id, newValue);
 	    this.model.tag = newValue;
 	}
-
 }

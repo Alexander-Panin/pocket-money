@@ -5,7 +5,10 @@ use crate::day::{Day};
 use crate::provider::{Provider};
 
 #[wasm_bindgen(getter_with_clone)]
-pub struct Row(pub bool, pub Day);
+pub struct FirstRecord(pub bool, pub Day);
+
+#[wasm_bindgen(getter_with_clone)]
+pub struct Tag(pub JsValue, pub f32);
 
 #[wasm_bindgen]
 pub struct Stats { pub last_date: i32 }
@@ -54,22 +57,22 @@ impl Store {
     }
 
     // ui -- prepare for rendering
-    pub fn transform(days: Vec<Day>) -> Vec<Row> {
+    pub fn transform(days: Vec<Day>) -> Vec<FirstRecord> {
         days.into_iter().scan(-1, |state, x| {
             let is_next = *state != x.date;
             *state = x.date;
-            Some(Row(is_next, x))
+            Some(FirstRecord(is_next, x))
         }).collect()
     }
 
     // ui -- data for rendering
-    pub async fn select(ns: &JsValue, ordering: Sort) -> Vec<Row> {
+    pub async fn select(ns: &JsValue, ordering: Sort) -> Vec<FirstRecord> {
         let days = Self::sort(Self::all(ns.clone()).await, ordering);
         Self::transform(days) 
     }    
 
     // ui -- data for (first fast) rendering
-    pub async fn select_fast(ns: &JsValue, ordering: Sort) -> Vec<Row> {
+    pub async fn select_fast(ns: &JsValue, ordering: Sort) -> Vec<FirstRecord> {
         let days = Self::sort(Self::all_fast(ns.clone()).await, ordering);
         Self::transform(days) 
     }
@@ -100,6 +103,20 @@ impl Store {
     pub async fn sum(ns: &JsValue) -> f32 {
         let days = Store::all(ns.clone()).await;
         days.into_iter().map(|x| x.price).sum::<f32>().round()
+    }
+
+    // ui -- stats page
+    pub async fn group_by(ns: &JsValue) -> Vec<Tag> {
+        let days = Store::all_with(ns.clone(), |x| x.date > 0).await;
+        let mut map = std::collections::HashMap::new();
+        for day in days.into_iter() {
+            map.entry(day.tag.as_string())
+                .and_modify(|e| *e += day.price)
+                .or_insert(day.price);
+        }
+        let mut v: Vec<_> = map.drain().map(|(k,v)| Tag(k.into(),v)).collect();
+        v.sort_by(|x,y| y.1.partial_cmp(&x.1).unwrap());
+        return v;
     }
 
     // ui -- list of tags (e.g. in slider) 

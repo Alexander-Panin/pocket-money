@@ -9,12 +9,12 @@ function one(x: Day, isNext: boolean) {
 	];
 }
 
-type Row = [boolean, Day];
+type FirstRecord = [boolean, Day];
 async function csv(ns: string): Promise<string> {
 	const data = await getWasm().Store.select(ns, 0 /* asc */);
 	return ["date,price,tag,comment"]
 		.concat(
-			data.map((x: Row) => 
+			data.map((x: FirstRecord) => 
 				(x[0] ? ",,,\n" : "") + one(x[1], x[0]).join(",")
 			)
 		).join("\n");

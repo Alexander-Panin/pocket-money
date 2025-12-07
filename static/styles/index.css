@@ -47,6 +47,8 @@ textarea:focus, input:focus {
     overflow-x: clip;
 }
 
+/* common styles */
+
 .title-sticky {
     position: sticky;
     top: 0;
@@ -74,3 +76,5 @@ textarea:focus, input:focus {
 .container-row {
     padding-bottom: 100px;
 }
+
+ /* end common styles */

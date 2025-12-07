@@ -1,0 +1,17 @@
+.row-category {
+	display: inline-block;
+	width: 120px;
+	padding-left: 20px;
+	font-size: 20px;
+	text-transform: capitalize;
+}
+
+.row-sum {
+	font-size: 24px;
+  display: inline-block;
+  width: 60px;
+}
+
+.row-container {
+	padding-top: 10px;
+}

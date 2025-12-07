@@ -16,6 +16,7 @@ export class View {
 			);
 		const {month, year} = route.getParams(this.ns);
 		document.querySelector('#list-title')!.textContent = `${getMonthBy(month, 'ru')} ${year}`; 
+		(document.querySelector('#list-stats-link') as HTMLAnchorElement).href = `/stats.html?month=${month}&year=${year}`;
 
 		const row = (document.querySelector("#template-row") as HTMLTemplateElement).content;
 		const container = document.querySelector("#container-row")!;
