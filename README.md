@@ -73,6 +73,7 @@ pitfalls:
 20. Everyday new things in Rust just very easy by practice
 21. Tests inside module (rust) - very nice
 22. snake_case for rust and camelCase for ts
+23. ok to use rust wasm in js, better not to use js in rust code (except build in e.g. alert)
 
 generate dev cert:
 
