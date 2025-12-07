@@ -1,3 +1,4 @@
+use crate::alloc::string::ToString;
 use wasm_bindgen::prelude::*;
 use web_sys::js_sys::{JsString};
 use uuid::Uuid;

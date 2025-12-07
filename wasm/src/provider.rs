@@ -1,3 +1,6 @@
+use alloc::vec;
+use alloc::vec::Vec;
+use crate::alloc::string::ToString;
 use web_sys::js_sys::{JsString};
 use crate::linked;
 use crate::day::{Day};

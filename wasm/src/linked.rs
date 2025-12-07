@@ -1,7 +1,8 @@
-use std::collections::HashSet;
+use alloc::vec;
+use alloc::vec::Vec;
 use wasm_bindgen::prelude::*;
 use web_sys::js_sys::{JsString};
-use std::future::Future;
+use core::future::Future;
 
 #[wasm_bindgen]
 extern "C" {
@@ -14,9 +15,10 @@ pub async fn collect_ids<T, F>(ns: JsString, read: T) -> Vec<JsString>
         F: Future<Output = Result<JsString, JsString>> 
 {
     let Ok(mut id) = read(ns, "root".into()).await else { return vec![]; };
-    let (mut result, mut acc) = (vec![id.clone()], HashSet::from([id.as_string().unwrap()]));
+    let mut result = vec![id.clone()];
+    let mut acc: hashbrown::HashSet<_> = hashbrown::HashSet::from([id.as_string()]);
     while let Ok(new_id) = read(id, "next".into()).await {
-        if !acc.insert(new_id.as_string().unwrap()) {
+        if !acc.insert(new_id.as_string()) {
             #[cfg(not(test))]
             alert("Corrupted data - cycle detected");
             break;

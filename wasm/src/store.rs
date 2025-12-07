@@ -1,3 +1,5 @@
+use alloc::vec;
+use alloc::vec::Vec;
 use wasm_bindgen::prelude::*;
 use web_sys::js_sys::{JsString};
 use crate::opfs::{read, write};
@@ -96,7 +98,7 @@ impl Store {
     // ui -- handy defaults values 
     pub async fn stats(ns: &JsString) -> Option<Stats> {
         let mut days = Store::all_with(ns.clone(), |x| x.date > 0).await;
-        days.sort_by_key(|x| std::cmp::Reverse(x.date));
+        days.sort_by_key(|x| core::cmp::Reverse(x.date));
         Some(Stats { last_date: days.first()?.date })
     }
 
@@ -109,7 +111,7 @@ impl Store {
     // ui -- stats page
     pub async fn group_by(ns: &JsString) -> Vec<Tag> {
         let days = Store::all_with(ns.clone(), |x| x.date > 0).await;
-        let mut map = std::collections::HashMap::new();
+        let mut map = hashbrown::HashMap::new();
         for day in days.into_iter() {
             map.entry(day.tag.as_string())
                 .and_modify(|e| *e += day.price)
