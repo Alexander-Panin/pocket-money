@@ -1,21 +1,23 @@
 use wasm_bindgen::prelude::*;
+use web_sys::js_sys::{JsString};
+
 
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(js_namespace = ["window", "localStorage"])]
-    pub fn getItem(a: JsValue) -> JsValue;
+    pub fn getItem(a: JsString) -> JsValue;
 
     #[wasm_bindgen(js_namespace = ["window", "localStorage"])]
-    pub fn setItem(a: JsValue, b: JsValue);
+    pub fn setItem(a: JsString, b: JsString);
 }
 
-pub async fn read(id: JsValue, name: JsValue) -> Result<JsValue, JsValue> {
-    let x = getItem(id+name);
-    if x == JsValue::NULL { Err(JsValue::NULL) } else { Ok(x) } 
+pub async fn read(id: JsString, name: JsString) -> Result<JsString, JsString> {
+    let x = getItem(id.concat(&name));
+    if x == JsValue::NULL { Err("".into()) } else { Ok(x.into()) } 
 }
 
-pub async fn write(id: JsValue, name: JsValue, value: JsValue) -> Result<(), JsValue> {
-    setItem(id+name, value);
+pub async fn write(id: JsString, name: JsString, value: JsString) -> Result<(), JsString> {
+    setItem(id.concat(&name), value);
     Ok(())
 }
 

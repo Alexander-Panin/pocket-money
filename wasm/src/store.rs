@@ -1,4 +1,5 @@
 use wasm_bindgen::prelude::*;
+use web_sys::js_sys::{JsString};
 use crate::opfs::{read, write};
 use crate::local_storage::{read as fastread, write as fastwrite};
 use crate::day::{Day};
@@ -8,7 +9,7 @@ use crate::provider::{Provider};
 pub struct FirstRecord(pub bool, pub Day);
 
 #[wasm_bindgen(getter_with_clone)]
-pub struct Tag(pub JsValue, pub f32);
+pub struct Tag(pub JsString, pub f32);
 
 #[wasm_bindgen]
 pub struct Stats { pub last_date: i32 }
@@ -22,21 +23,21 @@ pub struct Store {}
 #[wasm_bindgen]
 impl Store {
 
-    async fn all_with<F: FnMut(&Day) -> bool>(ns: JsValue, f: F) -> Vec<Day> {
+    async fn all_with<F: FnMut(&Day) -> bool>(ns: JsString, f: F) -> Vec<Day> {
         let mut result = Provider{read, write}.all(ns).await;
         result.retain(f); 
         result
     }    
 
-    async fn all(ns: JsValue) -> Vec<Day> {
+    async fn all(ns: JsString) -> Vec<Day> {
         Self::all_with(ns, |x| x.date >= 0).await
     }    
 
-    async fn all_fast(ns: JsValue) -> Vec<Day> {
+    async fn all_fast(ns: JsString) -> Vec<Day> {
         Self::all_with_fast(ns, |x| x.date >= 0).await
     }    
 
-    async fn all_with_fast<F: FnMut(&Day) -> bool>(ns: JsValue, f: F) -> Vec<Day> {
+    async fn all_with_fast<F: FnMut(&Day) -> bool>(ns: JsString, f: F) -> Vec<Day> {
         let mut result = Provider{read: fastread, write: fastwrite}.all(ns).await;
         result.retain(f); 
         result
@@ -51,7 +52,7 @@ impl Store {
     }
 
     // ui -- create new record
-    pub async fn append(ns: &JsValue, id: &JsValue) -> Result<(), JsValue> {
+    pub async fn append(ns: &JsString, id: &JsString) -> Result<(), JsString> {
         Provider{read, write}.append(ns.clone(), id.clone()).await?; 
         Provider{read: fastread, write: fastwrite}.append(ns.clone(), id.clone()).await 
     }
@@ -66,24 +67,24 @@ impl Store {
     }
 
     // ui -- data for rendering
-    pub async fn select(ns: &JsValue, ordering: Sort) -> Vec<FirstRecord> {
+    pub async fn select(ns: &JsString, ordering: Sort) -> Vec<FirstRecord> {
         let days = Self::sort(Self::all(ns.clone()).await, ordering);
         Self::transform(days) 
     }    
 
     // ui -- data for (first fast) rendering
-    pub async fn select_fast(ns: &JsValue, ordering: Sort) -> Vec<FirstRecord> {
+    pub async fn select_fast(ns: &JsString, ordering: Sort) -> Vec<FirstRecord> {
         let days = Self::sort(Self::all_fast(ns.clone()).await, ordering);
         Self::transform(days) 
     }
 
     // ui -- every month records
-    pub async fn regular(ns: &JsValue) -> Vec<Day> {
+    pub async fn regular(ns: &JsString) -> Vec<Day> {
         Self::all_with(ns.clone(), |x| x.date == 0).await
     }
 
     // ui -- copy every month records
-    pub async fn repeat_regular(ns: &JsValue, prev_ns: &JsValue) -> Vec<Day> {
+    pub async fn repeat_regular(ns: &JsString, prev_ns: &JsString) -> Vec<Day> {
         use crate::opfs::{read, write}; 
         let mut result = vec![];
         for x in Self::regular(prev_ns).await {
@@ -93,20 +94,20 @@ impl Store {
     }
 
     // ui -- handy defaults values 
-    pub async fn stats(ns: &JsValue) -> Option<Stats> {
+    pub async fn stats(ns: &JsString) -> Option<Stats> {
         let mut days = Store::all_with(ns.clone(), |x| x.date > 0).await;
         days.sort_by_key(|x| std::cmp::Reverse(x.date));
         Some(Stats { last_date: days.first()?.date })
     }
 
     // ui -- monthly summary 
-    pub async fn sum(ns: &JsValue) -> f32 {
+    pub async fn sum(ns: &JsString) -> f32 {
         let days = Store::all(ns.clone()).await;
         days.into_iter().map(|x| x.price).sum::<f32>().round()
     }
 
     // ui -- stats page
-    pub async fn group_by(ns: &JsValue) -> Vec<Tag> {
+    pub async fn group_by(ns: &JsString) -> Vec<Tag> {
         let days = Store::all_with(ns.clone(), |x| x.date > 0).await;
         let mut map = std::collections::HashMap::new();
         for day in days.into_iter() {
@@ -114,13 +115,13 @@ impl Store {
                 .and_modify(|e| *e += day.price)
                 .or_insert(day.price);
         }
-        let mut v: Vec<_> = map.drain().map(|(k,v)| Tag(k.into(),v)).collect();
+        let mut v: Vec<_> = map.drain().map(|(k,v)| Tag(k.unwrap().into(),v)).collect();
         v.sort_by(|x,y| y.1.partial_cmp(&x.1).unwrap());
         return v;
     }
 
     // ui -- list of tags (e.g. in slider) 
-    pub async fn tags(ns: &JsValue) -> Vec<JsValue> {
+    pub async fn tags(ns: &JsString) -> Vec<JsString> {
         Self::all(ns.clone()).await.into_iter().map(|x| x.tag).collect()
     }
 }

@@ -1,13 +1,13 @@
-use wasm_bindgen::prelude::*;
+use web_sys::js_sys::{JsString};
 use crate::linked;
 use crate::day::{Day};
 
 pub struct Provider<T,F,T2,F2> 
     where
-        T: Fn(JsValue, JsValue) -> F + Clone, 
-        F: Future<Output = Result<JsValue, JsValue>>,
-        T2: Fn(JsValue, JsValue, JsValue) -> F2 + Clone,
-        F2: Future<Output = Result<(), JsValue>>,
+        T: Fn(JsString, JsString) -> F + Clone, 
+        F: Future<Output = Result<JsString, JsString>>,
+        T2: Fn(JsString, JsString, JsString) -> F2 + Clone,
+        F2: Future<Output = Result<(), JsString>>,
 { 
     pub read: T, 
     pub write: T2 
@@ -15,13 +15,13 @@ pub struct Provider<T,F,T2,F2>
 
 impl<T,F,T2,F2> Provider<T,F,T2,F2>
     where
-        T: Fn(JsValue, JsValue) -> F + Clone, 
-        F: Future<Output = Result<JsValue, JsValue>>,
-        T2: Fn(JsValue, JsValue, JsValue) -> F2 + Clone,
-        F2: Future<Output = Result<(), JsValue>>,
+        T: Fn(JsString, JsString) -> F + Clone, 
+        F: Future<Output = Result<JsString, JsString>>,
+        T2: Fn(JsString, JsString, JsString) -> F2 + Clone,
+        F2: Future<Output = Result<(), JsString>>,
 {
 
-    pub async fn all(&self, ns: JsValue) -> Vec<Day> {
+    pub async fn all(&self, ns: JsString) -> Vec<Day> {
         let mut result = vec![];
         for id in linked::collect_ids(ns, self.read.clone()).await { 
             result.push( self.fetch(id.clone()).await ); 
@@ -29,21 +29,21 @@ impl<T,F,T2,F2> Provider<T,F,T2,F2>
         result
     }
 
-    pub async fn append(&self, ns: JsValue, id: JsValue) -> Result<(), JsValue> {
+    pub async fn append(&self, ns: JsString, id: JsString) -> Result<(), JsString> {
         if let Ok(root) = (self.read)(ns.clone(), "root".into()).await {
             (self.write)(id.clone(), "next".into(), root).await?;
         }
         (self.write)(ns, "root".into(), id).await
     }
 
-    pub async fn copy(&self, ns: JsValue, day: Day) -> Day {
+    pub async fn copy(&self, ns: JsString, day: Day) -> Day {
         let x = day.r#move(); 
         let _ = self.append(ns, x.id.clone()).await; 
         self.save(&x).await;
         return x;
     }
 
-    pub async fn fetch(&self, id: JsValue) -> Day {
+    pub async fn fetch(&self, id: JsString) -> Day {
         Day {
             price: (self.read)(id.clone(), "price".into()).await
                 .map(|x| x.unchecked_into_f64() as f32)
@@ -67,19 +67,19 @@ impl<T,F,T2,F2> Provider<T,F,T2,F2>
         let _ = (self.write)(id.clone(), "comment".into(), day.comment.clone()).await;
     }
 
-    pub async fn save_date(&self, id: JsValue, date: JsValue) -> Result<(), JsValue> {
+    pub async fn save_date(&self, id: JsString, date: JsString) -> Result<(), JsString> {
         (self.write)(id, "date".into(), date).await
     }
 
-    pub async fn save_price(&self, id: JsValue, price: JsValue) -> Result<(), JsValue> {
+    pub async fn save_price(&self, id: JsString, price: JsString) -> Result<(), JsString> {
         (self.write)(id, "price".into(), price).await
     }
 
-    pub async fn save_tag(&self, id: JsValue, tag: JsValue) -> Result<(), JsValue> {
+    pub async fn save_tag(&self, id: JsString, tag: JsString) -> Result<(), JsString> {
         (self.write)(id, "tag".into(), tag).await
     }    
 
-    pub async fn save_comment(&self, id: JsValue, comment: JsValue) -> Result<(), JsValue> {
+    pub async fn save_comment(&self, id: JsString, comment: JsString) -> Result<(), JsString> {
         (self.write)(id, "comment".into(), comment).await
     }
 }

@@ -15,7 +15,6 @@ export class Listener {
 			case 'download':
 				this.download(node, id);
 				return;
-			
 		}
 	}
 
