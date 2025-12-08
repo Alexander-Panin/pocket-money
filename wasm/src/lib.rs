@@ -2,12 +2,9 @@
 
 extern crate alloc;
 
-use lol_alloc::{AssumeSingleThreaded, FreeListAllocator};
-
-// SAFETY: This application is single threaded, so using AssumeSingleThreaded is allowed.
+/// SAFETY: The runtime environment must be single-threaded WASM.
 #[global_allocator]
-static ALLOCATOR: AssumeSingleThreaded<FreeListAllocator> =
-    unsafe { AssumeSingleThreaded::new(FreeListAllocator::new()) };
+static ALLOCATOR: talc::TalckWasm = unsafe { talc::TalckWasm::new_global() };
 
 pub mod utils;
 pub mod store;

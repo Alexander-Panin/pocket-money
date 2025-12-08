@@ -103,15 +103,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "34080505efa8e45a4b816c349525ebe327ceaa8559756f0356cba97ef3bf7432"
 
 [[package]]
-name = "lol_alloc"
-version = "0.4.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "83e5106554cabc97552dcadf54f57560ae6af3276652f82ca2be06120dc4c5dc"
-dependencies = [
- "spin",
-]
-
-[[package]]
 name = "minicov"
 version = "0.3.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -179,15 +170,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0fda2ff0d084019ba4d7c6f371c95d8fd75ce3524c3cb8fb653a3023f6323e64"
 
 [[package]]
-name = "spin"
-version = "0.9.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6980e8d7511241f8acf4aebddbb1ff938df5eebe98691418c4468d0b72a96a67"
-dependencies = [
- "lock_api",
-]
-
-[[package]]
 name = "syn"
 version = "2.0.106"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -196,6 +178,15 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
+]
+
+[[package]]
+name = "talc"
+version = "4.4.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a3ae828aa394de34c7de08f522d1b86bd1c182c668d27da69caadda00590f26d"
+dependencies = [
+ "lock_api",
 ]
 
 [[package]]
@@ -239,7 +230,7 @@ name = "wasm"
 version = "0.1.0"
 dependencies = [
  "hashbrown",
- "lol_alloc",
+ "talc",
  "uuid",
  "wasm-bindgen",
  "wasm-bindgen-futures",
