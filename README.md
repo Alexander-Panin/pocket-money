@@ -74,6 +74,7 @@ pitfalls:
 21. Tests inside module (rust) - very nice
 22. snake_case for rust and camelCase for ts
 23. ok to use rust wasm in js, better not to use js in rust code (except build in e.g. alert)
+24. wasm_bindgen_futures does not support no_std
 
 generate dev cert:
 

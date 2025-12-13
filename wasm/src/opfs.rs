@@ -33,7 +33,7 @@ pub async fn write(id: JsString, name: JsString, value: JsString) -> Result<(), 
 }
 
 async fn file_handle_create_if_needed(key: &str) -> Result<FileSystemFileHandle, JsString> {
-    let p = window().unwrap().navigator().storage().get_directory();
+    let p = window().ok_or::<&str>("".into())?.navigator().storage().get_directory();
     let root: FileSystemDirectoryHandle = future(p).await?;
     let options = FileSystemGetFileOptions::new();
     options.set_create(true);
@@ -42,7 +42,7 @@ async fn file_handle_create_if_needed(key: &str) -> Result<FileSystemFileHandle,
 }
 
 async fn file_handle(key: &str) -> Result<FileSystemFileHandle, JsString> {
-    let p = window().unwrap().navigator().storage().get_directory();
+    let p = window().ok_or::<&str>("".into())?.navigator().storage().get_directory();
     let root: FileSystemDirectoryHandle = future(p).await?;
     let p = root.get_file_handle(key);
     future(p).await

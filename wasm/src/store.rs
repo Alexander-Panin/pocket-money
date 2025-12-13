@@ -117,8 +117,8 @@ impl Store {
                 .and_modify(|e| *e += day.price)
                 .or_insert(day.price);
         }
-        let mut v: Vec<_> = map.drain().map(|(k,v)| Tag(k.unwrap().into(),v)).collect();
-        v.sort_by(|x,y| y.1.partial_cmp(&x.1).unwrap());
+        let mut v: Vec<_> = map.drain().filter_map(|(k,v)| Some(Tag(k?.into(),v))).collect();
+        v.sort_by(|x,y| y.1.partial_cmp(&x.1).unwrap_or(core::cmp::Ordering::Less));
         return v;
     }
 
