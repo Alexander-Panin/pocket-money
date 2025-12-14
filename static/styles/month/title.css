@@ -7,6 +7,6 @@
 .list-stats-link-left {
 	float: left;
 	padding-left: 7px;
-	margin-right: 8px;
+	padding-right: 8px;
 	color: var(--tt-brown);
 }
