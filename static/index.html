@@ -33,13 +33,6 @@
         .querySelector("body")
         .addEventListener("click", new Listener(namespace).handler);
     </script>
-
-     <script>
-        if('serviceWorker' in navigator) {
-          navigator.serviceWorker.register('./sw.js', { scope: './' });
-        }
-    </script>
-
     <div id="main" onclick="void(0);">
       <div id="container-list" class="container-list" ></div>
     </div>
