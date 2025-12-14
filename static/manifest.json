@@ -1,6 +1,6 @@
 {
-  "short_name": "pocket money",
-  "name": "pocket money",
+  "short_name": "123",
+  "name": "one two three",
   "icons": [
     {
       "src": "icons/512.png",
@@ -14,5 +14,5 @@
     }
   ],
   "start_url": "/",
-  "display": "standalone"
+  "display": "fullscreen"
 }
