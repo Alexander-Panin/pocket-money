@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title>Pocket Money</title>
-    <link rel="manifest" href="/manifest.json" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" type="image/png" href="./icon512.png">
     <meta name="apple-mobile-wep-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta charset="utf-8" />
@@ -32,6 +33,13 @@
         .querySelector("body")
         .addEventListener("click", new Listener(namespace).handler);
     </script>
+
+     <script>
+        if('serviceWorker' in navigator) {
+          navigator.serviceWorker.register('./sw.js', { scope: './' });
+        }
+    </script>
+
     <div id="main" onclick="void(0);">
       <div id="container-list" class="container-list" ></div>
     </div>
