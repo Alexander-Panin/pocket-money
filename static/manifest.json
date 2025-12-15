@@ -1,7 +1,7 @@
 {
   "lang": "en-us",
   "name": "one two three",
-  "short_name": "123",
+  "short_name": "one two three",
   "description": "records of input in table form",
   "start_url": "./",
   "orientation": "any",
