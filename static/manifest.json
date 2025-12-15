@@ -5,7 +5,7 @@
   "description": "records of input in table form",
   "start_url": "./",
   "orientation": "any",
-  "display": "fullscreen",
+  "display": "standalone",
   "background_color": "black",
   "theme_color": "black",
   "icons": [
@@ -13,5 +13,13 @@
           "src": "./icon512.png",
           "sizes": "512x512"
       }
-  ]
+  ],
+  "theme": {
+    "colors": {
+      "frame": "black",
+      "tab_background_text": "white",
+      "tab_text": "white",
+      "toolbar": "black"
+    }
+  }
 }
