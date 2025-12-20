@@ -31,6 +31,7 @@ export class View {
 			this.renderSlowMemory()
 		]);
 		this.cleanUpFastRender();
+		this.sum(await getWasm().Store.sum(this.ns))
 	}
 
 	cleanUpFastRender() {
@@ -56,6 +57,10 @@ export class View {
 			const regular = await getWasm().Store.repeat_regular(this.ns, prevNs);
 			this.list(getWasm().Store.transform(regular));
 		}
+	}
+
+	sum(s: number) {
+		document.querySelector('#list-sum')!.textContent = String(s);
 	}
 
 	popup() {
