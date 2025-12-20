@@ -25,23 +25,6 @@
 	padding-top: 10px;
 }
 
-.row-container {
-  animation-duration: 0.5s;
-  animation-name: slide-in;
-}
-
-@keyframes slide-in {
-  from {
-    translate: 10vw 0;
-    opacity: 0;
-  }
-
-  to {
-    translate: 0 0;
-    opacity: 1;
-  }
-}
-
 #quota-usage, #quota {
   animation-duration: 2s;
   animation-name: fade-in;

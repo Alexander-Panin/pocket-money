@@ -3,5 +3,10 @@
 	text-align: left;
 	padding-left: 10px;
 	padding-bottom: 0px;
+	padding-top: 20px;
 	color: darkgray;
+}
+
+.list-container {
+	padding-bottom: 25px;
 }

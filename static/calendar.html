@@ -20,8 +20,9 @@
       window.__wasm = wasm;
 
       const namespace = route.getNamespace(window.location.search);
-      new View().prerender();
-      init().then(() => new View().render());
+      const view = new View();;
+      view.prerender();
+      init().then(() => view.render());
 
       document
         .querySelector("body")
@@ -47,10 +48,12 @@
 
 <template id="template-list">
   <h1 __action="list/on-top" class="title-sticky">&#160;</h1>
-  <div id="container-row" class="container-row" __action="list/todo">
+  <div class="list-container" __action="list/todo">
     <h1 __action="list/todo" id="list-title" class="title" >Календарь</h1>
-    <!-- TODO 2025 -->
     <div class="list-year">2025</div>
+    <div id="list-row-2025"></div>
+    <div class="list-year">2026</div>
+    <div id="list-row-2026"></div>
   </div>
 </template>
 
