@@ -35,6 +35,7 @@ features = [
   "FileSystemGetFileOptions",
   "FileSystemDirectoryHandle",
   "FileSystemFileHandle",
+  "FileSystemSyncAccessHandle",
   "FileSystemWritableFileStream",
   "File",
   "Window",
@@ -44,6 +45,8 @@ features = [
   "NodeList",
   "NamedNodeMap",
   "Attr",
+  "WorkerGlobalScope",
+  "WorkerNavigator"
 ]
 
 
