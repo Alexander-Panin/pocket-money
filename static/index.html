@@ -22,7 +22,7 @@
   <body>
     <script type="module">
       import init, * as wasm from "/script/pkg/wasm.js?t=1763158241768";
-      import { Listener, View, route } from "/script/month.js?t=1763158241768";
+      import { Listener, View, route, onmsg } from "/script/month.js?t=1763158241768";
       window.__wasm = wasm;
 
       const namespace = route.getNamespace(window.location.search);
@@ -32,6 +32,10 @@
       document
         .querySelector("body")
         .addEventListener("click", new Listener(namespace).handler);
+
+      const worker = new Worker("worker.js", {type: "module"});
+      worker.onmessage = onmsg;
+      window.__worker = worker;
     </script>
     <div id="main" onclick="void(0);">
       <div id="container-list" class="container-list" ></div>

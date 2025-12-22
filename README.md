@@ -76,6 +76,8 @@ pitfalls:
 23. ok to use rust wasm in js, better not to use js in rust code (except build in e.g. alert)
 24. wasm_bindgen_futures does not support no_std
 25. three phases of `good` rendering :) slow rendering, 2) render with animation, 3) two pass rendering  
+26. one shot with Promise implementing post message and onmessage
+27. ios (even on chrome) only through workers 
 
 generate dev cert:
 

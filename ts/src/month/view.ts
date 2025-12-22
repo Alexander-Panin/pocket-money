@@ -1,4 +1,5 @@
 import getWasm from "../common/wasm";
+import worker from "../common/worker";
 import * as route from "../common/route";
 import { getMonthBy } from "../common/utils";
 import * as utils from "./utils";
@@ -54,7 +55,8 @@ export class View {
 	async repeatRegular(days: [boolean, Day][]) {
 		if (!Boolean(days.find(x => x[1].date === 0))) {
 			const prevNs = route.getPrevNamespace(this.ns);
-			const regular = await getWasm().Store.repeat_regular(this.ns, prevNs);
+			await worker("repeat_regular", {ns: this.ns, prevNs});
+			const regular = await getWasm().Store.regular(this.ns);
 			this.list(getWasm().Store.transform(regular));
 		}
 	}

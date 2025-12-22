@@ -2,7 +2,7 @@ use alloc::vec;
 use alloc::vec::Vec;
 use wasm_bindgen::prelude::*;
 use web_sys::js_sys::{JsString};
-use crate::opfs::{read, write};
+use crate::opfs::{read, read_in_worker, write_in_worker, noop_write};
 use crate::local_storage::{read as fastread, write as fastwrite};
 use crate::day::{Day};
 use crate::provider::{Provider};
@@ -26,7 +26,7 @@ pub struct Store {}
 impl Store {
 
     async fn all_with<F: FnMut(&Day) -> bool>(ns: JsString, f: F) -> Vec<Day> {
-        let mut result = Provider{read, write}.all(ns).await;
+        let mut result = Provider{read, write: noop_write}.all(ns).await;
         result.retain(f); 
         result
     }    
@@ -45,6 +45,16 @@ impl Store {
         result
     }
 
+    async fn all_with_in_worker<F: FnMut(&Day) -> bool>(ns: JsString, f: F) -> Vec<Day> {
+        let mut result = Provider{
+            read: read_in_worker,
+            write: write_in_worker,
+        }.all(ns).await;
+        result.retain(f); 
+        result
+    }    
+
+
     fn sort(mut days: Vec<Day>, ordering: Sort) -> Vec<Day> {
         days.sort_by(match ordering {
             Sort::Asc => |x: &Day, y: &Day| x.date.cmp(&y.date),
@@ -55,7 +65,15 @@ impl Store {
 
     // ui -- create new record
     pub async fn append(ns: &JsString, id: &JsString) -> Result<(), JsString> {
-        Provider{read, write}.append(ns.clone(), id.clone()).await?; 
+        Provider{
+            read: read_in_worker, 
+            write: write_in_worker,
+        
+        }.append(ns.clone(), id.clone()).await 
+    }
+
+    // ui -- create new record in fast memory
+    pub async fn append_fast(ns: &JsString, id: &JsString) -> Result<(), JsString> {
         Provider{read: fastread, write: fastwrite}.append(ns.clone(), id.clone()).await 
     }
 
@@ -85,12 +103,20 @@ impl Store {
         Self::all_with(ns.clone(), |x| x.date == 0).await
     }
 
+    async fn regular_in_worker(ns: &JsString) -> Vec<Day> {
+        Self::all_with_in_worker(ns.clone(), |x| x.date == 0).await
+    }
+
     // ui -- copy every month records
     pub async fn repeat_regular(ns: &JsString, prev_ns: &JsString) -> Vec<Day> {
-        use crate::opfs::{read, write}; 
         let mut result = vec![];
-        for x in Self::regular(prev_ns).await {
-            result.push(Provider{read, write}.copy(ns.clone(), x).await);
+        for x in Self::regular_in_worker(prev_ns).await {
+            result.push(
+                Provider{
+                    read: read_in_worker, 
+                    write: write_in_worker
+                }.copy(ns.clone(), x).await
+            );
         }
         result
     }

@@ -1,4 +1,5 @@
 import getWasm from "../common/wasm";
+import worker from "../common/worker";
 import * as tabs from "./tabs";
 
 const newIds: Set<string> = new Set();
@@ -12,9 +13,12 @@ async function fetch(ns: string, id: string) {
 
 async function appendIf(ns: string, model: Day) {
 	if (newIds.delete(model.id)) {  
-		const date = (await getWasm().Store.stats(ns))?.last_date;
-		await getWasm().Store.append(ns, model.id);
-		await getWasm().save_date(model.id, String(date ?? new Date().getDate()));
+		const lastDate = (await getWasm().Store.stats(ns))?.last_date;
+		const date = String(lastDate ?? new Date().getDate());
+		await worker("append", {ns, id: model.id});
+		await getWasm().Store.append_fast(ns, model.id);
+		await worker("save_date", {id: model.id, value: date});
+		await getWasm().save_date_fast(model.id, date);
 	}
 }
 
