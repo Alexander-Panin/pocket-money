@@ -5,7 +5,6 @@ function worker(): Worker { return (globalThis as any).__worker; }
 export function onmsg(e: any) {
 	const {id, msg} = e.data;
 	if (map[id]) {
-		console.log("ZZZ onmessage main", e.data);
 		map[id](msg);
 		delete map[id];
 	}
