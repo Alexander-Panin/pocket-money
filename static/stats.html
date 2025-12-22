@@ -22,7 +22,6 @@
       const namespace = route.getNamespace(window.location.search);
       new View(namespace).prerender();
       init().then(() => new View(namespace).render());
-
     </script>
 
     <div id="main" onclick="void(0);">
