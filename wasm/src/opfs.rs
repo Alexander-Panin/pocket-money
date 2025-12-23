@@ -1,4 +1,4 @@
-use wasm_bindgen::prelude::*;
+use wasm_bindgen::prelude::{JsCast};
 use web_sys::{
     window, 
     FileSystemGetFileOptions, 

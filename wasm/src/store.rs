@@ -1,7 +1,7 @@
 use alloc::vec;
 use alloc::vec::Vec;
 use alloc::collections::BTreeMap;
-use wasm_bindgen::prelude::*;
+use wasm_bindgen::prelude::{wasm_bindgen};
 use web_sys::js_sys::{JsString};
 use crate::opfs::{read, read_in_worker, write_in_worker, noop_write};
 use crate::local_storage::{read as fastread, write as fastwrite};

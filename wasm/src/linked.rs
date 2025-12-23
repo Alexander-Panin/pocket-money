@@ -1,7 +1,7 @@
 use alloc::vec;
 use alloc::vec::Vec;
 use alloc::collections::BTreeSet;
-use wasm_bindgen::prelude::*;
+use wasm_bindgen::prelude::{wasm_bindgen};
 use web_sys::js_sys::{JsString};
 use core::future::Future;
 

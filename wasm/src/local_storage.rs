@@ -1,4 +1,4 @@
-use wasm_bindgen::prelude::*;
+use wasm_bindgen::prelude::{wasm_bindgen, JsValue};
 use web_sys::js_sys::{JsString};
 
 #[wasm_bindgen]

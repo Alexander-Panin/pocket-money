@@ -1,5 +1,5 @@
 use crate::alloc::string::ToString;
-use wasm_bindgen::prelude::*;
+use wasm_bindgen::prelude::{wasm_bindgen};
 use web_sys::js_sys::{JsString};
 use uuid::Uuid;
 use crate::opfs::{read, read_in_worker, write_in_worker, noop_write};
