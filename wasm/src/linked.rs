@@ -1,5 +1,6 @@
 use alloc::vec;
 use alloc::vec::Vec;
+use alloc::collections::BTreeSet;
 use wasm_bindgen::prelude::*;
 use web_sys::js_sys::{JsString};
 use core::future::Future;
@@ -16,7 +17,7 @@ pub async fn collect_ids<T, F>(ns: JsString, read: T) -> Vec<JsString>
 {
     let Ok(mut id) = read(ns, "root".into()).await else { return vec![]; };
     let mut result = vec![id.clone()];
-    let mut acc: hashbrown::HashSet<_> = hashbrown::HashSet::from([id.as_string()]);
+    let mut acc: BTreeSet<_> = BTreeSet::from([id.as_string()]);
     while let Ok(new_id) = read(id, "next".into()).await {
         if !acc.insert(new_id.as_string()) {
             #[cfg(not(test))]

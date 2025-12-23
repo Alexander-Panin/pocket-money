@@ -23,7 +23,7 @@ export class View {
 	async money(year: number, months: string[]): Promise<Array<[string, number]>> {
 		const result = [];
 		for (const month of months) { 
-      		const sum = await getWasm().Store.sum(`${year}:${month}`);
+      		const sum = Math.round(await getWasm().Store.sum(`${year}:${month}`));
       		const pair: [string, number] = [month, sum];
 			result.push(pair);
 		}
@@ -36,6 +36,7 @@ export class View {
 		this.tmpNodes.forEach(x => x.remove());
 		this.list(2025, data);
 		this.list(2026, data2);
+		this.tmpNodes = [];
 	}
 
 	list(year: number, data: Array<[string, number]>) {

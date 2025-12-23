@@ -1,5 +1,6 @@
 use alloc::vec;
 use alloc::vec::Vec;
+use alloc::collections::BTreeMap;
 use wasm_bindgen::prelude::*;
 use web_sys::js_sys::{JsString};
 use crate::opfs::{read, read_in_worker, write_in_worker, noop_write};
@@ -131,19 +132,19 @@ impl Store {
     // ui -- monthly summary 
     pub async fn sum(ns: &JsString) -> f32 {
         let days = Store::all(ns.clone()).await;
-        days.into_iter().map(|x| x.price).sum::<f32>().round()
+        days.into_iter().map(|x| x.price).sum::<f32>()
     }
 
     // ui -- stats page
     pub async fn group_by(ns: &JsString) -> Vec<Tag> {
         let days = Store::all_with(ns.clone(), |x| x.date > 0).await;
-        let mut map = hashbrown::HashMap::new();
+        let mut map = BTreeMap::new();
         for day in days.into_iter() {
             map.entry(day.tag.as_string())
                 .and_modify(|e| *e += day.price)
                 .or_insert(day.price);
         }
-        let mut v: Vec<_> = map.drain().filter_map(|(k,v)| Some(Tag(k?.into(),v))).collect();
+        let mut v: Vec<_> = map.into_iter().filter_map(|(k,v)| Some(Tag(k?.into(),v))).collect();
         v.sort_by(|x,y| y.1.partial_cmp(&x.1).unwrap_or(core::cmp::Ordering::Less));
         return v;
     }

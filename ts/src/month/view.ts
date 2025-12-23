@@ -32,7 +32,7 @@ export class View {
 			this.renderSlowMemory()
 		]);
 		this.cleanUpFastRender();
-		this.sum(await getWasm().Store.sum(this.ns))
+		this.sum(Math.round(await getWasm().Store.sum(this.ns)));
 	}
 
 	cleanUpFastRender() {
