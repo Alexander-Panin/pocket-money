@@ -78,6 +78,7 @@ pitfalls:
 25. three phases of `good` rendering :) slow rendering, 2) render with animation, 3) two pass rendering  
 26. one shot with Promise implementing post message and onmessage
 27. ios (even on chrome) only through workers 
+28. `cargo tree -e features` good one to check what deps we have 
 
 generate dev cert:
 

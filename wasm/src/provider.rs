@@ -1,6 +1,6 @@
 use alloc::vec;
 use alloc::vec::Vec;
-use crate::alloc::string::ToString;
+use alloc::string::ToString;
 use web_sys::js_sys::{JsString};
 use crate::linked;
 use crate::day::{Day};
@@ -27,7 +27,7 @@ impl<T,F,T2,F2> Provider<T,F,T2,F2>
     pub async fn all(&self, ns: JsString) -> Vec<Day> {
         let mut result = vec![];
         for id in linked::collect_ids(ns, self.read.clone()).await { 
-            result.push( self.fetch(id.clone()).await ); 
+            result.push( self.fetch(id).await ); 
         }
         result
     }

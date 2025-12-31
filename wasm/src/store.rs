@@ -55,7 +55,6 @@ impl Store {
         result
     }    
 
-
     fn sort(mut days: Vec<Day>, ordering: Sort) -> Vec<Day> {
         days.sort_by(match ordering {
             Sort::Asc => |x: &Day, y: &Day| x.date.cmp(&y.date),
