@@ -4,9 +4,10 @@
     display: block;
     color: var(--tt-brown);
     inputmode: text;
-    max-width: 270px;
+    max-width: 230px;
     padding: 5px;
     padding-top: 3px;
+    margin-right: 40px;
     font-size: 32px;
     background: transparent;
     border: none;
@@ -17,7 +18,8 @@
 .tag-slider-scale-msg {
     display: block;
     margin: auto;
-    width: 100px;
+    margin-right: 40px;
+    width: 230px;
     color: var(--tt-brown);
     font-size: 24px;
     text-align: center;
@@ -26,6 +28,7 @@
 .tag-slider-main {
     display: block;
     margin: auto;
+    margin-right: 40px;
     background: green;
-    width: 280px;
+    width: 240px;
 }

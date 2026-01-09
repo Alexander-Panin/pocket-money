@@ -5,6 +5,7 @@
     inputmode: decimal;
     display: block;
     margin: auto;
+    margin-right: 40px;
     text-align: center;
     background: transparent;
     border: none;
@@ -15,6 +16,7 @@
 .money-slider-scale {
     display: block;
     margin: auto;
+    margin-right: 40px;
     background: rgb(168, 13, 13);
     width: 150px;
 }
@@ -22,6 +24,7 @@
 .money-slider-main {
     display: block;
     margin: auto;
+    margin-right: 40px;
     background: green; 
     width: 250px;
 }
@@ -32,4 +35,6 @@
     text-align: center;
     padding-right: 0px;
     font-size: 24px;
+    margin-right: 40px;
+    text-align: right;
 }
