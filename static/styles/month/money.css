@@ -14,11 +14,12 @@
 }
 
 .money-slider-scale {
-    display: block;
-    margin: auto;
+    float: right;
     margin-right: 40px;
+    margin-top: 24px;
     background: rgb(168, 13, 13);
     width: 150px;
+    line-height: 24px;
 }
 
 .money-slider-main {
@@ -30,11 +31,8 @@
 }
 
 .money-slider-scale-msg {
+    float: right;
     color: #af1e1e;
-    display: block;
-    text-align: center;
-    padding-right: 0px;
     font-size: 24px;
-    margin-right: 40px;
-    text-align: right;
+    margin-right: 15px;
 }
