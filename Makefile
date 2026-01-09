@@ -27,5 +27,5 @@ pull.update:
 
 b: wasm.dev ts.dev 
 
-deploy: pull.update wasm.test wasm.prod ts.install ts.prod version.create
+deploy: pull.update wasm.prod ts.install ts.prod version.create
 
