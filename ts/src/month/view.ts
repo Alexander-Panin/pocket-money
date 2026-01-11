@@ -62,7 +62,7 @@ export class View {
 	}
 
 	sum(s: number) {
-		document.querySelector('#list-sum')!.textContent = String(s);
+		document.querySelector('#list-sum')!.textContent = `€${s}`;
 	}
 
 	popup() {

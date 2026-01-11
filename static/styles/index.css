@@ -69,6 +69,11 @@ textarea:focus, input:focus {
     text-transform: capitalize;
 }
 
+.title-link-without-decoration {
+    color: var(--tt-brown);
+    text-decoration-line: none;
+}
+
 .title-link {
     color: var(--tt-brown);
 }

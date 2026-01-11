@@ -7,7 +7,7 @@
     right:auto;
     left:auto;
     bottom:0px;
-    width: 100%;
+    margin-left: 35px;
     height: 250px;
     z-index: 100;
 }
