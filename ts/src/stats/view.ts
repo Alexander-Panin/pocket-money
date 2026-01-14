@@ -21,16 +21,19 @@ export class View {
 
 	async render() {
 		const container = document.querySelector("#container-row")!;
-  		const groups = await getWasm().Store.group_by(this.ns);
+		const prevNs = route.getPrevNamespace(this.ns);
+  		const groups = await getWasm().Store.group_by_with_delta(this.ns, prevNs);
   		for (const x of groups) {
-  			const [category,sum] = [x[0], x[1]]; 
+  			const [category,sum, delta] = [x[0], x[1], x[2]]; 
   			const row = (document.querySelector("#template-row") as HTMLTemplateElement).content;
-  			container.appendChild(this.fill(row.cloneNode(true) as HTMLElement, sum, category));
+  			container.appendChild(this.fill(row.cloneNode(true) as HTMLElement, sum, delta, category));
   		}
 	}
 
-	fill(x: HTMLElement, sum: number, category: string) {
-  		x.querySelector('#row-sum')!.textContent = String(Math.round(sum * 10) / 10);
+	fill(x: HTMLElement, sum: number, delta: number, category: string) {
+		const round = (x: number) => String(Math.round(x * 10) / 10);
+  		x.querySelector('#row-sum')!.textContent = round(sum);
+  		x.querySelector('#row-delta')!.textContent = round(delta);	
   		x.querySelector('#row-category')!.textContent = category || "без категории";
   		return x;
 	}

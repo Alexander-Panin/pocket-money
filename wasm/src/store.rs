@@ -7,12 +7,14 @@ use crate::opfs::{read, read_in_worker, write_in_worker, noop_write};
 use crate::local_storage::{read as fastread, write as fastwrite};
 use crate::day::{Day};
 use crate::provider::{Provider};
+use core::cmp::{Ord, Ordering::Less};
+use core::marker::Copy;
 
 #[wasm_bindgen(getter_with_clone)]
 pub struct FirstRecord(pub bool, pub Day);
 
 #[wasm_bindgen(getter_with_clone)]
-pub struct Tag(pub JsString, pub f32);
+pub struct Tag(pub JsString, pub f32, pub f32);
 
 #[wasm_bindgen]
 pub struct Stats { pub last_date: i32 }
@@ -135,20 +137,35 @@ impl Store {
     }
 
     // ui -- stats page
-    pub async fn group_by(ns: &JsString) -> Vec<Tag> {
+    pub async fn group_by_with_delta(ns: &JsString, prev_ns: &JsString) -> Vec<Tag> {
+        let month = Store::group_by(ns).await;
+        let prev_month = Store::group_by(prev_ns).await;
+        let mut result: Vec<_> = Store::difference(month, prev_month)
+            .map(|(k,x,y)| Tag(k,x,x-y))
+            .collect();
+        result.sort_by(|x,y| y.1.partial_cmp(&x.1).unwrap_or(Less));
+        result
+    }
+
+    fn difference<K: Ord, V: Default+Copy>(lhs: BTreeMap<K, V>, rhs: BTreeMap<K, V>) -> impl Iterator<Item = (K, V, V)> {
+        lhs.into_iter().map(move |(key, value)| {
+            let x = *rhs.get(&key).unwrap_or(&V::default());
+            (key, value, x)
+        })
+    }
+
+    async fn group_by(ns: &JsString) -> BTreeMap<JsString, f32> {
         let days = Store::all_with(ns.clone(), |x| x.date > 0).await;
         let mut map = BTreeMap::new();
         for day in days.into_iter() {
-            map.entry(day.tag.as_string())
+            map.entry(day.tag)
                 .and_modify(|e| *e += day.price)
                 .or_insert(day.price);
         }
-        let mut v: Vec<_> = map.into_iter().filter_map(|(k,v)| Some(Tag(k?.into(),v))).collect();
-        v.sort_by(|x,y| y.1.partial_cmp(&x.1).unwrap_or(core::cmp::Ordering::Less));
-        return v;
+        return map;
     }
 
-    // ui -- list of tags (e.g. in slider) 
+    // ui -- list of tags (e.g. in a slider) 
     pub async fn tags(ns: &JsString) -> Vec<JsString> {
         Self::all(ns.clone()).await.into_iter().map(|x| x.tag).collect()
     }
