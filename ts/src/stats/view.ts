@@ -32,8 +32,9 @@ export class View {
 
 	fill(x: HTMLElement, sum: number, delta: number, category: string) {
 		const round = (x: number) => String(Math.round(x * 10) / 10);
+		const newDelta = sum === delta ? "..." : round(delta);
   		x.querySelector('#row-sum')!.textContent = round(sum);
-  		x.querySelector('#row-delta')!.textContent = round(delta);	
+  		x.querySelector('#row-delta')!.textContent = newDelta;
   		x.querySelector('#row-category')!.textContent = category || "без категории";
   		return x;
 	}
