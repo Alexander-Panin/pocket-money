@@ -5,9 +5,9 @@
 .comment {
     margin: 0 auto;
     display: block;
-    background: black;
-    border: 1px solid var(--tt-brown);
-    color: var(--tt-brown);
+    background: var(--bg);
+    border: 1px solid var(--text);
+    color: var(--text);
     width: 70%;
     height: 150px;
     border-radius: 5px;

@@ -2,7 +2,7 @@
     text-align: center;
     margin: auto;
     display: block;
-    color: var(--tt-brown);
+    color: var(--text);
     inputmode: text;
     max-width: 230px;
     padding: 5px;
@@ -11,7 +11,7 @@
     font-size: 32px;
     background: transparent;
     border: none;
-    border-bottom: 1px solid var(--tt-brown);
+    border-bottom: 1px solid var(--text);
     border-radius: 0px;
 }
 
@@ -20,7 +20,7 @@
     margin: auto;
     margin-right: 40px;
     width: 230px;
-    color: var(--tt-brown);
+    color: var(--text);
     font-size: 24px;
     text-align: center;
 }
@@ -29,6 +29,6 @@
     display: block;
     margin: auto;
     margin-right: 40px;
-    background: green;
+    background: var(--slider);
     width: 240px;
 }

@@ -11,7 +11,7 @@
     height: 31px;
     line-height: 34px;
     text-align: center;
-    background: black;
+    background: var(--bg);
 }
 
 .nav.nav-close {

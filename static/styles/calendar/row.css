@@ -6,7 +6,7 @@
 }
 
 .row-link {
-	color: var(--tt-brown);
+	color: var(--text);
 	text-transform: capitalize;
 }
 

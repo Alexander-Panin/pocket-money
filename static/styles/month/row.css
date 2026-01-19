@@ -30,7 +30,7 @@
 }
 
 .row:focus {
-    box-shadow: 0px -5px 21px var(--tt-blue) inset;
+    box-shadow: 0px -5px 21px var(--shadow) inset;
     outline: none;
 }
 

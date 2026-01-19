@@ -1,10 +1,24 @@
 :root {
     --tt-brown: rgb(186, 116, 37);
     --tt-blue: rgba(35, 173, 278, 1);
-}
+    --tt-black: #494949;
+    --tt-silver: silver;
+
+    --text: var(--tt-black);  
+    --bg: white;
+    --separator: var(--tt-black);
+    --slider: var(--tt-blue);
+    --shadow: var(--tt-silver);
+
+/*    --text: var(--tt-brown);  
+    --bg: black;
+    --separator: var(--tt-brown);
+    --slider: green;
+    --shadow: var(--tt-blue);
+*/}
 
 html {
-    background: black;
+    background: var(--bg);
     height: 100%;
     padding: 0;
     margin: 0;
@@ -21,9 +35,9 @@ body {
 
 hr {
   border: none;
-  border-top: 2px dotted var(--tt-brown);
+  border-top: 2px dotted var(--separator);
   color: black;
-  background-color: black;
+  background-color: var(--bg);
   height: 1px;
   width: 100%;
   margin-bottom: 4px;
@@ -41,8 +55,8 @@ textarea:focus, input:focus {
 
 #main {
     width: 100%;
-    background-color: black;
-    color: var(--tt-brown);
+    background-color: var(--bg);
+    color: var(--text);
     min-height: 100vh;
     overflow-x: clip;
 }
@@ -55,9 +69,8 @@ textarea:focus, input:focus {
     padding: 0;
     margin: 0;
     cursor: pointer;
-    background: black;
+    background: var(--bg);
     z-index: 100;
-    border-radius: 0 19px;
 }
 
 .title {
@@ -70,16 +83,20 @@ textarea:focus, input:focus {
 }
 
 .title-link-without-decoration {
-    color: var(--tt-brown);
+    color: var(--text);
     text-decoration-line: none;
 }
 
 .title-link {
-    color: var(--tt-brown);
+    color: var(--text);
 }
 
 .container-row {
     padding-bottom: 100px;
+}
+
+.spacer {
+    color: var(--bg);
 }
 
  /* end common styles */

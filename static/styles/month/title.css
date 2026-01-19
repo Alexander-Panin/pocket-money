@@ -1,14 +1,14 @@
 .list-stats-link-right {
 	float: right;
 	padding-right: 7px;
-	color: var(--tt-brown);
+	color: var(--text);
 }
 
 .list-stats-link-left {
 	float: left;
 	padding-left: 7px;
 	padding-right: 8px;
-	color: var(--tt-brown);
+	color: var(--text);
 }
 
 .list-sum {

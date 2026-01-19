@@ -5,30 +5,30 @@
 }
 
 .year-parts {
-    color: var(--tt-brown);
+    color: var(--text);
 }
 
 .year-msg {
-    color: var(--tt-brown);
+    color: var(--text);
     font-size: 14px;
 }
 
 .year-input {
     text-align: center;
     display: block;
-    color: var(--tt-brown);
+    color: var(--text);
     display: inline-block;
     max-width: 40px;
     font-size: 32px;
     background: transparent;
     border: none;
-    border-bottom: 1px solid var(--tt-brown);
+    border-bottom: 1px solid var(--text);
     border-radius: 0px;
 }
 
 .year-slider {
     display: block;
     margin: auto;
-    background: green; 
+    background: var(--slider); 
     width: 250px;
 }

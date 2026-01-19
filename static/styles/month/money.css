@@ -1,7 +1,7 @@
 .money-input {
     font-size: 36px;
     max-width: 180px;
-    color: var(--tt-brown);
+    color: var(--text);
     inputmode: decimal;
     display: block;
     margin: auto;
@@ -9,7 +9,7 @@
     text-align: center;
     background: transparent;
     border: none;
-    border-bottom: 1px solid var(--tt-brown);
+    border-bottom: 1px solid var(--text);
     border-radius: 0px;
 }
 
@@ -26,7 +26,7 @@
     display: block;
     margin: auto;
     margin-right: 40px;
-    background: green; 
+    background: var(--slider); 
     width: 250px;
 }
 
