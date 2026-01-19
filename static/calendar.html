@@ -16,9 +16,9 @@
   <body>
     <script type="module">
       import init, * as wasm from "/script/pkg/wasm.js?t=1763158241772";
-      import { View, Listener, route } from "/script/calendar.js?t=1763158241772";
+      import { View, Listener, route, colorSchema } from "/script/calendar.js?t=1763158241772";
       window.__wasm = wasm;
-
+      colorSchema.render();
       const namespace = route.getNamespace(window.location.search);
       const view = new View();;
       view.prerender();

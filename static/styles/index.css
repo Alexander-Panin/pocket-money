@@ -3,19 +3,23 @@
     --tt-blue: rgba(35, 173, 278, 1);
     --tt-black: #494949;
     --tt-silver: silver;
+}
 
+html[data-theme="dark"] {
+    --text: var(--tt-brown);  
+    --bg: black;
+    --separator: var(--tt-brown);
+    --slider: green;
+    --shadow: var(--tt-blue);
+}
+
+html[data-theme="light"] {
     --text: var(--tt-black);  
     --bg: white;
     --separator: var(--tt-black);
     --slider: var(--tt-blue);
     --shadow: var(--tt-silver);
-
-/*    --text: var(--tt-brown);  
-    --bg: black;
-    --separator: var(--tt-brown);
-    --slider: green;
-    --shadow: var(--tt-blue);
-*/}
+}
 
 html {
     background: var(--bg);

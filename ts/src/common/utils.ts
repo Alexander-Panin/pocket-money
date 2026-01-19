@@ -7,3 +7,4 @@ export function getMonths(locale: string = 'en'): string[] {
 export function getMonthBy(month: string, locale: string): string {
   return getMonths(locale)[getMonths().indexOf(month)] ?? "not found"; 
 }
+

@@ -16,9 +16,10 @@
   <body>
     <script type="module">
       import init, * as wasm from "/script/pkg/wasm.js?t=1";
-      import { View, route } from "/script/stats.js?t=1";
+      import { View, route, colorSchema } from "/script/stats.js?t=1";
       window.__wasm = wasm;
 
+      colorSchema.render();
       const namespace = route.getNamespace(window.location.search);
       new View(namespace).prerender();
       init().then(() => new View(namespace).render());
