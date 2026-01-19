@@ -6,20 +6,10 @@
   "start_url": "./",
   "orientation": "any",
   "display": "standalone",
-  "background_color": "black",
-  "theme_color": "black",
   "icons": [
       {
           "src": "./icon512.png",
           "sizes": "512x512"
       }
-  ],
-  "theme": {
-    "colors": {
-      "frame": "black",
-      "tab_background_text": "black",
-      "tab_text": "black",
-      "toolbar": "black"
-    }
-  }
+  ]
 }
