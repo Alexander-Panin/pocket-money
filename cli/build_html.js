@@ -19,6 +19,6 @@ function build_wasm() {
 	fs.writeFileSync(`../static/script/pkg/wasm.js`, newContent);
 }
 
-['index.html', 'calendar.html', 'stats.html'].forEach(build)
+['index.html', 'calendar.html', 'stats.html', 'worker.js'].forEach(build)
 
 build_wasm()
