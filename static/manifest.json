@@ -1,6 +1,6 @@
 {
   "lang": "en-us",
-  "name": "one two three",
+  "name": "1-2-3",
   "short_name": "1-2-3",
   "description": "records of input in table form",
   "start_url": "./",
@@ -11,5 +11,6 @@
           "src": "./icon512.png",
           "sizes": "512x512"
       }
-  ]
+  ],
+  "version": "2"
 }
