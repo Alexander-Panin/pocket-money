@@ -3,6 +3,7 @@
     --tt-blue: rgba(35, 173, 278, 1);
     --tt-black: #494949;
     --tt-silver: silver;
+    --tt-white: rgb(249,248,254, 1);
 }
 
 html[data-theme="dark"] {
@@ -15,7 +16,7 @@ html[data-theme="dark"] {
 
 html[data-theme="light"] {
     --text: var(--tt-black);  
-    --bg: white;
+    --bg: var(--tt-white);
     --separator: var(--tt-black);
     --slider: var(--tt-blue);
     --shadow: var(--tt-silver);
