@@ -83,16 +83,16 @@
 </template>
 
 <template id="template-popup">
-  <div id="container-popup-nav"></div>
-  <div id="container-popup-main"></div>
+  <div __action="ns/skip" id="container-popup-nav" class="container-popup-nav"></div>
+  <div id="container-popup-main" class="container-popup-main"></div>
 </template>
 
 <template id="template-nav">
   <span  __action="nav/close" class="nav nav-close">X</span>
-  <span  __action="nav/money" class="nav nav-money">$</span>
-  <span  __action="nav/tag" class="nav nav-tag">✎</span>
   <span  __action="nav/year" class="nav nav-year">Y</span>
   <span  __action="nav/comment" class="nav nav-comment">T</span>
+  <span  __action="nav/tag" class="nav nav-tag">✎</span>
+  <span  __action="nav/money" class="nav nav-money">$</span>
 </template>
 
 <template id="template-comment">
