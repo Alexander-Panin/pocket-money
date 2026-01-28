@@ -36,7 +36,8 @@
 
 .row-comment-msg {
     max-width: 92%;
-    line-height: 10px;
+    line-height: 16px;
+    margin-top: -2px;
 }
 
 .row-comment {
