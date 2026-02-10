@@ -1,0 +1,10 @@
+.list-stats-link-left {
+	float: left;
+	padding-left: 7px;
+	padding-right: 8px;
+	color: var(--text);
+}
+
+.title-without-right-menu {
+	padding-right: 15px;
+}

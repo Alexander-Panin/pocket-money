@@ -12,10 +12,11 @@ fn panic(_panic: &core::panic::PanicInfo<'_>) -> ! {
 #[global_allocator]
 static ALLOCATOR: talc::TalckWasm = unsafe { talc::TalckWasm::new_global() };
 
-pub mod utils;
-pub mod store;
-pub mod opfs;
-pub mod linked;
 pub mod day;
-pub mod provider;
+pub mod linked;
 pub mod local_storage;
+pub mod opfs;
+pub mod provider;
+pub mod search;
+pub mod store;
+pub mod utils;

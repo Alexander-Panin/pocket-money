@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="/styles/index.css?t=1768852079225" fetchpriority="high" />
     <link rel="stylesheet" href="/styles/calendar/row.css?t=1768852079225" />
     <link rel="stylesheet" href="/styles/calendar/year.css?t=1768852079225" />
+    <link rel="stylesheet" href="/styles/calendar/title.css?t=1768852079219" async />
   </head>
   <body>
     <script type="module">
@@ -48,6 +49,9 @@
 <template id="template-list">
   <h1 __action="list/on-top" class="title-sticky">&#160;</h1>
   <div class="list-container" __action="list/todo">
+    <a __action="ns/skip" href="/search.html" class="title-link-without-decoration">
+      <h2 id="list-title" class="title list-stats-link-right" >🔎</h2>
+    </a>
     <h1 __action="list/todo" id="list-title" class="title" >Календарь</h1>
     <div class="list-year">2025</div>
     <div id="list-row-2025"></div>

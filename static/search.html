@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Pocket Money - Search</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="./icon512.png">
+    <meta name="apple-mobile-wep-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles/index.css?t=1768852079225" fetchpriority="high" />
+    <link rel="stylesheet" href="/styles/search/title.css?t=1768852079225" />
+  </head>
+  <body>
+    <script type="module">
+      import init, * as wasm from "/script/pkg/wasm.js?t=1768852079225";
+      import { View, route, colorSchema } from "/script/search.js?t=1768852079225";
+      window.__wasm = wasm;
+
+      colorSchema.render();
+      const namespace = route.getNamespace(window.location.search);
+      new View(namespace).prerender();
+      init().then(() => new View(namespace).render());
+    </script>
+
+    <div id="main" onclick="void(0);">
+      <div id="container-list" class="container-list" ></div>
+    </div>
+  </body>
+</html>
+
+<template id="template-list">
+  <h1 __action="list/on-top" class="title-sticky">&#160;</h1>
+  <div id="container-row" class="container-row" __action="list/todo">
+    <a __action="ns/skip" href="/calendar.html" class="title-link-without-decoration">
+      <h2 id="list-title" class="title list-stats-link-left" >⤴</h2>
+    </a>
+    <h1 __action="list/todo" id="list-title" class="title title-without-right-menu" >
+      Найти
+    </h1>
+  </div>
+</template>
+
+<template id="template-row">
+  <div class="row-container">
+    <span id="row-result" class="row-result"></span>
+  </div>
+</template>

@@ -1,0 +1,5 @@
+.list-stats-link-right {
+	float: right;
+	padding-right: 7px;
+	color: var(--text);
+}
