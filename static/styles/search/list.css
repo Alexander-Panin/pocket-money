@@ -1,0 +1,12 @@
+.list-search {
+    font-size: 24px;
+    max-width: 240px;
+    color: var(--text);
+    display: block;
+    margin: auto;
+    text-align: center;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--text);
+    border-radius: 0px;
+}

@@ -11,17 +11,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/styles/index.css?t=1768852079225" fetchpriority="high" />
     <link rel="stylesheet" href="/styles/search/title.css?t=1768852079225" />
+    <link rel="stylesheet" href="/styles/search/list.css?t=1768852079225" />
   </head>
   <body>
     <script type="module">
       import init, * as wasm from "/script/pkg/wasm.js?t=1768852079225";
-      import { View, route, colorSchema } from "/script/search.js?t=1768852079225";
+      import { View, route, colorSchema, Listener } from "/script/search.js?t=1768852079225";
       window.__wasm = wasm;
 
       colorSchema.render();
       const namespace = route.getNamespace(window.location.search);
       new View(namespace).prerender();
-      init().then(() => new View(namespace).render());
+      init()
+        .then(() => new View(namespace).render())
+        .then(() => {
+          document
+            .querySelector("body")
+            .addEventListener("input", new Listener(namespace).handler);
+          });
     </script>
 
     <div id="main" onclick="void(0);">
@@ -39,6 +46,7 @@
     <h1 __action="list/todo" id="list-title" class="title title-without-right-menu" >
       Найти
     </h1>
+    <input autofocus id="list-search" class="list-search" __action="list/search" />
   </div>
 </template>
 

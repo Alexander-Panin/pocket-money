@@ -34,7 +34,8 @@ impl Store {
         result
     }    
 
-    async fn all(ns: JsString) -> Vec<Day> {
+    // ui - global search
+    pub async fn all(ns: JsString) -> Vec<Day> {
         Self::all_with(ns, |x| x.date >= 0).await
     }    
 

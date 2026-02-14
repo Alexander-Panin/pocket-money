@@ -1,12 +1,72 @@
 import getWasm from "../common/wasm";
 
-export function prefixHash(index: string, key: string) {
-	const [xs, n] = str2ab(index);
-	const [ys, k] = str2ab(key);
-	let prefix = getWasm().PrefixHash.new(n);
-	prefix.build(xs);
-	const result = prefix.find(ys);
-	result.forEach((i: number) => console.log(ab2str(xs.slice(i, i+k))));
+export function record(s: string, i: number): string {
+	const f = s.lastIndexOf("¥", i);
+	const l = s.indexOf("¥", i);
+	return s.slice(f+1, l);
+}
+
+export class DataHash {
+	index: string;
+	prefix: PrefixHash;
+
+	constructor() {
+		this.index = ""; 
+		this.prefix = new PrefixHash("");
+		this.build(undefined);
+	}
+
+	async build(index: string | undefined) {
+		this.index = index ?? await this.read_fast();
+		this.prefix = new PrefixHash(this.index);
+	}
+
+	async rebuild() {
+		const index = await	this.read_slow();
+		this.write_fast(index);
+		await this.build(index);
+	}
+
+	async read_slow(): Promise<string> {
+		const keys = ["2025:december"]; /* todo */
+		const result = [];
+		for (const key of keys) {
+			const days = await getWasm().Store.all(key);
+			result.push(days.map(format_record(key)).join("¥"));
+		}
+		return result.join("¥");
+	}
+
+	async read_fast(): Promise<string> {
+		return this.read_slow(); /* todo */
+	}
+
+	async write_fast(index: string) {
+		/* todo */
+	}
+}
+
+const format_record = (key: string) => (d: Day): string => {
+	const round = (price: number) => Math.round(price * 10) / 10;
+	const c = (comment: string) => comment === "" ? " " : ` ${comment} `;
+	return `€${round(d.price)} [${d.tag}]${c(d.comment)}${d.date}:${key}`;
+}
+
+class PrefixHash {
+
+	prefix: any; // PrefixHash
+
+	constructor(index: string) {
+		const [xs, n] = str2ab(index);
+		this.prefix = getWasm().PrefixHash.new(n);
+		this.prefix.build(xs);
+	}
+
+	find(key: string) {
+		const newKey = key.slice(0,30);
+		const [ys] = str2ab(newKey);
+		return this.prefix.find(ys);
+	}
 }
 
 function ab2str(buf: Uint16Array): String {

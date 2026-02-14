@@ -41,7 +41,7 @@ impl PrefixHash {
         }
         let j = self.size+1;
         let mut result = vec![];
-        for i in 1..=self.size {
+        for i in 0..=self.size {
             let a = (self.poly[i+k] + self.poly[j]*self.degree[k]) % P;
             let b = (self.poly[j+k] + self.poly[i]*self.degree[k]) % P;
             if a == b { result.push(i); }
@@ -83,6 +83,26 @@ mod tests {
         prefix.build(xs);
         let result = prefix.find(ys);
         assert_eq!(result, vec![4,7]);
+    }    
+
+    #[wasm_bindgen_test]
+    async fn test4() {
+        let xs = vec![104,101,108,108,111,32,119,111,114,108,100]; // hello world
+        let ys = vec![104,101,108]; // hel
+        let mut prefix = PrefixHash::new(xs.len());
+        prefix.build(xs);
+        let result = prefix.find(ys);
+        assert_eq!(result, vec![0]);
+    }     
+
+    #[wasm_bindgen_test]
+    async fn test5() {
+        let xs = vec![104,101,108,108,111,32,119,111,114,108,100]; // hello world
+        let ys = vec![111,101,108]; // oel
+        let mut prefix = PrefixHash::new(xs.len());
+        prefix.build(xs);
+        let result = prefix.find(ys);
+        assert_eq!(result, vec![] as Vec<usize>);
     }    
 
 }
