@@ -29,9 +29,9 @@ export class Listener {
 	}
 
 	search(key: string) {
-		if (key.length < 3) return;
 		this.nodes.forEach(x => x.remove());
 		this.nodes = []; 
+		if (key.length < 3) return;
 		const result = this.dataHash.prefix.find(key);
 		this.render(result, key);
 	}
