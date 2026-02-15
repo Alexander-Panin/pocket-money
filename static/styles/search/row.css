@@ -1,0 +1,16 @@
+.row-result-value {
+	font-weight: 700;
+}
+
+#row-container:first {
+	padding-top: 20px;
+}
+
+#row-container {
+	padding: 7px;
+    overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+}

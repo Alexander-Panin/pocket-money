@@ -1,11 +1,5 @@
 import getWasm from "../common/wasm";
 
-export function record(s: string, i: number): string {
-	const f = s.lastIndexOf("¥", i);
-	const l = s.indexOf("¥", i);
-	return s.slice(f+1, l);
-}
-
 export class DataHash {
 	index: string;
 	prefix: PrefixHash;
@@ -46,10 +40,10 @@ export class DataHash {
 	}
 }
 
-const format_record = (key: string) => (d: Day): string => {
-	const round = (price: number) => Math.round(price * 10) / 10;
-	const c = (comment: string) => comment === "" ? " " : ` ${comment} `;
-	return `€${round(d.price)} [${d.tag}]${c(d.comment)}${d.date}:${key}`;
+export function record(index: string, i: number): string {
+	const f = index.lastIndexOf("¥", i);
+	const l = index.indexOf("¥", i);
+	return index.slice(f+1, l);
 }
 
 class PrefixHash {
@@ -67,6 +61,12 @@ class PrefixHash {
 		const [ys] = str2ab(newKey);
 		return this.prefix.find(ys);
 	}
+}
+
+const format_record = (key: string) => (d: Day): string => {
+	const round = (price: number) => Math.round(price * 10) / 10;
+	const c = (comment: string) => comment === "" ? " " : ` ${comment} `;
+	return `[${d.tag}] €${round(d.price)} ${d.date}:${key} ${c(d.comment)}`;
 }
 
 function ab2str(buf: Uint16Array): String {

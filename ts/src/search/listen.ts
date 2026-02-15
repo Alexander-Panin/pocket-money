@@ -41,13 +41,19 @@ export class Listener {
 		const row = (document.querySelector("#template-row") as HTMLTemplateElement).content;
 		xs.slice(0, 10).forEach(i => {
 			const text = record(this.dataHash.index, i);
-			container.appendChild(this.fill(row.cloneNode(true) as HTMLElement, text));
+			container.appendChild(this.fill(row.cloneNode(true) as HTMLElement, text, key));
 			this.nodes.push( container.lastElementChild! );
 		});
 	}
 
-	fill(x: HTMLElement, text: string) {
-  		x.querySelector('#row-result')!.textContent = text;
+	fill(x: HTMLElement, text: string, key: string) {
+		const f = text.indexOf(key);
+		const l = f + key.length;
+		const [a,b,c] = [text.slice(0,f), text.slice(f,l), text.slice(l)];
+		const node = x.querySelector('#row-result-value')!;
+		node.before(document.createTextNode(a) );
+		node.textContent = b;
+		node.after(document.createTextNode(c) );
   		return x;
 	}
 
