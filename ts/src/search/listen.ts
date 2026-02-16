@@ -22,13 +22,26 @@ export class Listener {
 			case 'list/search':
 				this.search((event.target as HTMLInputElement).value ?? '');
 				return;
+			case 'list/rebuild':
+				this.rebuildIndex();
+				return;
 			case 'list/on-top':
 				this.onTop();
 				/* pass down */
 		}
 	}
 
+	hideButton() {
+		document.querySelector("#list-rebuild")?.remove();
+	}
+
+	rebuildIndex() {
+		this.hideButton();
+		this.dataHash.rebuild();
+	}
+
 	search(key: string) {
+		this.hideButton();
 		this.nodes.forEach(x => x.remove());
 		this.nodes = []; 
 		if (key.length < 3) return;

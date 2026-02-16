@@ -5,6 +5,16 @@
 	color: var(--text);
 }
 
+.list-stats-link-right {
+	float: right;
+	padding-right: 7px;
+	color: var(--text);
+}
+
+.invisible {
+	visibility: hidden;
+}
+
 .title-without-right-menu {
 	padding-right: 15px;
 }

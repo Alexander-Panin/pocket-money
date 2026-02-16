@@ -172,6 +172,19 @@ impl Store {
     }
 }
 
+#[wasm_bindgen]
+pub struct Index {}
+
+#[wasm_bindgen]
+impl Index {
+    pub async fn read(id: JsString, name: JsString) -> JsString {
+        read(id, name).await.unwrap_or("".into())
+    }
+    pub async fn write(id: JsString, name: JsString, value: JsString) {
+        let _ = write_in_worker(id, name, value).await;
+    }  
+}
+
 
 #[cfg(test)]
 mod tests {

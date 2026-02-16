@@ -9,6 +9,9 @@ self.onmessage = async (e) => {
         case "append": 
             wasm.Store.append(ns, id).then(sendBack); 
             break;
+        case "index:write": 
+            wasm.Index.write(ns, id, value).then(sendBack); 
+            break;
         case "repeat_regular": 
             wasm.Store.repeat_regular(ns, prevNs).then(sendBack); 
             break;

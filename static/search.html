@@ -17,7 +17,7 @@
   <body>
     <script type="module">
       import init, * as wasm from "/script/pkg/wasm.js?t=1768852079225";
-      import { View, route, colorSchema, Listener } from "/script/search.js?t=1768852079225";
+      import { View, route, colorSchema, Listener, onmsg } from "/script/search.js?t=1768852079225";
       window.__wasm = wasm;
 
       colorSchema.render();
@@ -26,10 +26,18 @@
       init()
         .then(() => new View(namespace).render())
         .then(() => {
+          const handler = new Listener(namespace).handler;
           document
             .querySelector("body")
-            .addEventListener("input", new Listener(namespace).handler);
+            .addEventListener("input", handler);
+          document
+            .querySelector("body")
+            .addEventListener("click", handler);
           });
+
+      const worker = new Worker("worker.js", {type: "module"});
+      worker.onmessage = onmsg;
+      window.__worker = worker;
     </script>
 
     <div id="main" onclick="void(0);">
@@ -44,10 +52,16 @@
     <a __action="ns/skip" href="/calendar.html" class="title-link-without-decoration">
       <h2 id="list-title" class="title list-stats-link-left" >⤴</h2>
     </a>
+    <a __action="ns/skip" href="" class="title-link-without-decoration">
+      <h2 id="list-title" class="title list-stats-link-right invisible" >⤴</h2>
+    </a>
     <h1 __action="list/todo" id="list-title" class="title title-without-right-menu" >
       Найти
     </h1>
     <input autofocus id="list-search" class="list-search" __action="list/search" />
+    <button id="list-rebuild" class="list-rebuild" __action="list/rebuild">
+      обновить поисковый индекс 
+    </button>
   </div>
 </template>
 

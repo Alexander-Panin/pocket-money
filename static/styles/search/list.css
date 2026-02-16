@@ -11,3 +11,8 @@
     border-radius: 0px;
     margin-bottom: 30px;
 }
+
+.list-rebuild {
+    display: block;
+    margin: 0 auto;
+}

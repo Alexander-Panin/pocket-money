@@ -1,4 +1,5 @@
 import getWasm from "../common/wasm";
+import worker from "../common/worker";
 import { calendarKeys } from "../common/utils";
 
 export class DataHash {
@@ -8,18 +9,18 @@ export class DataHash {
 	constructor() {
 		this.index = ""; 
 		this.prefix = new PrefixHash("");
-		this.build(undefined);
+		this.build();
 	}
 
-	async build(index: string | undefined) {
-		this.index = index ?? await this.read_fast();
+	async build() {
+		this.index = await this.read_fast();
 		this.prefix = new PrefixHash(this.index);
 	}
 
 	async rebuild() {
-		const index = await	this.read_slow();
-		this.write_fast(index);
-		await this.build(index);
+		this.index = await this.read_slow();
+		this.prefix = new PrefixHash(this.index);
+		this.write_fast(this.index);
 	}
 
 	async read_slow(): Promise<string> {
@@ -33,11 +34,11 @@ export class DataHash {
 	}
 
 	async read_fast(): Promise<string> {
-		return this.read_slow(); /* todo */
+		return getWasm().Index.read('prefixhash:', 'index');
 	}
 
 	async write_fast(index: string) {
-		/* todo */
+		return worker("index:write", {ns: 'prefixhash:', id: 'index', value: index});
 	}
 }
 
@@ -67,7 +68,7 @@ class PrefixHash {
 const format_record = (key: string) => (d: Day): string => {
 	const round = (price: number) => Math.round(price * 10) / 10;
 	const c = (comment: string) => comment === "" ? " " : ` ${comment} `;
-	return `[${d.tag}] €${round(d.price)} ${d.date}:${key} ${c(d.comment)}`;
+	return `[${d.tag}] €${d.price.toFixed(1)} ${d.date}:${key} ${c(d.comment)}`;
 }
 
 function ab2str(buf: Uint16Array): String {
