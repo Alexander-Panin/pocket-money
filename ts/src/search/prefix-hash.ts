@@ -1,4 +1,5 @@
 import getWasm from "../common/wasm";
+import { calendarKeys } from "../common/utils";
 
 export class DataHash {
 	index: string;
@@ -22,7 +23,7 @@ export class DataHash {
 	}
 
 	async read_slow(): Promise<string> {
-		const keys = ["2025:december"]; /* todo */
+		const keys = calendarKeys();
 		const result = [];
 		for (const key of keys) {
 			const days = await getWasm().Store.all(key);

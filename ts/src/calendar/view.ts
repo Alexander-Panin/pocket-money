@@ -1,8 +1,8 @@
 import getWasm from "../common/wasm";
-import { getMonthBy } from "../common/utils";
+import { getMonthBy, months2025, months2026 } from "../common/utils";
 
-const MONTHS_2025 = ['august', 'september', 'october', 'november', 'december'];
-const MONTHS_2026 = ['january', 'february', 'march'];
+const MONTHS_2025 = months2025(); 
+const MONTHS_2026 = months2026();
 
 export class View {
 	tmpNodes: Array<Element>
