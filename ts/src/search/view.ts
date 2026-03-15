@@ -1,3 +1,5 @@
+import getWasm from "../common/wasm";
+
 export class View {
 	constructor() { }
 
@@ -9,7 +11,10 @@ export class View {
 			);
 	}
 
-	render() {}
+	async render() {
+		const date = await getWasm().Index.read('prefixhash:', 'date');
+		document.querySelector('#list-updated-date')!.textContent = date;
+	}
 }
 
 

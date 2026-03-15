@@ -33,6 +33,7 @@ export class Listener {
 
 	hideButton() {
 		document.querySelector("#list-rebuild")?.remove();
+		document.querySelector("#list-updated-date")?.remove();
 	}
 
 	rebuildIndex() {

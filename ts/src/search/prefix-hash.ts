@@ -21,6 +21,7 @@ export class DataHash {
 		this.index = await this.read_slow();
 		this.prefix = new PrefixHash(this.index);
 		this.write_fast(this.index);
+
 	}
 
 	async read_slow(): Promise<string> {
@@ -38,7 +39,10 @@ export class DataHash {
 	}
 
 	async write_fast(index: string) {
-		return worker("index:write", {ns: 'prefixhash:', id: 'index', value: index});
+		await worker("index:write", {ns: 'prefixhash:', id: 'index', value: index});
+		const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' } as const;
+		const value = new Date().toLocaleDateString("ru-RU", options);
+		return worker("index:write_date", {ns: 'prefixhash:', id: 'date', value });
 	}
 }
 
