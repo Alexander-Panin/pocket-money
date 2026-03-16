@@ -9,15 +9,15 @@
     <meta name="mobile-web-app-capable" content="yes" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/styles/index.css?t=1768852079225" fetchpriority="high" />
-    <link rel="stylesheet" href="/styles/search/title.css?t=1768852079225" />
-    <link rel="stylesheet" href="/styles/search/list.css?t=1768852079225" />
-    <link rel="stylesheet" href="/styles/search/row.css?t=1768852079225" />
+    <link rel="stylesheet" href="/styles/index.css?t=1773649253342" fetchpriority="high" />
+    <link rel="stylesheet" href="/styles/search/title.css?t=1773649253342" />
+    <link rel="stylesheet" href="/styles/search/list.css?t=1773649253342" />
+    <link rel="stylesheet" href="/styles/search/row.css?t=1773649253342" />
   </head>
   <body>
     <script type="module">
-      import init, * as wasm from "/script/pkg/wasm.js?t=1768852079225";
-      import { View, route, colorSchema, Listener, onmsg } from "/script/search.js?t=1768852079225";
+      import init, * as wasm from "/script/pkg/wasm.js?t=1773649253342";
+      import { View, route, colorSchema, Listener, onmsg } from "/script/search.js?t=1773649253342";
       window.__wasm = wasm;
 
       colorSchema.render();
@@ -35,7 +35,7 @@
             .addEventListener("click", handler);
           });
 
-      const worker = new Worker("worker.js", {type: "module"});
+      const worker = new Worker("worker.js?t=1773649253342", {type: "module"});
       worker.onmessage = onmsg;
       window.__worker = worker;
     </script>
