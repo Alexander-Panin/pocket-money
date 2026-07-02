@@ -21,7 +21,7 @@ export function months2025() {
 }
 
 export function months2026() {
-  return monthsRaw().slice(0,5); 
+  return monthsRaw().slice(0,10); 
 }
 
 export function calendarKeys() {
