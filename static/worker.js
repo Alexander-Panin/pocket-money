@@ -1,4 +1,4 @@
-import init, * as wasm from "/script/pkg/wasm.js?t=1773649253342";
+import init, * as wasm from "/script/pkg/wasm.js?t=1782996279283";
 
 self.onmessage = async (e) => {
     await init();

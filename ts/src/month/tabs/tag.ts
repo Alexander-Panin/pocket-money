@@ -3,7 +3,7 @@ import worker from "../../common/worker";
 import * as utils from "../utils";
 
 function dedup(xs: string[]) {
-	const init = ["продукты", "ресторан", "амазон"];
+	const init = ["кофе", "кафе", "доннеры", "морожка", "вода", "продукты", "ресторан"];
 	const newXs = xs.map(x => x.trim().toLowerCase());
 	const tmp = Array.from(new Set(init.concat(newXs)));
 	tmp.sort();
