@@ -137,12 +137,18 @@ impl Store {
         days.into_iter().map(|x| x.price).sum::<f32>()
     }
 
+    // ui -- monthly summary 
+    pub async fn sum_fast(ns: &JsString) -> f32 {
+        let days = Store::all_fast(ns.clone()).await;
+        days.into_iter().map(|x| x.price).sum::<f32>()
+    }
+
     // ui -- stats page
     pub async fn group_by_with_delta(ns: &JsString, prev_ns: &JsString) -> Vec<Tag> {
         let month = Store::group_by(ns).await;
         let prev_month = Store::group_by(prev_ns).await;
         let mut result: Vec<_> = Store::difference(month, prev_month)
-            .map(|(k,x,y)| Tag(k,x,x-y))
+            .map(|(k,x,y)| Tag(k,x,y))
             .collect();
         result.sort_by(|x,y| y.1.partial_cmp(&x.1).unwrap_or(Less));
         result

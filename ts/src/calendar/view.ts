@@ -23,20 +23,46 @@ export class View {
 	async money(year: number, months: string[]): Promise<Array<[string, number]>> {
 		const result = [];
 		for (const month of months) { 
-      		const sum = Math.round(await getWasm().Store.sum(`${year}:${month}`));
+			const sum = Math.round(await getWasm().Store.sum(`${year}:${month}`));
       		const pair: [string, number] = [month, sum];
 			result.push(pair);
 		}
 		return result;
 	}	
-	
-	async render() {
+
+	async money_fast(year: number, months: string[]): Promise<Array<[string, number]>> {
+		const result = [];
+		for (const month of months) { 
+      		const sum = Math.round(await getWasm().Store.sum_fast(`${year}:${month}`));
+      		const pair: [string, number] = [month, sum];
+			result.push(pair);
+		}
+		return result;
+	}
+
+	async render_money_fast() {
+		const data = await this.money_fast(2025, MONTHS_2025); 
+		const data2 = await this.money_fast(2026, MONTHS_2026); 
+		this.tmpNodes.forEach(x => x.remove());
+		this.tmpNodes = [];
+		this.tmpNodes.push(
+			...this.list(2025, data),
+			...this.list(2026, data2),
+		);
+	}
+
+	async render_money() {
 		const data = await this.money(2025, MONTHS_2025); 
 		const data2 = await this.money(2026, MONTHS_2026); 
+		this.list(2025, data),
+		this.list(2026, data2),
 		this.tmpNodes.forEach(x => x.remove());
-		this.list(2025, data);
-		this.list(2026, data2);
 		this.tmpNodes = [];
+	}	
+	
+	async render() {
+		await this.render_money_fast();
+		await this.render_money();
 	}
 
 	list(year: number, data: Array<[string, number]>) {
