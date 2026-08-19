@@ -29,11 +29,11 @@ export class View {
 	async render() {
 		await Promise.all([
 			this.renderFastMemory(),
-			this.renderSlowMemory()
+			this.renderSlowMemory(),
+			this.renderFastMoney(),
+			this.renderSlowMoney(),
 		]);
 		this.cleanUpFastRender();
-		this.sum(Math.round(await getWasm().Store.sum_fast(this.ns)));
-		this.sum(Math.round(await getWasm().Store.sum(this.ns)));
 	}
 
 	cleanUpFastRender() {
@@ -62,7 +62,13 @@ export class View {
 		}
 	}
 
-	sum(s: number) {
+	async renderFastMoney() {
+		const s = Math.round(await getWasm().Store.sum_fast(this.ns));
+		document.querySelector('#list-sum')!.textContent = `€${s}`;
+	}
+
+	async renderSlowMoney() {
+		const s = Math.round(await getWasm().Store.sum(this.ns));
 		document.querySelector('#list-sum')!.textContent = `€${s}`;
 	}
 
