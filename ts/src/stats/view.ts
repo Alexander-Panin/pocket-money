@@ -4,8 +4,12 @@ import { getMonthBy } from "../common/utils";
 
 export class View {
 	ns: string;
+	tmpNodes: Array<Element>;
 
-	constructor(ns: string) { this.ns = ns; }
+	constructor(ns: string) { 
+		this.ns = ns; 
+		this.tmpNodes = [];
+	}
 
 	prerender() {
 		document
@@ -20,21 +24,30 @@ export class View {
 	}
 
 	async render() {
-		const container = document.querySelector("#container-row")!;
 		const prevNs = route.getPrevNamespace(this.ns);
-  		const groups = await getWasm().Store.group_by_with_delta(this.ns, prevNs);
+  		const tmp = await getWasm().Store.group_by_months_fast(this.ns, prevNs);
+  		this.renderGroups(tmp);
+  		const groups = await getWasm().Store.group_by_months(this.ns, prevNs);
+		this.tmpNodes.forEach(x => x.remove());
+  		this.renderGroups(groups);
+		this.tmpNodes = [];
+	}
+
+	renderGroups(groups: Array<[string, number, number]>) {
+		const container = document.querySelector("#container-row")!;
   		for (const x of groups) {
-  			const [category,sum, delta] = [x[0], x[1], x[2]]; 
+  			const [category, sum, delta] = [x[0], x[1], x[2]]; 
   			const row = (document.querySelector("#template-row") as HTMLTemplateElement).content;
-  			container.appendChild(this.fill(row.cloneNode(true) as HTMLElement, sum, delta, category));
+  			const elem = this.fill(row.cloneNode(true) as HTMLElement, sum, delta, category);
+  			this.tmpNodes.push(elem);
+  			container.appendChild(elem);
   		}
 	}
 
-	fill(x: HTMLElement, sum: number, delta: number, category: string) {
+	fill(x: HTMLElement, sum: number, delta: number, category: string): HTMLElement {
 		const round = (x: number) => String(Math.round(x * 10) / 10);
-		const newDelta = sum === delta ? "..." : round(delta);
   		x.querySelector('#row-sum')!.textContent = round(sum);
-  		x.querySelector('#row-delta')!.textContent = newDelta;
+  		x.querySelector('#row-delta')!.textContent = round(delta);
   		x.querySelector('#row-category')!.textContent = category || "без категории";
   		return x;
 	}

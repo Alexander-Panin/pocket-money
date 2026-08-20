@@ -12,13 +12,17 @@ async function fetch(ns: string, id: string) {
 }
 
 async function appendIf(ns: string, model: Day) {
-	if (newIds.delete(model.id)) {  
+	if (newIds.delete(model.id)) {
 		const lastDate = (await getWasm().Store.stats(ns))?.last_date;
 		const date = String(lastDate ?? new Date().getDate());
-		await worker("append", {ns, id: model.id});
-		await getWasm().Store.append_fast(ns, model.id);
-		await worker("save_date", {id: model.id, value: date});
-		await getWasm().save_date_fast(model.id, date);
+		await Promise.all([
+			worker("append", {ns, id: model.id}),
+			worker("save_date", {id: model.id, value: date}),
+		]);
+		await Promise.all([
+			getWasm().Store.append_fast(ns, model.id),
+			getWasm().save_date_fast(model.id, date),
+		]);
 	}
 }
 

@@ -143,13 +143,22 @@ impl Store {
         days.into_iter().map(|x| x.price).sum::<f32>()
     }
 
-    // ui -- stats page
-    pub async fn group_by_with_delta(ns: &JsString, prev_ns: &JsString) -> Vec<Tag> {
-        let month = Store::group_by(ns).await;
-        let prev_month = Store::group_by(prev_ns).await;
-        let mut result: Vec<_> = Store::difference(month, prev_month)
-            .map(|(k,x,y)| Tag(k,x,y))
-            .collect();
+    // ui -- stats page 
+    pub async fn group_by_months(ns: &JsString, prev_ns: &JsString) -> Vec<Tag> {
+        let days = Store::all_with(ns.clone(), |x| x.date > 0).await;
+        let prev_days = Store::all_with(prev_ns.clone(), |x| x.date > 0).await;
+        Store::sort_by(Store::difference(Store::group_by(days), Store::group_by(prev_days)))
+    }
+
+    // ui -- stats page 
+    pub async fn group_by_months_fast(ns: &JsString, prev_ns: &JsString) -> Vec<Tag> {
+        let days = Store::all_with_fast(ns.clone(), |x| x.date > 0).await;
+        let prev_days = Store::all_with_fast(prev_ns.clone(), |x| x.date > 0).await;
+        Store::sort_by(Store::difference(Store::group_by(days), Store::group_by(prev_days)))
+    }
+
+    fn sort_by<I: Iterator<Item = (JsString, f32, f32)>>(it: I) -> Vec<Tag> {
+        let mut result: Vec<_> = it.map(|(k,x,y)| Tag(k,x,y)).collect();
         result.sort_by(|x,y| y.1.partial_cmp(&x.1).unwrap_or(Less));
         result
     }
@@ -161,8 +170,7 @@ impl Store {
         })
     }
 
-    async fn group_by(ns: &JsString) -> BTreeMap<JsString, f32> {
-        let days = Store::all_with(ns.clone(), |x| x.date > 0).await;
+    fn group_by(days: Vec<Day>) -> BTreeMap<JsString, f32> {
         let mut map = BTreeMap::new();
         for day in days.into_iter() {
             map.entry(day.tag)
