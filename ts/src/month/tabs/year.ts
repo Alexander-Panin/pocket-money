@@ -11,29 +11,31 @@ export default class Year {
 		this.fill(day.date);
 	}
 
-	action(event: Event) {
+	action(event: Event): Promise<number | undefined> {
 		const action = (event.target as Element).attributes.getNamedItem('__action')?.value;
 		switch (action) {
 			case 'year/input':
-				this.input(parseInt((event.target as HTMLInputElement).value));
-				return;
+				return this.input(parseInt((event.target as HTMLInputElement).value));
 			case 'year/slider':
-				this.slider(parseInt((event.target as HTMLInputElement).value));
+				return this.slider(parseInt((event.target as HTMLInputElement).value));
 		}
+		return Promise.resolve(undefined);
 	}
 
-	async input(date: number) {
+	async input(date: number): Promise<number | undefined> {
 		if (isNaN(date)) return; 
 		await worker("save_date", {id: this.model.id, value: String(date)});
 		await getWasm().save_date_fast(this.model.id, String(date));
 		this.model.date = date;
+		return date;
 	}
 
-	async slider(date: number) {
+	async slider(date: number): Promise<number | undefined> {
 		(document.querySelector("#year-input") as HTMLInputElement).value = String(date);
 		await worker("save_date", {id: this.model.id, value: String(date)});
 		await getWasm().save_date_fast(this.model.id, String(date));
 		this.model.date = date;
+		return date;
 	}
 
 	fill(value: number) {

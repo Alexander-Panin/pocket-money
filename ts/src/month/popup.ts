@@ -11,18 +11,14 @@ async function fetch(ns: string, id: string) {
 	return model;
 }
 
-async function appendIf(ns: string, model: Day) {
+async function appendIf(ns: string, model: Day, dateYear: number | undefined) {
 	if (newIds.delete(model.id)) {
-		const lastDate = (await getWasm().Store.stats(ns))?.last_date;
+		const lastDate = dateYear ?? (await getWasm().Store.stats(ns))?.last_date;
 		const date = String(lastDate ?? new Date().getDate());
-		await Promise.all([
-			worker("append", {ns, id: model.id}),
-			worker("save_date", {id: model.id, value: date}),
-		]);
-		await Promise.all([
-			getWasm().Store.append_fast(ns, model.id),
-			getWasm().save_date_fast(model.id, date),
-		]);
+		await worker("append", {ns, id: model.id});
+		await worker("save_date", {id: model.id, value: date});
+		await getWasm().Store.append_fast(ns, model.id);
+		await getWasm().save_date_fast(model.id, date);
 	}
 }
 
@@ -74,10 +70,11 @@ export class Popup {
 		action?.startsWith('nav/') ? this.handleNav(action) : this.handleChildren(event);	 
 	}
 
-	handleChildren(event: Event) {
-		this.view?.action(event);
+	async handleChildren(event: Event) {
+		const result = await this.view?.action(event);
 		this.row.setAttribute('__id', this.model.id);
-		appendIf(this.ns, this.model);
+		const yearView = this.view instanceof tabs.Year;
+		appendIf(this.ns, this.model, (yearView && result) || undefined);
 	}
 
 	handleNav(action: string) {
