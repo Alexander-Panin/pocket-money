@@ -33,7 +33,7 @@ export default class Money {
 
 	scale(value: number) {
 		const koef = Math.max(value,0);
-		const [min, max] = [koef*5, (koef+2)*5];
+		const [min, max] = [koef*5, (koef+1)*5];
 		document.querySelector('#money-slider-scale-msg')!.textContent = `${min}–${max}`;
 		const slider = (document.querySelector('#money-slider-main') as HTMLInputElement);
 		slider.min = String(min*10);
