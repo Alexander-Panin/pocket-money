@@ -22,7 +22,7 @@ export default class Money {
 				this.slider(parseInt((event.target as HTMLInputElement).value));
 				return;
 			case 'money/input':
-				this.input(parseFloat((event.target as HTMLInputElement).value));
+				this.input((event.target as HTMLInputElement).value);
 		}
 	}
 
@@ -49,7 +49,8 @@ export default class Money {
 	    this.model.price = value / 10;
 	}
 
-	async input(value: number) {
+	async input(input: string | undefined) {
+		const value = parseFloat((input ?? "").replace(",", "."));
 		if (isNaN(value)) return;
 	    (this.row.querySelector('#row-money-euro') as HTMLElement).textContent = utils.euro(value); 
 	    (this.row.querySelector('#row-money-cent') as HTMLElement).textContent = utils.cent(value);
